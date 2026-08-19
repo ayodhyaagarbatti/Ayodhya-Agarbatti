@@ -10,7 +10,9 @@ import { db } from '../firebase';
 
 const Admin = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [checkingSession, setCheckingSession] = useState(true);
     const [password, setPassword] = useState('');
+    const [isLoggingIn, setIsLoggingIn] = useState(false);
     const [error, setError] = useState('');
     const [activeTab, setActiveTab] = useState('orders'); // 'orders' | 'activity' | 'messages' | 'subscribers' | 'reviews'
     const [firestorePermissionError, setFirestorePermissionError] = useState(false);
@@ -37,10 +39,27 @@ const Admin = () => {
     };
 
     useEffect(() => {
-        // Check session storage
-        const auth = sessionStorage.getItem('adminAuth');
-        if (auth === 'true') {
-            setIsAuthenticated(true);
+        // Verify any existing session token server-side (signature + expiry) -
+        // a stale/forged sessionStorage value alone is no longer enough.
+        const token = sessionStorage.getItem('adminAuth');
+        if (!token) {
+            setCheckingSession(false);
+        } else {
+            fetch('/api/admin-verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token })
+            })
+                .then((r) => r.json())
+                .then((data) => {
+                    if (data.valid) {
+                        setIsAuthenticated(true);
+                    } else {
+                        sessionStorage.removeItem('adminAuth');
+                    }
+                })
+                .catch(() => sessionStorage.removeItem('adminAuth'))
+                .finally(() => setCheckingSession(false));
         }
 
         // Initialize with LocalStorage backup data first
@@ -168,14 +187,27 @@ const Admin = () => {
         };
     }, []);
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        if (password === 'admin123' || password === 'ayodhya') {
+        setError('');
+        setIsLoggingIn(true);
+        try {
+            const res = await fetch('/api/admin-login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password })
+            });
+            const data = await res.json();
+            if (!res.ok || !data.token) {
+                setError(data.error || 'Invalid credentials. Access denied.');
+                return;
+            }
+            sessionStorage.setItem('adminAuth', data.token);
             setIsAuthenticated(true);
-            sessionStorage.setItem('adminAuth', 'true');
-            setError('');
-        } else {
-            setError('Invalid credentials. Access denied.');
+        } catch (err) {
+            setError('Could not reach the server. Please try again.');
+        } finally {
+            setIsLoggingIn(false);
         }
     };
 
@@ -346,6 +378,10 @@ const Admin = () => {
     const pageViewCount = activityLogs.filter(l => l.type === 'PAGE_VIEW').length;
     const cartActionCount = activityLogs.filter(l => l.type === 'CART_ACTION').length;
 
+    if (checkingSession) {
+        return <div className="min-h-screen bg-ivory flex items-center justify-center pt-32" />;
+    }
+
     if (!isAuthenticated) {
         return (
             <div className="min-h-screen bg-ivory flex items-center justify-center p-6 pt-32">
@@ -365,13 +401,13 @@ const Admin = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-gold transition-colors text-sm"
-                                placeholder="Enter Access Key (default: admin123)"
+                                placeholder="Enter Access Key"
                             />
                         </div>
                         {error && <p className="text-red-500 text-xs font-bold">{error}</p>}
 
-                        <button type="submit" className="w-full bg-charcoal text-white py-3 rounded-lg font-bold uppercase tracking-widest text-xs hover:bg-gold hover:text-charcoal transition-all">
-                            Access Admin Database
+                        <button type="submit" disabled={isLoggingIn} className="w-full bg-charcoal text-white py-3 rounded-lg font-bold uppercase tracking-widest text-xs hover:bg-gold hover:text-charcoal transition-all disabled:opacity-50">
+                            {isLoggingIn ? 'Checking...' : 'Access Admin Database'}
                         </button>
                     </form>
                 </div>

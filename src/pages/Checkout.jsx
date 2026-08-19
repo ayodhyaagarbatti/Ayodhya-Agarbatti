@@ -7,6 +7,8 @@ import { db } from '../firebase';
 import { logCheckoutStep } from '../utils/analyticsLogger';
 import SEO from '../components/SEO';
 
+const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID || '';
+
 const checkoutSchema = {
     "@context": "https://schema.org",
     "@type": "WebPage",
@@ -160,6 +162,12 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                 };
                 await saveAndRedirect(newOrder);
             } else {
+                if (!RAZORPAY_KEY_ID) {
+                    alert('Payment gateway is not configured yet. Set VITE_RAZORPAY_KEY_ID to enable online payments.');
+                    setIsProcessing(false);
+                    return;
+                }
+
                 // Razorpay Logic - Ensure Razorpay script loaded
                 const res = await loadRazorpayScript();
                 if (!res || typeof window.Razorpay === 'undefined') {
@@ -168,15 +176,51 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                     return;
                 }
 
+                // Order is created server-side so the amount can't be tampered with
+                // from the browser, matching the horoscope checkout flow.
+                let order;
+                try {
+                    const createRes = await fetch('/api/create-order', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ amount: total * 100, currency: 'INR', receipt: orderNumber })
+                    });
+                    const createData = await createRes.json();
+                    if (!createRes.ok) throw new Error(createData.error || 'Failed to create order');
+                    order = createData;
+                } catch (error) {
+                    console.error('Error creating Razorpay order:', error);
+                    alert('Could not start payment: ' + error.message);
+                    setIsProcessing(false);
+                    return;
+                }
+
                 const options = {
-                    key: "rzp_live_SVqG1GXacFfPNP",
-                    amount: total * 100,
-                    currency: "INR",
+                    key: RAZORPAY_KEY_ID,
+                    amount: order.amount,
+                    currency: order.currency,
+                    order_id: order.order_id,
                     name: "Ayodhya Agarbatti",
                     description: "Sacred Fragrances Order",
                     image: "/images/ayodhya_logo.png",
                     handler: async function (response) {
                         try {
+                            const verifyRes = await fetch('/api/verify-payment', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_signature: response.razorpay_signature
+                                })
+                            });
+                            const verifyData = await verifyRes.json();
+                            if (!verifyRes.ok || !verifyData.verified) {
+                                alert('Payment could not be verified. If you were charged, please contact support with payment ID ' + response.razorpay_payment_id + '.');
+                                setIsProcessing(false);
+                                return;
+                            }
+
                             const newOrder = {
                                 orderNumber: orderNumber,
                                 paymentId: response.razorpay_payment_id || 'RZP-ONLINE',
@@ -203,7 +247,7 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                                 subtotal: subtotal,
                                 shipping: shippingFee,
                                 total: total,
-                                paymentStatus: 'Paid',
+                                paymentStatus: 'Paid & Verified',
                                 status: 'Order Placed',
                                 date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
                                 createdAt: serverTimestamp()
