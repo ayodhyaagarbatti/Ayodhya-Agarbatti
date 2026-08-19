@@ -42,6 +42,7 @@ const HoroscopePayment = () => {
     const product = getHoroscopeProduct(productId);
     const { subject, partner, contact } = location.state || {};
     const [isProcessing, setIsProcessing] = useState(false);
+    const [payError, setPayError] = useState('');
 
     if (!product) {
         return (
@@ -68,35 +69,74 @@ const HoroscopePayment = () => {
 
     const handlePay = async () => {
         if (!RAZORPAY_KEY_ID) {
-            alert('Payment gateway is not configured yet. Set VITE_RAZORPAY_KEY_ID to enable payments.');
+            setPayError('Payment gateway is not configured yet. Set VITE_RAZORPAY_KEY_ID to enable payments.');
             return;
         }
+        setPayError('');
         setIsProcessing(true);
         const orderNumber = `AYD-HORO-${Date.now().toString().slice(-6)}-${Math.floor(1000 + Math.random() * 9000)}`;
 
         const res = await loadRazorpayScript();
         if (!res || typeof window.Razorpay === 'undefined') {
-            alert('Razorpay Payment Gateway failed to load. Please check your internet connection.');
+            setPayError('Razorpay Payment Gateway failed to load. Please check your internet connection.');
+            setIsProcessing(false);
+            return;
+        }
+
+        // Order is created server-side (api/create-order.js) so the amount can't be
+        // tampered with from the browser, and so payment.failed/success can later be
+        // verified against a real order_id via api/verify-payment.js.
+        let order;
+        try {
+            const createRes = await fetch('/api/create-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount: product.price * 100, currency: 'INR', receipt: orderNumber })
+            });
+            const createData = await createRes.json();
+            if (!createRes.ok) throw new Error(createData.error || 'Failed to create order');
+            order = createData;
+        } catch (error) {
+            console.error('Error creating Razorpay order:', error);
+            setPayError('Could not start payment: ' + error.message);
             setIsProcessing(false);
             return;
         }
 
         const options = {
             key: RAZORPAY_KEY_ID,
-            amount: product.price * 100,
-            currency: 'INR',
+            amount: order.amount,
+            currency: order.currency,
+            order_id: order.order_id,
             name: 'Ayodhya Agarbatti',
             description: `${product.name} - Vedic Horoscope Reading`,
             image: '/images/ayodhya_logo.png',
             handler: async function (response) {
                 try {
+                    const verifyRes = await fetch('/api/verify-payment', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature
+                        })
+                    });
+                    const verifyData = await verifyRes.json();
+                    if (!verifyRes.ok || !verifyData.verified) {
+                        setPayError('Payment could not be verified. If you were charged, please contact support with payment ID ' + response.razorpay_payment_id + '.');
+                        setIsProcessing(false);
+                        return;
+                    }
+
                     await saveHoroscopeOrder({
                         orderNumber,
                         productId,
                         productName: product.name,
                         amount: product.price,
-                        paymentId: response.razorpay_payment_id || 'RZP-ONLINE',
-                        paymentStatus: 'Paid',
+                        razorpayOrderId: response.razorpay_order_id,
+                        paymentId: response.razorpay_payment_id,
+                        paymentStatus: 'Paid & Verified',
                         customer: { name: subject.name, email: contact.email, phone: contact.phone },
                         subject,
                         partner: partner || null,
@@ -105,7 +145,7 @@ const HoroscopePayment = () => {
                     navigate('/horoscope/result', { state: { subject, partner, product } });
                 } catch (error) {
                     console.error('Error saving horoscope order:', error);
-                    alert('Payment completed but failed to record your order. Please contact support with your payment ID: ' + (response.razorpay_payment_id || ''));
+                    setPayError('Payment verified but failed to record your order. Please contact support with your payment ID: ' + (response.razorpay_payment_id || ''));
                     setIsProcessing(false);
                 }
             },
@@ -120,7 +160,7 @@ const HoroscopePayment = () => {
 
         const rzp1 = new window.Razorpay(options);
         rzp1.on('payment.failed', function (response) {
-            alert('Payment Failed: ' + (response.error?.description || 'Transaction unsuccessful'));
+            setPayError('Payment failed: ' + (response.error?.description || 'Transaction unsuccessful'));
             setIsProcessing(false);
         });
         rzp1.open();
@@ -154,6 +194,13 @@ const HoroscopePayment = () => {
                         <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 text-amber-800 text-xs p-3 rounded-lg mb-4">
                             <AlertTriangle size={14} className="shrink-0 mt-0.5" />
                             Payment gateway not configured yet - set <code className="font-mono">VITE_RAZORPAY_KEY_ID</code> to enable checkout.
+                        </div>
+                    )}
+
+                    {payError && (
+                        <div className="flex items-start gap-2 bg-red-50 border border-red-200 text-red-700 text-xs p-3 rounded-lg mb-4">
+                            <AlertTriangle size={14} className="shrink-0 mt-0.5" />
+                            {payError}
                         </div>
                     )}
 
