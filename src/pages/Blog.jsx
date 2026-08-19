@@ -364,7 +364,7 @@ const Blog = () => {
                                 </div>
                                 <div className="space-y-4">
                                     <h4 className="font-heading text-sm uppercase tracking-widest text-gold mb-2">🔬 Quality You Can Trust</h4>
-                                    <p className="text-ivory/80">45-50 minute burn time per stick. 100% non-toxic, soot-free formulation. Third-party tested for purity. Free express shipping across India on orders above ₹999. 7-day replacement guarantee with zero-cost pickup.</p>
+                                    <p className="text-ivory/80">45-50 minute burn time per stick. 100% non-toxic, soot-free formulation. Third-party tested for purity. Free express shipping across India on orders above ₹500. 7-day replacement guarantee with zero-cost pickup.</p>
                                 </div>
                             </div>
                         </motion.div>

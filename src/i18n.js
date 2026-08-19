@@ -6,7 +6,7 @@ const resources = {
         translation: {
             // TopBar
             topBar: "✨ Hand-Rolled in Ayodhya • 100% Charcoal-Free",
-            freeShipping: "Complimentary Shipping on Orders Over ₹999",
+            freeShipping: "Complimentary Shipping on Orders Over ₹500",
 
             // Navbar
             navHome: "Home",
@@ -137,7 +137,7 @@ const resources = {
         translation: {
             // TopBar
             topBar: "✨ पवित्र अयोध्या में हस्त-निर्मित • 100% कोयला-मुक्त",
-            freeShipping: "₹999 से अधिक के ऑर्डर पर मुफ्त शिपिंग",
+            freeShipping: "₹500 से अधिक के ऑर्डर पर मुफ्त शिपिंग",
 
             // Navbar
             navHome: "होम",

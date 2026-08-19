@@ -7,9 +7,9 @@ import { useTranslation } from 'react-i18next';
 const Cart = ({ isOpen, onClose, items, onRemove, onUpdateQuantity }) => {
     const { t } = useTranslation();
 
-    // Parse price string (e.g. "₹299") to integer (299)
+    // Parse price string (e.g. "₹70") to integer (70)
     const total = items.reduce((acc, item) => {
-        const priceNum = item.numericPrice || parseInt(String(item.price || '0').replace(/[^0-9]/g, '')) || 299;
+        const priceNum = item.numericPrice || parseInt(String(item.price || '0').replace(/[^0-9]/g, '')) || 70;
         return acc + (priceNum * item.quantity);
     }, 0);
 
@@ -56,7 +56,7 @@ const Cart = ({ isOpen, onClose, items, onRemove, onUpdateQuantity }) => {
                     ) : (
                         items.map((item) => {
                             const imageSrc = item.image || (item.images && item.images[0]) || '/images/ayodhya_logo.png';
-                            const displayPrice = item.price || (item.numericPrice ? `₹${item.numericPrice}` : '₹299');
+                            const displayPrice = item.price || (item.numericPrice ? `₹${item.numericPrice}` : '₹70');
                             return (
                                 <div key={item.id} className="flex gap-4">
                                     <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden shrink-0 border border-charcoal/5">

@@ -27,6 +27,9 @@ import ProductDetails from './pages/ProductDetails';
 import Admin from './pages/Admin';
 import Checkout from './pages/Checkout';
 import ReturnPolicy from './pages/ReturnPolicy';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsAndConditions from './pages/TermsAndConditions';
+import ShippingPolicy from './pages/ShippingPolicy';
 import NotFound from './pages/NotFound';
 import HoroscopeLanding from './pages/horoscope/HoroscopeLanding';
 import HoroscopeDetailsForm from './pages/horoscope/HoroscopeDetailsForm';
@@ -108,7 +111,7 @@ function AppContent() {
             const parsed = JSON.parse(saved);
             return parsed.map(item => {
                 const matchedProduct = products.find(p => p.id === item.id);
-                const numericPrice = matchedProduct?.numericPrice || item.numericPrice || 299;
+                const numericPrice = matchedProduct?.numericPrice || item.numericPrice || 70;
                 const priceStr = matchedProduct?.price || item.price || `₹${numericPrice}`;
                 const imageSrc = item.image || matchedProduct?.images?.[0] || item.images?.[0] || '/images/ayodhya_logo.png';
                 return {
@@ -137,7 +140,7 @@ function AppContent() {
 
     const calculateCartTotal = (items) => {
         return items.reduce((acc, item) => {
-            const priceNum = item.numericPrice || parseInt(String(item.price || '0').replace(/[^0-9]/g, '')) || 299;
+            const priceNum = item.numericPrice || parseInt(String(item.price || '0').replace(/[^0-9]/g, '')) || 70;
             return acc + priceNum * (item.quantity || 1);
         }, 0);
     };
@@ -147,8 +150,8 @@ function AppContent() {
     const addToCart = (product) => {
         setCartItems(prev => {
             const imageSrc = product.image || (product.images && product.images[0]) || '/images/ayodhya_logo.png';
-            const priceStr = product.price || (product.numericPrice ? `₹${product.numericPrice}` : '₹299');
-            const numericPrice = product.numericPrice || parseInt(String(priceStr).replace(/[^0-9]/g, '')) || 299;
+            const priceStr = product.price || (product.numericPrice ? `₹${product.numericPrice}` : '₹70');
+            const numericPrice = product.numericPrice || parseInt(String(priceStr).replace(/[^0-9]/g, '')) || 70;
 
             const itemWithDefaults = {
                 ...product,
@@ -249,6 +252,9 @@ function AppContent() {
                         <Route path="/checkout" element={<Checkout cartItems={cartItems} onClearCart={clearCart} />} />
                         <Route path="/success" element={<PaymentSuccess />} />
                         <Route path="/return-policy" element={<ReturnPolicy />} />
+                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+                        <Route path="/shipping-policy" element={<ShippingPolicy />} />
                         <Route path="/product/:id" element={<ProductDetails addToCart={addToCart} />} />
                         <Route path="/horoscope" element={<HoroscopeLanding />} />
                         <Route path="/horoscope/:productId/details" element={<HoroscopeDetailsForm />} />

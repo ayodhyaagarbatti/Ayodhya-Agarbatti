@@ -111,10 +111,15 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
         setStep(2);
     };
 
-    const total = cartItems.reduce((acc, item) => {
+    const FREE_SHIPPING_THRESHOLD = 500;
+    const DELIVERY_CHARGE = 79;
+
+    const subtotal = cartItems.reduce((acc, item) => {
         const priceNum = parseInt(item.price.replace(/[^0-9]/g, '')) || 0;
         return acc + priceNum * item.quantity;
     }, 0);
+    const shippingFee = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : DELIVERY_CHARGE;
+    const total = subtotal + shippingFee;
 
     const handlePlaceOrder = async () => {
         setIsProcessing(true);
@@ -144,8 +149,8 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                         quantity: item.quantity,
                         image: item.image || ''
                     })),
-                    subtotal: total,
-                    shipping: 0,
+                    subtotal: subtotal,
+                    shipping: shippingFee,
                     total: total,
                     paymentId: 'COD',
                     paymentStatus: 'Pending COD',
@@ -195,8 +200,8 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                                     quantity: item.quantity,
                                     image: item.image || ''
                                 })),
-                                subtotal: total,
-                                shipping: 0,
+                                subtotal: subtotal,
+                                shipping: shippingFee,
                                 total: total,
                                 paymentStatus: 'Paid',
                                 status: 'Order Placed',
@@ -293,7 +298,7 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
         <div className="min-h-screen bg-ivory/50 pt-28 pb-12">
             <SEO
                 title="Secure Checkout | Ayodhya Agarbatti - Complete Your Order"
-                description="Complete your secure purchase of premium charcoal-free incense sticks from Ayodhya Agarbatti. Multiple payment options including Razorpay (UPI, Cards, Netbanking) and Cash on Delivery. Free shipping on orders above ₹999."
+                description="Complete your secure purchase of premium charcoal-free incense sticks from Ayodhya Agarbatti. Multiple payment options including Razorpay (UPI, Cards, Netbanking) and Cash on Delivery. Free shipping on orders above ₹500."
                 keywords="checkout Ayodhya Agarbatti, secure payment incense, buy agarbatti online payment, razorpay checkout, cash on delivery incense, order sacred fragrances"
                 canonical="https://www.ayodhyaagarbatti.in/checkout"
                 ogImage="https://www.ayodhyaagarbatti.in/images/ayodhya_package.png"
@@ -474,12 +479,21 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                             <div className="space-y-3 mb-6">
                                 <div className="flex justify-between text-sm text-gray-600">
                                     <span>Subtotal ({cartItems.length} items)</span>
-                                    <span>₹{total}</span>
+                                    <span>₹{subtotal}</span>
                                 </div>
                                 <div className="flex justify-between text-sm text-gray-600">
-                                    <span>Shipping</span>
-                                    <span className="text-green-600">FREE</span>
+                                    <span>Delivery Charge</span>
+                                    {shippingFee === 0 ? (
+                                        <span className="text-green-600">FREE</span>
+                                    ) : (
+                                        <span>₹{shippingFee}</span>
+                                    )}
                                 </div>
+                                {shippingFee > 0 && (
+                                    <p className="text-[11px] text-gray-400">
+                                        Add ₹{FREE_SHIPPING_THRESHOLD - subtotal} more to unlock free delivery.
+                                    </p>
+                                )}
                             </div>
                             <div className="border-t border-gray-100 pt-4 flex justify-between items-center mb-6">
                                 <span className="font-bold text-lg text-charcoal">Total Amount</span>
@@ -489,7 +503,7 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                                 <Truck size={20} className="text-charcoal shrink-0 mt-1" />
                                 <div>
                                     <p className="text-xs font-bold text-gray-900 uppercase">Estimated Delivery</p>
-                                    <p className="text-xs text-gray-500 mt-1">3-5 Business Days provided by our premium logistics partners.</p>
+                                    <p className="text-xs text-gray-500 mt-1">3-5 Business Days provided by our premium logistics partners. Free delivery on orders above ₹{FREE_SHIPPING_THRESHOLD}, else a flat ₹{DELIVERY_CHARGE} charge applies.</p>
                                 </div>
                             </div>
                         </div>

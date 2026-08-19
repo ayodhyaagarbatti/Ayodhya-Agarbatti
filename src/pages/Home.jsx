@@ -15,7 +15,7 @@ const homeSchema = {
     "@context": "https://schema.org",
     "@type": "WebPage",
     "name": "Ayodhya Agarbatti - Pure Sacred Incense Sticks Hand-Rolled in Ayodhya",
-    "description": "Buy 100% natural, charcoal-free premium incense sticks hand-rolled in the holy city of Ayodhya. Sourced from organic temple flowers, pure Mysore sandalwood, and therapeutic essential oils. Free shipping on orders above ₹999.",
+    "description": "Buy 100% natural, charcoal-free premium incense sticks hand-rolled in the holy city of Ayodhya. Sourced from organic temple flowers, pure Mysore sandalwood, and therapeutic essential oils. Free shipping on orders above ₹500.",
     "url": "https://www.ayodhyaagarbatti.in/",
     "publisher": {
         "@type": "Organization",
@@ -105,7 +105,7 @@ const Home = ({ addToCart }) => {
         <div className="overflow-x-hidden">
             <SEO
                 title="Ayodhya Agarbatti | Pure Sacred Incense Sticks Hand-Rolled in Ayodhya"
-                description="Buy 100% natural, charcoal-free premium incense sticks hand-rolled in the holy city of Ayodhya. Sourced from organic temple flowers, pure Mysore sandalwood, and therapeutic essential oils. Free shipping on orders above ₹999. Shop Espresso Ground, Madagascan Calm, Citrus Clarity & Creative Spark."
+                description="Buy 100% natural, charcoal-free premium incense sticks hand-rolled in the holy city of Ayodhya. Sourced from organic temple flowers, pure Mysore sandalwood, and therapeutic essential oils. Free shipping on orders above ₹500. Shop Espresso Ground, Madagascan Calm, Citrus Clarity & Creative Spark."
                 keywords="Ayodhya Agarbatti, natural incense sticks, charcoal free agarbatti, Mysore sandalwood incense, temple flower agarbatti, organic incense sticks India, luxury agarbatti, pooja incense, Ayodhya incense online buy, buy agarbatti online, hand rolled incense, non toxic incense, premium incense India"
                 canonical="https://www.ayodhyaagarbatti.in/"
                 ogImage="https://www.ayodhyaagarbatti.in/images/ayodhya_package.png"
@@ -181,7 +181,7 @@ const Home = ({ addToCart }) => {
                             </div>
                             <h4 className="font-heading text-lg text-charcoal mb-2">Do you offer free shipping across India?</h4>
                             <p className="text-gray-600 text-sm leading-relaxed">
-                                Yes! Free express shipping on all orders above ₹999. We also offer Cash on Delivery (COD) for most pin codes. Orders typically deliver within 3-5 business days with zero-cost pickup for returns.
+                                Yes! Free express shipping on all orders above ₹500. We also offer Cash on Delivery (COD) for most pin codes. Orders typically deliver within 3-5 business days with zero-cost pickup for returns.
                             </p>
                         </article>
 

@@ -109,6 +109,9 @@ const Footer = () => {
                         <li><Link to="/contact" className="hover:text-gold transition-colors">{t('footerContact')}</Link></li>
                         <li><Link to="/horoscope" className="hover:text-gold transition-colors">✨ Vedic Horoscope</Link></li>
                         <li><Link to="/return-policy" className="hover:text-gold transition-colors text-gold/90 font-bold">{t('footerReturnPolicy')}</Link></li>
+                        <li><Link to="/shipping-policy" className="hover:text-gold transition-colors">Shipping & Exchange</Link></li>
+                        <li><Link to="/terms-and-conditions" className="hover:text-gold transition-colors">Terms & Conditions</Link></li>
+                        <li><Link to="/privacy-policy" className="hover:text-gold transition-colors">Privacy Policy</Link></li>
                     </ul>
                 </div>
 

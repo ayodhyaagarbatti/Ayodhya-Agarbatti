@@ -45,14 +45,14 @@ export const trackAddToCart = (product, quantity = 1) => {
             item_id: String(product.id),
             item_name: product.name,
             item_category: product.category || 'Incense',
-            price: product.numericPrice || 299,
+            price: product.numericPrice || 70,
             quantity: quantity
         };
 
         if (window.gtag) {
             window.gtag('event', 'add_to_cart', {
                 currency: 'INR',
-                value: (product.numericPrice || 299) * quantity,
+                value: (product.numericPrice || 70) * quantity,
                 items: [itemData]
             });
         }
@@ -70,7 +70,7 @@ export const trackBeginCheckout = (cartItems, totalValue) => {
         const items = cartItems.map(item => ({
             item_id: String(item.id),
             item_name: item.name,
-            price: item.numericPrice || 299,
+            price: item.numericPrice || 70,
             quantity: item.quantity
         }));
 

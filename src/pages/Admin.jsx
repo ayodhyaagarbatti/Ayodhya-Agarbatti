@@ -198,7 +198,7 @@ const Admin = () => {
                     paymentMethod: "Razorpay Online"
                 },
                 items: [
-                    { id: 1, name: "Espresso Ground Incense", variant: "Coffee & Cocoa", price: "₹299", quantity: 2 }
+                    { id: 1, name: "Espresso Ground Incense", variant: "Coffee & Cocoa", price: "₹70", quantity: 2 }
                 ],
                 subtotal: 598,
                 shipping: 0,

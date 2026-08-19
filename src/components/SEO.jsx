@@ -119,7 +119,7 @@ const localBusinessSchema = {
             "timeZone": "Asia/Kolkata"
         }
     ],
-    "priceRange": "₹299 - ₹1299",
+    "priceRange": "₹70 - ₹300",
     "currenciesAccepted": "INR",
     "paymentAccepted": "Cash, Credit Card, UPI, Razorpay, COD",
     "areaServed": {

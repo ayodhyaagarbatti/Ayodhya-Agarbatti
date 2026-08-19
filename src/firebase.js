@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
@@ -27,6 +27,11 @@ try {
 // Export services
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+
+// "Sign in with Google" - the OAuth consent screen used here is configured
+// in Firebase Console > Authentication > Sign-in method > Google (Web client ID),
+// not in this file. See VITE_GOOGLE_CLIENT_ID in .env for the ID that must be set there.
+export const googleProvider = new GoogleAuthProvider();
 
 export { analytics };
 export default app;

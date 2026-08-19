@@ -4,11 +4,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 import { useTranslation } from 'react-i18next';
+import { useAuthUser } from '../hooks/useAuthUser';
+import AccountModal from './AccountModal';
 
 const Navbar = ({ cartCount, onCartClick, onSearchClick }) => {
     const { t } = useTranslation();
     const [scrolled, setScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isAccountOpen, setIsAccountOpen] = useState(false);
+    const { user } = useAuthUser();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -42,10 +46,10 @@ const Navbar = ({ cartCount, onCartClick, onSearchClick }) => {
 
     const navItems = [
         { name: t('navHome'), key: 'navHome', path: '/' },
+        { name: '✨ Horoscope', key: 'navHoroscope', path: '/horoscope' },
         { name: t('navShop'), key: 'navShop', path: '/shop' },
         { name: t('navRituals'), key: 'navRituals', path: '/#ritual' },
         { name: t('navJournal'), key: 'navJournal', path: '/blog' },
-        { name: '✨ Horoscope', key: 'navHoroscope', path: '/horoscope' },
         { name: t('navContact'), key: 'navContact', path: '/contact' }
     ];
 
@@ -88,14 +92,18 @@ const Navbar = ({ cartCount, onCartClick, onSearchClick }) => {
                         <Search className="w-5 h-5 text-ivory group-hover:text-gold transition-colors" />
                     </button>
 
-                    <Link
-                        to="/admin"
-                        title="Admin / Account"
+                    <button
+                        onClick={() => setIsAccountOpen(true)}
+                        title={user ? user.displayName || 'Account' : 'Sign In'}
                         aria-label="Account access"
                         className="p-1.5 rounded-full hover:bg-white/10 transition-colors group"
                     >
-                        <User className="w-5 h-5 text-ivory group-hover:text-gold transition-colors" />
-                    </Link>
+                        {user?.photoURL ? (
+                            <img src={user.photoURL} alt="" className="w-5 h-5 rounded-full object-cover" />
+                        ) : (
+                            <User className="w-5 h-5 text-ivory group-hover:text-gold transition-colors" />
+                        )}
+                    </button>
 
                     <button
                         onClick={onCartClick}
@@ -132,10 +140,10 @@ const Navbar = ({ cartCount, onCartClick, onSearchClick }) => {
 
                         {[
                             { name: 'Home', path: '/' },
+                            { name: '✨ Horoscope', path: '/horoscope' },
                             { name: 'Shop', path: '/shop' },
                             { name: 'Rituals', path: '/#ritual' },
                             { name: 'Journal', path: '/blog' },
-                            { name: '✨ Horoscope', path: '/horoscope' },
                             { name: 'Contact', path: '/contact' },
                             { name: 'Admin Dashboard', path: '/admin' }
                         ].map((item) => (
@@ -154,6 +162,8 @@ const Navbar = ({ cartCount, onCartClick, onSearchClick }) => {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            <AccountModal isOpen={isAccountOpen} onClose={() => setIsAccountOpen(false)} user={user} />
         </nav>
     );
 };
