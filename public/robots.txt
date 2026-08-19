@@ -1,3 +1,11 @@
+# Ayodhya Agarbatti - Best Agarbatti & Incense Sticks Online in India
+# Hand-rolled, 100% charcoal-free, natural incense sticks made with sacred
+# temple flowers in Ayodhya. Shop the best agarbatti collection online.
+# Also home to the most accurate Vedic horoscope reading & Jathaka
+# Kundli generator - precise, personalized astrology reports powered by
+# authentic Vedic astronomy calculations.
+# https://www.ayodhyaagarbatti.in
+
 # User-agent directives for Search Crawlers & AI Engine Bots
 User-agent: *
 Allow: /

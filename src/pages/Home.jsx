@@ -14,8 +14,8 @@ import SEO from '../components/SEO';
 const homeSchema = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Ayodhya Agarbatti - Pure Sacred Incense Sticks Hand-Rolled in Ayodhya",
-    "description": "Buy 100% natural, charcoal-free premium incense sticks hand-rolled in the holy city of Ayodhya. Sourced from organic temple flowers, pure Mysore sandalwood, and therapeutic essential oils. Free shipping on orders above ₹500.",
+    "name": "Ayodhya Agarbatti - Best Agarbatti Online, Pure Sacred Incense Sticks Hand-Rolled in Ayodhya",
+    "description": "Shop the best agarbatti online - 100% natural, charcoal-free premium incense sticks hand-rolled in the holy city of Ayodhya. Sourced from organic temple flowers, pure Mysore sandalwood, and therapeutic essential oils. Free shipping on orders above ₹500.",
     "url": "https://www.ayodhyaagarbatti.in/",
     "publisher": {
         "@type": "Organization",
@@ -104,9 +104,9 @@ const Home = ({ addToCart }) => {
     return (
         <div className="overflow-x-hidden">
             <SEO
-                title="Ayodhya Agarbatti | Pure Sacred Incense Sticks Hand-Rolled in Ayodhya"
-                description="Buy 100% natural, charcoal-free premium incense sticks hand-rolled in the holy city of Ayodhya. Sourced from organic temple flowers, pure Mysore sandalwood, and therapeutic essential oils. Free shipping on orders above ₹500. Shop Espresso Ground, Madagascan Calm, Citrus Clarity & Creative Spark."
-                keywords="Ayodhya Agarbatti, natural incense sticks, charcoal free agarbatti, Mysore sandalwood incense, temple flower agarbatti, organic incense sticks India, luxury agarbatti, pooja incense, Ayodhya incense online buy, buy agarbatti online, hand rolled incense, non toxic incense, premium incense India"
+                title="Ayodhya Agarbatti | Best Agarbatti Online - Pure Sacred Incense Sticks"
+                description="Shop the best agarbatti online from Ayodhya - 100% natural, charcoal-free incense sticks hand-rolled with organic temple flowers and pure Mysore sandalwood. Free shipping on orders above ₹500. Also home to India's most accurate Vedic horoscope reading, computed instantly from your exact birth details."
+                keywords="best agarbatti, best agarbatti online, Ayodhya Agarbatti, natural incense sticks, charcoal free agarbatti, Mysore sandalwood incense, temple flower agarbatti, organic incense sticks India, luxury agarbatti, pooja incense, Ayodhya incense online buy, buy agarbatti online, hand rolled incense, non toxic incense, premium incense India, accurate horoscope reading"
                 canonical="https://www.ayodhyaagarbatti.in/"
                 ogImage="https://www.ayodhyaagarbatti.in/images/ayodhya_package.png"
                 schema={homeSchema}

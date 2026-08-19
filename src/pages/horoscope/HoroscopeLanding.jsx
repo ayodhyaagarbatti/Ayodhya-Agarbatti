@@ -8,8 +8,9 @@ const HoroscopeLanding = () => {
     return (
         <div className="min-h-screen bg-ivory/50 pt-32 pb-20">
             <SEO
-                title="Vedic Horoscope Readings | Ayodhya Agarbatti"
-                description="Get your Janma Kundali life horoscope for ₹99 or a full marriage compatibility match for ₹149 - computed instantly, downloadable as a branded PDF."
+                title="Most Accurate Horoscope Reading Online | Vedic Astrology - Ayodhya Agarbatti"
+                description="Get the most accurate horoscope reading online - a Janma Kundali life horoscope for ₹99 or a full marriage compatibility match for ₹149, computed to arc-second precision from your exact birth details and delivered instantly as a branded PDF."
+                keywords="most accurate horoscope reading, accurate horoscope online, Vedic horoscope, Janma Kundali, marriage compatibility match, birth chart online, kundli matching, Vedic astrology reading India"
                 canonical="https://www.ayodhyaagarbatti.in/horoscope"
                 ogType="website"
             />
