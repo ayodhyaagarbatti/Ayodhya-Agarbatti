@@ -1,0 +1,1106 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Jāthaka ॐ · All Mighty Īśvara - Vedic Horoscope & Marriage Matching | Offline Janma Kundali</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Cast a complete 30-section Vedic janma kundali - Lagna, nakṣatra, pañcāṅga, 15 varga charts, Ashtakavarga, Vimśottari daśā and transits - or match two charts with the 36-point Ashtakoota Guṇa Milan. Computed entirely in your browser: Lahiri sidereal, Swiss-Ephemeris-grade, no internet and no artificial intelligence - the AI in Jāthaka AI is Almighty Īśvara.">
+<meta name="author" content="Jāthaka">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F3EEE3" media="(prefers-color-scheme:light)">
+<meta name="theme-color" content="#111226" media="(prefers-color-scheme:dark)">
+
+<!-- favicon: the brass yantra, inline so the page stays fully offline -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23191A33'/%3E%3Ccircle cx='50' cy='50' r='33' fill='none' stroke='%23C9A24A' stroke-width='5'/%3E%3Cg stroke='%23C9A24A' stroke-width='5' stroke-linecap='round'%3E%3Cline x1='50' y1='11' x2='50' y2='89'/%3E%3Cline x1='11' y1='50' x2='89' y2='50'/%3E%3C/g%3E%3Ccircle cx='50' cy='50' r='11' fill='%23C9A24A'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23191A33'/%3E%3Ccircle cx='50' cy='50' r='33' fill='none' stroke='%23C9A24A' stroke-width='5'/%3E%3Cg stroke='%23C9A24A' stroke-width='5' stroke-linecap='round'%3E%3Cline x1='50' y1='11' x2='50' y2='89'/%3E%3Cline x1='11' y1='50' x2='89' y2='50'/%3E%3C/g%3E%3Ccircle cx='50' cy='50' r='11' fill='%23C9A24A'/%3E%3C/svg%3E">
+
+<!-- link previews (WhatsApp / Slack / X / iMessage) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jāthaka">
+<meta property="og:title" content="Jāthaka - Vedic Horoscope & Marriage Matching">
+<meta property="og:description" content="A complete 30-section janma kundali, plus 36-point Ashtakoota marriage matching with the Nāḍī and Bhakūṭa cancellation rules - cast entirely in your browser. Lahiri sidereal, no internet, no artificial intelligence.">
+<meta property="og:url" content="https://rdlohith.github.io/jathaka-horoscope/">
+<meta property="og:image" content="https://rdlohith.github.io/jathaka-horoscope/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Jāthaka - Vedic horoscope calculator and marriage matching">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Jāthaka - Vedic Horoscope & Marriage Matching">
+<meta name="twitter:description" content="A complete 30-section janma kundali, plus 36-point Ashtakoota marriage matching - cast entirely in your browser. Lahiri sidereal, no internet, no artificial intelligence.">
+<meta name="twitter:image" content="https://rdlohith.github.io/jathaka-horoscope/og.png">
+<style>
+/* ============ Brass & Indigo design system ============ */
+:root{
+  --ground:#F3EEE3; --panel:#FBF8F1; --panel-2:#F0E9DB;
+  --ink:#22203A; --ink-soft:#55506E; --ink-faint:#8A849E;
+  --line:#DED4BE; --line-soft:#E9E1D0;
+  --brass:#A9812B; --brass-bright:#C9A24A; --brass-deep:#7A5E1C;
+  --kumkum:#B23A22; --indigo:#3A3A6B;
+  --good:#4B7A46; --warn:#B07A16; --crit:#B23A22;
+  --shadow:0 1px 2px rgba(40,32,10,.06),0 8px 30px rgba(40,32,10,.07);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --ground:#111226; --panel:#191A33; --panel-2:#20214012;
+    --panel:#181A31; --panel-2:#1F2140;
+    --ink:#ECE7D8; --ink-soft:#B3AEC6; --ink-faint:#7E7A96;
+    --line:#2E2F52; --line-soft:#26274A;
+    --brass:#C9A24A; --brass-bright:#E1BE6A; --brass-deep:#9A7A2E;
+    --kumkum:#E0664B; --indigo:#8A8AD6;
+    --good:#7FB877; --warn:#D9A94B; --crit:#E0664B;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 40px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="light"]{
+  --ground:#F3EEE3; --panel:#FBF8F1; --panel-2:#F0E9DB;
+  --ink:#22203A; --ink-soft:#55506E; --ink-faint:#8A849E;
+  --line:#DED4BE; --line-soft:#E9E1D0;
+  --brass:#A9812B; --brass-bright:#C9A24A; --brass-deep:#7A5E1C;
+  --kumkum:#B23A22; --indigo:#3A3A6B;
+  --good:#4B7A46; --warn:#B07A16; --crit:#B23A22;
+  --shadow:0 1px 2px rgba(40,32,10,.06),0 8px 30px rgba(40,32,10,.07);
+}
+:root[data-theme="dark"]{
+  --ground:#111226; --panel:#181A31; --panel-2:#1F2140;
+  --ink:#ECE7D8; --ink-soft:#B3AEC6; --ink-faint:#7E7A96;
+  --line:#2E2F52; --line-soft:#26274A;
+  --brass:#C9A24A; --brass-bright:#E1BE6A; --brass-deep:#9A7A2E;
+  --kumkum:#E0664B; --indigo:#8A8AD6;
+  --good:#7FB877; --warn:#D9A94B; --crit:#E0664B;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 40px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+  line-height:1.55;-webkit-font-smoothing:antialiased;font-size:16px}
+h1,h2,h3,h4{font-family:var(--serif);font-weight:600;text-wrap:balance;line-height:1.15;margin:0}
+a{color:var(--brass);text-decoration-color:var(--line)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-family:var(--sans);text-transform:uppercase;letter-spacing:.16em;
+  font-size:11.5px;font-weight:600;color:var(--brass)}
+
+/* header */
+header.top{border-bottom:1px solid var(--line);background:
+  linear-gradient(180deg,color-mix(in srgb,var(--panel) 70%,transparent),transparent);
+  position:relative;overflow:hidden}
+.starfield{position:absolute;inset:0;pointer-events:none;opacity:.5}
+.top-inner{position:relative;padding:30px 0 26px;display:flex;align-items:center;
+  justify-content:space-between;gap:20px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:14px}
+.sigil{width:46px;height:46px;flex:none}
+.brand h1{font-size:26px;letter-spacing:.01em}
+.brand .sub{color:var(--ink-soft);font-size:13px;margin-top:2px}
+.brand .om{color:var(--brass);font-weight:700}
+.theme-btn{font-family:var(--sans);font-size:13px;color:var(--ink-soft);background:var(--panel);
+  border:1px solid var(--line);border-radius:20px;padding:7px 14px;cursor:pointer;display:flex;
+  gap:7px;align-items:center}
+.theme-btn:hover{border-color:var(--brass)}
+
+/* form panel */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;
+  box-shadow:var(--shadow)}
+.form-card{margin:26px 0;padding:24px}
+.form-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:16px 18px}
+@media (max-width:720px){.form-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:480px){.form-grid{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:6px;position:relative}
+.field.col-span{grid-column:1/-1}
+label{font-size:12.5px;font-weight:600;color:var(--ink-soft);letter-spacing:.02em}
+input,select{font-family:var(--sans);font-size:15px;color:var(--ink);background:var(--ground);
+  border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+input:focus,select:focus{outline:2px solid var(--brass);outline-offset:1px;border-color:var(--brass)}
+/* one keyboard focus ring for the whole site - buttons and links used to fall
+   back to whatever outline the browser felt like drawing */
+a:focus-visible,button:focus-visible,summary:focus-visible,
+[tabindex]:focus-visible,.ac-item:focus-visible{
+  outline:2px solid var(--brass);outline-offset:2px}
+/* motion: everything interactive eases instead of snapping */
+a,button,.btn,.theme-btn,.mini-btn,.manual-toggle,.ac-item,.celeb,.chip,.jump-arrow{
+  transition:background-color .16s ease,border-color .16s ease,color .16s ease,
+    box-shadow .16s ease,opacity .16s ease,transform .16s ease}
+/* line-art icons, so button glyphs match the serif/brass look on every platform
+   instead of rendering as a different full-colour emoji per OS */
+.ico{width:14px;height:14px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round}
+.btn .ico{width:15px;height:15px}
+.hint{font-size:11.5px;color:var(--ink-faint)}
+/* "Time not known" - a stated limitation is worth far more than a guessed Lagna. */
+.unk{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--ink-faint);
+  cursor:pointer;font-weight:400;letter-spacing:0}
+.unk input{width:14px;height:14px;accent-color:var(--brass);cursor:pointer;margin:0}
+input[type=time]:disabled{opacity:.45;cursor:not-allowed}
+.ac-list{position:absolute;top:100%;left:0;right:0;z-index:30;background:var(--panel);
+  border:1px solid var(--line);border-radius:10px;margin-top:4px;max-height:240px;overflow:auto;
+  box-shadow:var(--shadow);display:none}
+.ac-list.show{display:block}
+.ac-item{padding:9px 12px;cursor:pointer;font-size:14px;border-bottom:1px solid var(--line-soft)}
+.ac-item:last-child{border-bottom:none}
+.ac-item:hover,.ac-item.active{background:var(--panel-2)}
+.ac-item small{color:var(--ink-faint);font-family:var(--mono)}
+.form-actions{display:flex;gap:12px;align-items:center;margin-top:20px;flex-wrap:wrap}
+.btn{font-family:var(--sans);font-weight:600;font-size:15px;border-radius:11px;padding:12px 22px;
+  cursor:pointer;border:1px solid transparent;display:inline-flex;align-items:center;
+  justify-content:center;gap:8px}
+.btn-primary{background:linear-gradient(180deg,var(--brass-bright),var(--brass));color:#231a06;
+  box-shadow:0 2px 10px color-mix(in srgb,var(--brass) 40%,transparent)}
+.btn-primary:hover{filter:brightness(1.05)}
+.btn-ghost{background:transparent;border-color:var(--line);color:var(--ink-soft)}
+.btn-ghost:hover{border-color:var(--brass);color:var(--ink)}
+.manual-toggle{font-size:13px;color:var(--brass);cursor:pointer;user-select:none;
+  background:none;border:none;font-family:var(--sans);padding:0}
+.manual-row{display:none}
+.manual-row.show{display:grid}
+.err{color:var(--crit);font-size:13.5px;margin-top:10px;font-weight:500}
+
+/* mode switch: one chart, or two charts matched */
+.mode-tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+@media (max-width:560px){.mode-tabs{grid-template-columns:1fr}}
+.mode-tab{text-align:left;padding:13px 16px;border-radius:12px;border:1px solid var(--line);
+  background:var(--panel-2);color:var(--ink-soft);cursor:pointer;font-family:var(--sans)}
+.mode-tab b{display:block;font-family:var(--serif);font-size:15px;color:var(--ink);margin-bottom:2px}
+.mode-tab span{font-size:11.5px;color:var(--ink-faint);line-height:1.4;display:block}
+.mode-tab:hover{border-color:var(--brass)}
+.mode-tab.active{border-color:var(--brass);background:color-mix(in srgb,var(--brass) 10%,var(--panel-2));
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--brass) 35%,transparent)}
+.mode-tab.active b{color:var(--brass)}
+
+/* second nativity - only in compatibility mode */
+.partner-block{display:none;margin-top:22px;padding-top:20px;border-top:1px solid var(--line)}
+body.mode-match .partner-block{display:block}
+body.mode-match #genderField{display:none}
+.partner-note{max-width:70ch;margin-bottom:14px;line-height:1.55}
+/* the showcase casts one celebrity's horoscope, so it has no meaning mid-match -
+   leaving it on screen invited a click that would silently abandon the pairing */
+body.mode-match #showcase{display:none}
+/* the matching-method note is the trust argument for compatibility mode only */
+.why-match{display:none;margin-top:22px;padding:18px 20px;border-radius:14px;
+  border:1px solid var(--line);border-left:3px solid var(--brass);background:var(--panel-2)}
+body.mode-match .why-match{display:block}
+.why-match h3{font-family:var(--serif);font-size:16px;margin:0 0 8px}
+.why-match p{font-size:13.5px;color:var(--ink-soft);margin:0 0 10px;line-height:1.65;max-width:78ch}
+.why-match ul{margin:0;padding-left:19px;font-size:13.5px;color:var(--ink-soft);line-height:1.65}
+.why-match li{margin-bottom:7px}
+.why-match b{color:var(--ink)}
+/* saved charts: in match mode each row loads into a role instead of casting */
+.hist-split{display:flex;align-items:center;gap:10px;flex-wrap:wrap;cursor:default}
+.hist-split:hover{border-color:var(--line-soft)}
+.hist-who{flex:1;min-width:130px}
+.hist-roles{display:flex;gap:6px}
+.hist-roles .mini-btn{white-space:nowrap}
+
+/* section nav */
+nav.jump{position:sticky;top:0;z-index:20;background:
+  color-mix(in srgb,var(--ground) 88%,transparent);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);display:none}
+nav.jump.show{display:block}
+.jump-rail{display:flex;align-items:center;gap:8px}
+/* the rail hides the native scrollbar and fades its ends instead, so the strip
+   reads as parchment rather than a grey OS scrollbar (and takes no extra height) */
+.jump-inner{display:flex;gap:4px;overflow-x:auto;padding:9px 0;flex:1;min-width:0;
+  scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;
+  scroll-behavior:smooth;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 30px,#000 calc(100% - 30px),transparent 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 30px,#000 calc(100% - 30px),transparent 100%)}
+.jump-inner::-webkit-scrollbar{display:none}
+/* fade only the side that actually has more content */
+.jump-inner.at-start{-webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 30px),transparent 100%);
+  mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 30px),transparent 100%)}
+.jump-inner.at-end{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 30px,#000 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 30px,#000 100%)}
+.jump-inner.at-start.at-end{-webkit-mask-image:none;mask-image:none}
+.jump-inner a{font-size:13px;color:var(--ink-soft);text-decoration:none;padding:6px 12px;
+  border-radius:8px;white-space:nowrap;font-weight:500;
+  transition:background-color .16s ease,color .16s ease}
+.jump-inner a:hover{background:var(--panel);color:var(--ink)}
+/* arrows: the mouse-user affordance that "there are 27 sections, keep going" */
+.jump-arrow{flex:none;width:27px;height:27px;padding:0;border-radius:50%;cursor:pointer;
+  border:1px solid var(--line);background:var(--panel);color:var(--ink-soft);
+  font-family:var(--serif);font-size:16px;line-height:1;display:none;
+  align-items:center;justify-content:center;
+  transition:background-color .16s ease,border-color .16s ease,color .16s ease,opacity .16s ease}
+.jump-rail.scrollable .jump-arrow{display:flex}
+.jump-arrow:hover{border-color:var(--brass);color:var(--ink);background:var(--panel-2)}
+.jump-arrow[disabled]{opacity:.28;cursor:default;border-color:var(--line);
+  background:var(--panel);color:var(--ink-soft)}
+.jump-count{flex:none;font-family:var(--mono);font-size:11px;color:var(--ink-faint);
+  letter-spacing:.04em;white-space:nowrap;display:none}
+.jump-rail.scrollable .jump-count{display:block}
+
+/* report */
+#report{display:none}
+#report.show{display:block}
+section.rpt{margin:34px 0;scroll-margin-top:58px}
+.sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:16px;
+  border-bottom:1px solid var(--line);padding-bottom:10px}
+.sec-head h2{font-size:22px}
+.sec-head .num{font-family:var(--mono);color:var(--brass);font-size:13px;font-weight:600}
+.sec-head .note{margin-left:auto;font-size:12px;color:var(--ink-faint)}
+
+/* hero summary */
+.hero{padding:26px 24px;position:relative;overflow:hidden}
+.hero .name{font-size:30px;margin-bottom:2px}
+.hero .born{color:var(--ink-soft);font-size:14.5px}
+.hero-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:22px}
+@media (max-width:720px){.hero-grid{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--panel-2);border:1px solid var(--line-soft);border-radius:12px;padding:14px 16px}
+.stat .k{font-size:11.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--brass);font-weight:600}
+.stat .v{font-family:var(--serif);font-size:21px;margin-top:4px}
+.stat .s{font-size:12.5px;color:var(--ink-soft);margin-top:2px}
+
+/* tables */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line-soft);white-space:nowrap}
+th{background:var(--panel-2);font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--ink-soft);font-weight:600;position:sticky;top:0}
+tr:last-child td{border-bottom:none}
+td.num,th.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.glyph{font-family:var(--serif);font-weight:600}
+.pill{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;
+  letter-spacing:.02em}
+.pill.retro{background:color-mix(in srgb,var(--kumkum) 16%,transparent);color:var(--crit)}
+.pill.comb{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+.pill.exalt{background:color-mix(in srgb,var(--good) 16%,transparent);color:var(--good)}
+.pill.debil{background:color-mix(in srgb,var(--kumkum) 14%,transparent);color:var(--crit)}
+.pill.own{background:color-mix(in srgb,var(--brass) 18%,transparent);color:var(--brass-deep)}
+:root[data-theme="dark"] .pill.own{color:var(--brass-bright)}
+@media (prefers-color-scheme:dark){.pill.own{color:var(--brass-bright)}}
+
+/* charts */
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:720px){.chart-row{grid-template-columns:1fr}}
+.chart-card{padding:18px;text-align:center}
+.chart-card h3{font-size:15px;margin-bottom:12px;color:var(--ink-soft);font-weight:600;
+  font-family:var(--sans);text-transform:uppercase;letter-spacing:.08em;font-size:12px}
+.varga-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media (max-width:720px){.varga-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:480px){.varga-grid{grid-template-columns:1fr}}
+.varga-card{padding:12px}
+.varga-card h4{font-size:12px;font-family:var(--sans);text-transform:uppercase;letter-spacing:.06em;
+  color:var(--brass);text-align:center;margin-bottom:8px}
+svg.chart{width:100%;height:auto;max-width:340px;display:block;margin:0 auto}
+svg .cl{stroke:var(--brass);stroke-width:1.4;fill:none}
+svg .cl-soft{stroke:var(--line);stroke-width:1;fill:none}
+svg .sign-no{fill:var(--ink-faint);font:600 9px var(--mono)}
+svg .pl{fill:var(--ink);font:600 12px var(--serif)}
+svg .pl-asc{fill:var(--kumkum)}
+svg .bg{fill:var(--panel)}
+
+/* dasha */
+.dasha-cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:720px){.dasha-cols{grid-template-columns:1fr}}
+.dasha-list{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.md-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line-soft);
+  cursor:pointer}
+.md-row:last-child{border-bottom:none}
+.md-row:hover{background:var(--panel-2)}
+.md-row.active{background:color-mix(in srgb,var(--brass) 12%,transparent)}
+.md-row .lord{font-family:var(--serif);font-weight:600;font-size:15px;width:82px}
+.md-row .span{font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);margin-left:auto}
+.md-row .now{font-size:10px;font-weight:700;color:#231a06;background:var(--brass-bright);
+  padding:1px 7px;border-radius:10px}
+.ad-wrap{display:none;background:var(--panel-2);padding:4px 0}
+.ad-wrap.show{display:block}
+.ad-row{display:flex;gap:10px;padding:5px 14px 5px 28px;font-size:12.5px}
+.ad-row .lord{font-family:var(--serif);width:72px}
+.ad-row .span{font-family:var(--mono);color:var(--ink-soft);margin-left:auto}
+.ad-row.active{color:var(--brass-deep);font-weight:600}
+:root[data-theme="dark"] .ad-row.active{color:var(--brass-bright)}
+.ad-row{cursor:pointer}
+.ad-row:hover{background:color-mix(in srgb,var(--brass) 8%,transparent)}
+.ad-row .now{font-size:9px;font-weight:700;color:#231a06;background:var(--brass-bright);
+  padding:1px 6px;border-radius:20px;letter-spacing:.05em}
+/* third level: pratyantardaśā, built on first expand */
+.pd-wrap{display:none;background:color-mix(in srgb,var(--ground) 55%,var(--panel-2));padding:3px 0}
+.pd-wrap.show{display:block}
+.pd-row{display:flex;gap:10px;align-items:center;padding:4px 14px 4px 44px;font-size:11.5px}
+.pd-row .lord{font-family:var(--serif);width:66px}
+.pd-row .span{font-family:var(--mono);color:var(--ink-faint);margin-left:auto}
+.pd-row.active{color:var(--brass-deep);font-weight:600}
+:root[data-theme="dark"] .pd-row.active{color:var(--brass-bright)}
+.pd-row .now{font-size:9px;font-weight:700;color:#231a06;background:var(--brass-bright);
+  padding:1px 5px;border-radius:20px;letter-spacing:.05em}
+@media (max-width:600px){.pd-row{padding-left:30px}.pd-row .span{font-size:10.5px}}
+
+/* ashtakavarga */
+.av-wrap{overflow-x:auto}
+table.av td,table.av th{text-align:center;padding:6px 8px;font-family:var(--mono);font-size:13px}
+table.av td:first-child,table.av th:first-child{text-align:left;font-family:var(--serif);white-space:nowrap}
+.av-sav{font-weight:700}
+.av-heat{border-radius:4px}
+
+/* interpretation */
+.interp{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:720px){.interp{grid-template-columns:1fr}}
+.read{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--brass);
+  border-radius:10px;padding:15px 17px}
+.read h4{font-size:15px;margin-bottom:6px}
+.read p{margin:0;font-size:14.5px;color:var(--ink-soft)}
+.read .tag{font-size:11px;color:var(--brass);text-transform:uppercase;letter-spacing:.08em;
+  font-weight:600;margin-bottom:7px}
+.yoga-list{display:flex;flex-direction:column;gap:10px}
+.yoga{display:flex;gap:12px;padding:12px 15px;background:var(--panel);border:1px solid var(--line);
+  border-radius:10px}
+.yoga .icon{color:var(--brass);font-size:18px;font-family:var(--serif)}
+.yoga b{font-family:var(--serif);font-size:15.5px}
+.yoga p{margin:2px 0 0;font-size:13.5px;color:var(--ink-soft)}
+.two-col{columns:2;column-gap:26px}
+@media (max-width:640px){.two-col{columns:1}}
+.two-col li{break-inside:avoid;margin-bottom:6px}
+ul.clean{list-style:none;padding:0;margin:0}
+ul.clean li{padding-left:18px;position:relative;font-size:14px;color:var(--ink-soft);margin-bottom:7px}
+ul.clean li:before{content:"◆";position:absolute;left:0;color:var(--brass);font-size:9px;top:3px}
+
+.disc{font-size:12px;color:var(--ink-faint);border-top:1px solid var(--line);
+  padding:20px 0 40px;margin-top:30px;text-align:center}
+/* "why this reading?" - the rule that fired, the chart values that satisfied it,
+   and the tradition it comes from. Provenance for every generated verdict. */
+/* capped: inside a table cell an auto-width grid resolves circularly and
+   overflows the column, so the disclosure gets an explicit ceiling */
+.why-rule{margin-top:9px;font-size:12px;max-width:640px}
+.why-rule summary{cursor:pointer;color:var(--brass);font-weight:600;letter-spacing:.015em;
+  list-style:none;display:inline-flex;align-items:center;gap:6px;user-select:none}
+.why-rule summary::-webkit-details-marker{display:none}
+.why-rule summary:before{content:"\25B8";font-size:10px;display:inline-block;
+  transition:transform .16s ease}
+.why-rule[open] summary:before{transform:rotate(90deg)}
+.why-rule summary:hover{color:var(--brass-bright)}
+.why-rule dl{margin:9px 0 2px;padding:11px 13px;border-left:2px solid var(--brass);
+  background:var(--panel-2);border-radius:0 9px 9px 0;
+  display:grid;grid-template-columns:auto 1fr;gap:5px 13px}
+.why-rule dt{font-family:var(--sans);font-size:10px;text-transform:uppercase;
+  letter-spacing:.11em;color:var(--ink-faint);font-weight:600;padding-top:2px;white-space:nowrap}
+.why-rule dd{margin:0;color:var(--ink-soft);line-height:1.5}
+.why-rule dd.mono{font-family:var(--mono);font-size:11.5px}
+.why-print{display:none}
+/* Strength of the indication - part 3 of the five-part contract. The colour is
+   a reading aid only; the basis text beside it is what actually justifies it. */
+.conf-pill{display:inline-block;font-family:var(--sans);font-size:9.5px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.1em;padding:2px 8px;border-radius:999px;
+  border:1px solid currentColor;vertical-align:1px}
+.conf-pill.c-strong{color:#4d9a6a}
+.conf-pill.c-mod{color:var(--brass)}
+.conf-pill.c-weak{color:var(--ink-faint)}
+.conf-basis{color:var(--ink-faint);font-size:11.5px}
+/* Unknown-birth-time notice. Deliberately loud: it changes what the report claims. */
+.time-warn{border-left:3px solid var(--brass);margin-bottom:18px;padding:15px 18px}
+.time-warn .tw-h{font-family:var(--sans);font-size:11px;text-transform:uppercase;
+  letter-spacing:.12em;color:var(--brass);font-weight:700;margin-bottom:9px}
+.time-warn p{margin:0 0 8px;font-size:13.5px;line-height:1.62;color:var(--ink-soft)}
+.time-warn p:last-child{margin-bottom:0}
+@media (max-width:560px){.why-rule dl{grid-template-columns:1fr;gap:2px}
+  .why-rule dt{margin-top:6px}}
+
+.footer-actions{display:flex;gap:12px;justify-content:center;margin:26px 0 10px;flex-wrap:wrap}
+
+/* persistent site footer - present from first load, not only after a chart is cast */
+.site-foot{border-top:1px solid var(--line);margin-top:56px;
+  background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--panel) 55%,transparent))}
+.foot-inner{padding:32px 22px 38px;display:flex;flex-direction:column;
+  align-items:center;gap:15px;text-align:center}
+.foot-mark{display:flex;align-items:center;gap:11px}
+.foot-mark svg{width:27px;height:27px;flex:none}
+.foot-mark .fm-name{font-family:var(--serif);font-size:17px;font-weight:600;line-height:1.2}
+.foot-mark .fm-sub{font-size:11.5px;color:var(--ink-faint);margin-top:1px}
+.foot-credit{font-size:13px;color:var(--ink-soft);display:flex;align-items:center;
+  gap:10px;flex-wrap:wrap;justify-content:center}
+.foot-credit .rule{width:28px;height:1px;background:var(--line);flex:none}
+.foot-credit b{font-family:var(--serif);color:var(--brass);font-weight:600;letter-spacing:.02em}
+.foot-note{font-size:11.5px;color:var(--ink-faint);max-width:660px;line-height:1.65;margin:0}
+.foot-url{font-size:11.5px;color:var(--ink-faint);margin:0}
+.foot-url a{color:var(--brass-deep);font-weight:600;text-decoration:none}
+.foot-url a:hover{text-decoration:underline}
+
+.empty{text-align:center;color:var(--ink-faint);padding:40px 0;font-size:14px}
+
+/* PDF watermark - hidden on screen, tiled diagonally across every printed page so a
+   shared/forwarded PDF always carries the domain, even past the footer colophon */
+.print-watermark{display:none}
+
+/* print */
+@media print{
+  /* pin a clean light BRAND palette regardless of on-screen theme, so the PDF is branded, not black-and-white */
+  :root,:root[data-theme="dark"],:root[data-theme="light"]{
+    --ground:#ffffff; --panel:#ffffff; --panel-2:#F7F1E5;
+    --ink:#211F38; --ink-soft:#4C4767; --ink-faint:#8A849C;
+    --line:#D8CDB4; --line-soft:#EBE3D2;
+    --brass:#9C761F; --brass-bright:#B8912F; --brass-deep:#7A5E1C;
+    --kumkum:#B23A22; --indigo:#3A3A6B;
+    --good:#3F6B3B; --warn:#9A6A12; --crit:#B23A22;
+    --shadow:none;
+  }
+  /* force colours & backgrounds to actually render in the PDF */
+  *{ -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
+  /* drop the app chrome and the non-report panels */
+  #loginScreen,nav.jump,#mobileBar,.theme-btn,.header-actions,#formCard,#showcase,#whyCorrect,
+  .footer-actions,.starfield,#history{ display:none !important; }
+  /* provenance travels with the PDF - JS opens each disclosure on beforeprint;
+     this also forces the content visible for any renderer that skips the event */
+  details.why-rule>dl{display:grid !important}
+  .why-rule{max-width:none;margin-top:6px;break-inside:avoid;page-break-inside:avoid}
+  .why-rule summary{font-size:8.5px;text-transform:uppercase;letter-spacing:.09em;
+    color:var(--brass-deep);font-weight:600}
+  .why-rule summary:before{display:none}
+  .why-screen{display:none}
+  .why-print{display:inline}
+  /* the strength pill has to stay legible in a printed report too */
+  .conf-pill{font-size:7px;padding:1px 5px;letter-spacing:.09em}
+  .conf-basis{font-size:8.5px}
+  .time-warn{break-inside:avoid;page-break-inside:avoid;padding:11px 13px;margin-bottom:12px}
+  .time-warn .tw-h{font-size:8.5px}
+  .time-warn p{font-size:9.5px;line-height:1.45;margin-bottom:5px}
+  .why-rule dl{background:none;border-left:1.5px solid var(--brass);padding:4px 0 4px 9px;
+    margin:3px 0 0;gap:1px 10px}
+  .why-rule dt{font-size:7.5px;letter-spacing:.09em}
+  .why-rule dd{font-size:9px;line-height:1.4}
+  .why-rule dd.mono{font-size:8.5px}
+  /* instructions about the print dialog are meaningless once printed */
+  .screen-only{ display:none !important }
+  /* keep the tail matter compact so it rides up with the glossary instead of
+     claiming a near-empty final sheet */
+  .disc{ margin-top:8px;padding-top:6px;font-size:9px;line-height:1.4 }
+  /* the sponsor credit rides along on the exported PDF as a compact colophon.
+     To keep it screen-only instead, add .site-foot to the display:none rule above. */
+  .site-foot{ margin-top:6px;background:none;border-top:1px solid var(--brass);
+    break-inside:avoid;page-break-inside:avoid }
+  /* one line on paper, so the colophon fits under the last section instead of
+     reserving a sheet of its own */
+  .foot-inner{ padding:4px 0 0;flex-direction:row;justify-content:center;
+    align-items:center;gap:10px;flex-wrap:wrap }
+  .foot-mark{ gap:6px }
+  .foot-mark svg{ width:13px;height:13px }
+  .foot-mark .fm-name{ font-size:10.5px }
+  .foot-mark .fm-sub,.foot-note{ display:none }
+  .foot-credit{ font-size:9.5px }
+  .foot-credit .rule{ display:none }
+  .foot-credit:before{ content:"·";color:var(--brass);margin-right:2px }
+  /* the clickable domain line stays on the printed/PDF page - the whole point is
+     that a forwarded PDF carries a live link back to the site, not just a name */
+  .foot-url{ display:block !important;font-size:9px;width:100% }
+  /* diagonal tiled domain watermark - print only, sits above the report so it
+     survives a screenshot/photo of the PDF too, but low-opacity so it never
+     blocks reading the chart underneath */
+  .print-watermark{
+    display:block !important;
+    position:fixed; inset:0;
+    z-index:9999;
+    pointer-events:none;
+    opacity:.13;
+    background-repeat:repeat;
+    background-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='420'%20height='220'%3E%3Ctext%20x='0'%20y='120'%20font-family='Georgia,serif'%20font-size='28'%20fill='rgb(156,118,31)'%20transform='rotate(-32%20210%20110)'%20text-anchor='middle'%3Eayodhyaagarbatti.in%3C/text%3E%3C/svg%3E");
+  }
+  body{background:#fff;font-size:10.5px}
+  .wrap{max-width:100%;padding:0}
+  /* keep the logo as a letterhead */
+  header.top{border-bottom:2px solid var(--brass);break-after:avoid;background:none}
+  .top-inner{padding:12px 0}
+  .brand h1{font-size:22px}
+  /* let long tables flow across pages, keep small cards intact */
+  section.rpt{margin:12px 0;break-inside:auto;page-break-inside:auto}
+  .sec-head{break-after:avoid;page-break-after:avoid}
+  .panel,.read,.chart-card,.varga-card,.stat,.mini,.yoga,.sc-card,.why-col,.factor,.bar-wrap,
+  .hero,.col-note,.gate,.area,.koota,.escalate,.match-pair .who{break-inside:avoid;page-break-inside:avoid;box-shadow:none !important}
+  /* the compatibility section is a decision aid - print every meter and gate open */
+  .area-grid{grid-template-columns:repeat(2,1fr) !important;gap:8px}
+  .koota .kfill,.area .afill{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  tr,thead{break-inside:avoid;page-break-inside:avoid}
+  thead{display:table-header-group}
+  .hero-grid,.chart-row,.varga-grid,.dasha-cols,.interp,.two-panel,.sc-cols,.panch-grid,.factors{gap:8px}
+  a{color:var(--ink);text-decoration:none}
+  /* un-clip scroll areas so nothing is cut off */
+  .gochara-wrap,.tbl-wrap,.av-wrap{max-height:none !important;overflow:visible !important}
+  table{font-size:9.5px}
+  svg.chart{max-width:210px}
+  .bars{height:120px}
+  .hero .name{font-size:24px}
+  @page{margin:12mm}
+}
+
+/* ============ login screen ============ */
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:radial-gradient(1200px 600px at 50% -10%,color-mix(in srgb,var(--brass) 12%,transparent),transparent),var(--ground)}
+.login-card{width:100%;max-width:420px;background:var(--panel);border:1px solid var(--line);
+  border-radius:20px;box-shadow:var(--shadow);padding:32px 30px}
+.login-brand{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.login-brand svg{width:40px;height:40px}
+.login-brand h1{font-family:var(--serif);font-size:24px}
+.login-brand .om{color:var(--brass)}
+.login-tag{font-family:var(--sans);font-size:10px;text-transform:uppercase;letter-spacing:.2em;
+  color:var(--brass);font-weight:700;text-align:center;margin:-4px 0 12px}
+.ishwara{color:var(--brass);font-weight:700;letter-spacing:.03em}
+.ishwara-panel{margin:26px 0 18px;padding:22px 24px;border-left:3px solid var(--brass)}
+.ishwara-panel .ip-h{font-family:var(--serif);font-size:20px;color:var(--brass);margin-bottom:12px}
+.ishwara-panel .ip-expand{font-family:var(--sans);font-size:11px;text-transform:uppercase;
+  letter-spacing:.14em;color:var(--ink-faint);font-weight:600;white-space:nowrap}
+.ishwara-panel p{margin:0 0 10px;font-size:14px;line-height:1.68;color:var(--ink-soft)}
+.ishwara-panel p:last-child{margin-bottom:0}
+@media (max-width:560px){.ishwara-panel{padding:17px 16px}
+  .ishwara-panel .ip-h{font-size:17px}
+  .ishwara-panel .ip-expand{display:block;margin-top:4px;white-space:normal}}
+.login-sub{color:var(--ink-soft);font-size:13px;margin-bottom:22px}
+.auth-tabs{display:flex;gap:6px;background:var(--panel-2);border-radius:12px;padding:4px;margin-bottom:20px}
+.auth-tab{flex:1;text-align:center;padding:9px;border-radius:9px;font-size:14px;font-weight:600;
+  color:var(--ink-soft);cursor:pointer;border:none;background:none;font-family:var(--sans)}
+.auth-tab.active{background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+#authTitle{font-family:var(--serif);font-size:19px;margin-bottom:16px}
+.auth-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.auth-err{color:var(--crit);font-size:13px;min-height:18px;margin:2px 0 8px}
+.btn-block{width:100%;justify-content:center;display:flex}
+.auth-divider{display:flex;align-items:center;gap:12px;color:var(--ink-faint);font-size:12px;margin:20px 0}
+.auth-divider::before,.auth-divider::after{content:"";flex:1;height:1px;background:var(--line)}
+.login-note{font-size:11.5px;color:var(--ink-faint);text-align:center;margin-top:18px;line-height:1.5}
+.login-note b{color:var(--ink-soft)}
+
+/* user badge */
+.user-badge{display:none;align-items:center;gap:10px}
+.user-badge .uname{font-size:13px;color:var(--ink-soft)}
+.user-badge .uname b{color:var(--ink)}
+.header-actions{display:flex;align-items:center;gap:10px}
+
+/* saved charts */
+#history{margin-top:18px;border-top:1px solid var(--line);padding-top:16px}
+.hist-title{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--brass);font-weight:600;margin-bottom:10px}
+.hist-empty{font-size:13px;color:var(--ink-faint)}
+#history{display:flex;flex-wrap:wrap;gap:8px}
+.hist-title{flex-basis:100%}
+.hist-item{text-align:left;background:var(--panel-2);border:1px solid var(--line-soft);border-radius:10px;
+  padding:8px 12px;cursor:pointer;font-family:var(--sans)}
+.hist-item:hover{border-color:var(--brass)}
+.hist-item b{display:block;font-size:14px;color:var(--ink)}
+.hist-item small{color:var(--ink-faint);font-size:11.5px}
+
+/* hero extras */
+.two-panel{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+@media (max-width:720px){.two-panel{grid-template-columns:repeat(2,1fr)}}
+.mini{border-top:2px solid var(--line);padding-top:8px}
+.mini-k{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--brass);font-weight:600}
+.mini-v{font-size:14px;margin-top:2px}
+.sc-cols{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
+@media (max-width:720px){.sc-cols{grid-template-columns:1fr}}
+.sc-card{padding:18px 20px}
+.sc-card.good{border-left:3px solid var(--good)}
+.sc-card.bad{border-left:3px solid var(--crit)}
+.sc-head{font-family:var(--sans);font-size:12px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:12px}
+.sc-card.good .sc-head{color:var(--good)}
+.sc-card.bad .sc-head{color:var(--crit)}
+.oneline{margin-top:18px;padding:16px 20px;font-size:14.5px;color:var(--ink-soft)}
+.oneline b{color:var(--ink)}
+
+/* generic */
+.muted{color:var(--ink-faint)}
+.para{font-size:14px;color:var(--ink-soft);margin:0 0 14px;max-width:74ch}
+.sub-h{font-family:var(--serif);font-size:16px;margin:22px 0 12px}
+.disc-inline{font-size:12px;color:var(--ink-faint);font-style:italic;margin-top:10px}
+
+/* panchanga grid */
+.panch-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media (max-width:720px){.panch-grid{grid-template-columns:repeat(2,1fr)}}
+.panch{background:var(--panel-2);border:1px solid var(--line-soft);border-radius:10px;padding:10px 12px}
+.panch span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint)}
+.panch b{font-size:14.5px;font-family:var(--serif);font-weight:600}
+
+/* bar chart */
+.bar-wrap{padding:18px 20px}
+.bar-title{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);font-weight:600;margin-bottom:14px;text-align:center}
+.bars{display:flex;align-items:flex-end;gap:6px;height:180px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:4px}
+.bar{width:70%;border-radius:4px 4px 0 0;min-height:3px;transition:height .5s}
+.bar-v{font-family:var(--mono);font-size:11px;font-weight:600}
+.bar-l{font-size:9.5px;color:var(--ink-faint);text-align:center;line-height:1.1}
+
+/* ---- marriage compatibility (Guṇa Milan) ---- */
+.match-head{display:flex;flex-wrap:wrap;gap:20px;align-items:center;padding:20px 22px}
+.match-total{font-family:var(--serif);font-size:44px;line-height:1;color:var(--brass);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.match-total small{font-size:20px;color:var(--ink-faint)}
+.match-verdict{flex:1;min-width:240px;font-size:14.5px;color:var(--ink-soft);line-height:1.6}
+.match-verdict b{color:var(--ink)}
+.match-pair{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 18px}
+.match-pair .who{flex:1;min-width:220px;background:var(--panel-2);border:1px solid var(--line-soft);
+  border-radius:10px;padding:11px 14px;font-size:13px;color:var(--ink-soft)}
+.match-pair .who b{display:block;font-family:var(--serif);font-size:15px;color:var(--ink);margin-bottom:3px}
+.match-pair .who-role{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--brass);background:color-mix(in srgb,var(--brass) 14%,transparent);
+  padding:2px 8px;border-radius:20px;margin-bottom:6px}
+/* koota rows: a labelled bar per koota, so the weighting is visible at a glance */
+.koota{display:grid;grid-template-columns:150px 1fr 62px;gap:12px;align-items:center;
+  padding:11px 0;border-bottom:1px solid var(--line-soft)}
+.koota:last-child{border-bottom:none}
+.koota .kn{font-family:var(--serif);font-size:14.5px}
+.koota .kn small{display:block;font-family:var(--sans);font-size:10.5px;color:var(--ink-faint);
+  text-transform:uppercase;letter-spacing:.06em;margin-top:1px}
+.koota .ktrack{background:var(--panel-2);border-radius:20px;height:15px;overflow:hidden;
+  border:1px solid var(--line-soft)}
+.koota .kfill{height:100%;border-radius:20px;transition:width .6s}
+.koota .kpts{font-family:var(--mono);font-size:12.5px;font-weight:600;text-align:right;
+  font-variant-numeric:tabular-nums}
+.koota .kbody{grid-column:1/-1;font-size:13px;color:var(--ink-soft);margin-top:-2px;line-height:1.55}
+/* narrow screens: name and score share the top row, then the bar, then the text -
+   the bar has to stay next to what it measures, not drift below the paragraph */
+@media (max-width:600px){
+  .koota{grid-template-columns:1fr auto;row-gap:8px}
+  .koota .kn{order:1}
+  .koota .kpts{order:2}
+  .koota .ktrack{order:3;grid-column:1/-1}
+  .koota .kbody{order:4;grid-column:1/-1;margin-top:0}
+}
+/* dosha gates - the exception checks that decide whether the score means anything */
+.gate{padding:14px 17px;border-radius:12px;border:1px solid var(--line);background:var(--panel);
+  border-left:3px solid var(--brass);margin-bottom:11px}
+.gate.clear{border-left-color:var(--good)}
+.gate.cancelled{border-left-color:var(--warn)}
+.gate.standing{border-left-color:var(--crit)}
+.gate .gh{font-family:var(--serif);font-size:15px;margin-bottom:4px}
+.gate .gv{font-size:13.5px;font-weight:600;margin-bottom:5px}
+.gate.clear .gv{color:var(--good)}
+.gate.cancelled .gv{color:var(--warn)}
+.gate.standing .gv{color:var(--crit)}
+.gate p{margin:0;font-size:13.5px;color:var(--ink-soft);line-height:1.6}
+/* life-area meters */
+.area-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media (max-width:700px){.area-grid{grid-template-columns:1fr}}
+.area{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.area .ah{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:8px}
+.area .ah b{font-family:var(--serif);font-size:14.5px}
+.area .ah .as{font-family:var(--mono);font-size:13px;font-weight:600}
+.area .atrack{background:var(--panel-2);border-radius:20px;height:7px;overflow:hidden;margin-bottom:9px}
+.area .afill{height:100%;border-radius:20px}
+.area p{margin:0 0 6px;font-size:13px;color:var(--ink-soft);line-height:1.6}
+.area .af{font-size:11.5px;color:var(--ink-faint);font-family:var(--mono);line-height:1.5}
+.strength-tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;
+  text-transform:uppercase;letter-spacing:.06em;vertical-align:middle}
+.strength-tag.strong{background:color-mix(in srgb,var(--good) 16%,transparent);color:var(--good)}
+.strength-tag.moderate{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+.strength-tag.weak{background:color-mix(in srgb,var(--crit) 15%,transparent);color:var(--crit)}
+.escalate{background:color-mix(in srgb,var(--warn) 7%,var(--panel));border:1px solid var(--line);
+  border-left:3px solid var(--warn);border-radius:12px;padding:16px 19px;margin-top:16px}
+.escalate .eh{font-family:var(--serif);font-size:15.5px;margin-bottom:8px}
+.escalate ol{margin:0;padding-left:20px;font-size:13.5px;color:var(--ink-soft);line-height:1.65}
+.escalate li{margin-bottom:6px}
+
+/* stat pills */
+.stat-pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px}
+.stat-pill.good{background:color-mix(in srgb,var(--good) 16%,transparent);color:var(--good)}
+.stat-pill.warn{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+.stat-pill.muted{background:var(--panel-2);color:var(--ink-faint)}
+
+/* prose */
+.prose{display:flex;flex-direction:column;gap:14px}
+.good-tag{color:var(--good)!important}
+.bad-tag{color:var(--crit)!important}
+
+/* arudha grid */
+table.arudha td{padding:8px 12px}
+table.arudha .ar-k{font-weight:700;color:var(--brass);font-family:var(--mono);width:44px}
+
+/* gochara */
+.gochara-wrap{max-height:560px;overflow-y:auto}
+table.gochara td,table.gochara th{padding:6px 10px;font-size:12.5px}
+table.gochara td:nth-child(4),table.gochara td:nth-child(5),table.gochara td:nth-child(6){font-family:var(--mono)}
+.row-ss td{background:color-mix(in srgb,var(--crit) 12%,transparent)}
+.row-ss td:last-child,.row-kant td:last-child{color:var(--crit);font-weight:600}
+.row-kant td{background:color-mix(in srgb,var(--warn) 10%,transparent)}
+.row-fav td:last-child{color:var(--good);font-weight:600}
+.row-dasha td{background:color-mix(in srgb,var(--brass) 8%,transparent)}
+.legend-chip{display:inline-block;padding:1px 8px;border-radius:6px;font-size:11px;margin-left:4px}
+.row-ss.legend-chip{background:color-mix(in srgb,var(--crit) 14%,transparent);color:var(--crit)}
+.row-kant.legend-chip{background:color-mix(in srgb,var(--warn) 14%,transparent);color:var(--warn)}
+.row-fav.legend-chip{background:color-mix(in srgb,var(--good) 14%,transparent);color:var(--good)}
+.active-row td{background:color-mix(in srgb,var(--brass) 12%,transparent)}
+.col-note{padding:18px 20px;font-size:14px;color:var(--ink-soft);display:flex;flex-direction:column;gap:10px;justify-content:center}
+.col-note b{color:var(--ink)}
+
+/* nav active */
+nav.jump a.active-link{background:var(--brass);color:#231a06}
+:root[data-theme="dark"] nav.jump a.active-link{color:#1a1608}
+
+/* plain-English gloss under section heads */
+.layman-note{display:none;margin:-6px 0 14px;padding:9px 13px;font-size:13px;line-height:1.5;
+  color:var(--ink-soft);background:color-mix(in srgb,var(--indigo) 8%,var(--panel-2));
+  border-left:3px solid var(--indigo);border-radius:8px}
+body.show-layman .layman-note{display:block}
+#laymanBtn[aria-pressed="true"]{border-color:var(--brass);color:var(--ink)}
+
+/* saved-chart backup toolbar */
+.hist-actions{display:flex;gap:8px;flex-basis:100%;margin-bottom:2px}
+.mini-btn{font-family:var(--sans);font-size:12px;font-weight:600;color:var(--ink-soft);background:var(--panel-2);
+  border:1px solid var(--line);border-radius:8px;padding:5px 11px;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.mini-btn:hover{border-color:var(--brass);color:var(--ink)}
+
+/* compact mobile summary bar (phones only) */
+#mobileBar{display:none}
+#mobileBar.show{display:none}
+@media (max-width:720px){
+  #mobileBar.show{display:flex;position:sticky;top:0;z-index:22;gap:14px;justify-content:space-around;
+    background:color-mix(in srgb,var(--brass) 14%,var(--ground));border-bottom:1px solid var(--line);
+    padding:7px 12px;font-size:12px;color:var(--ink-soft);overflow-x:auto;white-space:nowrap}
+  #mobileBar.show b{color:var(--ink);font-family:var(--serif);font-weight:600}
+  nav.jump{top:34px}
+  /* larger touch targets on phones */
+  .btn{min-height:44px}
+  .auth-tab{min-height:44px}
+  .jump-inner a{padding-top:9px;padding-bottom:9px}
+  .btn:active,.mini-btn:active,.celeb:active,.jump-inner a:active{transform:scale(.98)}
+  /* swipeable divisional charts: horizontal snap carousel */
+  .varga-grid{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:82%;
+    overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;padding-bottom:4px}
+  .varga-grid::-webkit-scrollbar{display:none}
+  .varga-card{scroll-snap-align:center}
+  .varga-hint{display:block}
+}
+.varga-hint{display:none;font-size:12px;color:var(--ink-faint);margin:2px 0 12px}
+
+/* ============ celebrity showcase ============ */
+.showcase-card,.why-card{margin:26px 0;padding:26px}
+.showcase-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.showcase-head h2{font-family:var(--serif);font-size:20px}
+.showcase-sub{color:var(--ink-soft);font-size:13.5px;margin:2px 0 18px;max-width:70ch}
+.celeb-group{margin-top:14px}
+.celeb-group h4{font-family:var(--sans);font-size:11.5px;text-transform:uppercase;letter-spacing:.12em;
+  color:var(--brass);font-weight:700;margin:0 0 12px}
+.celeb-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media (max-width:820px){.celeb-grid{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:600px){.celeb-grid{grid-template-columns:repeat(2,1fr)}}
+.celeb{display:flex;align-items:center;gap:11px;text-align:left;background:var(--panel-2);
+  border:1px solid var(--line-soft);border-radius:12px;padding:11px 12px;cursor:pointer;
+  font-family:var(--sans);transition:border-color .15s,transform .15s}
+.celeb:hover{border-color:var(--brass);transform:translateY(-1px)}
+.celeb .ini{width:38px;height:38px;flex:none;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-family:var(--serif);font-weight:600;font-size:15px;color:#231a06;
+  background:linear-gradient(150deg,var(--brass-bright),var(--brass))}
+.celeb .ci{min-width:0}
+.celeb .cn{font-size:13.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.celeb .cd{font-size:11px;color:var(--ink-faint);font-family:var(--mono)}
+.showcase-note{font-size:11.5px;color:var(--ink-faint);margin-top:18px;line-height:1.5;
+  border-top:1px solid var(--line-soft);padding-top:14px}
+
+/* ============ why-correct ============ */
+.why-card .eyebrow{margin-bottom:6px}
+.why-card h2{font-family:var(--serif);font-size:22px;margin-bottom:6px}
+.why-lead{color:var(--ink-soft);font-size:14.5px;max-width:74ch;margin-bottom:22px}
+.why-cols{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media (max-width:720px){.why-cols{grid-template-columns:1fr}}
+.why-col{background:var(--panel-2);border:1px solid var(--line-soft);border-radius:14px;padding:20px}
+.why-col.sci{border-top:3px solid var(--indigo)}
+.why-col.trad{border-top:3px solid var(--brass)}
+.why-col h3{font-family:var(--serif);font-size:17px;display:flex;align-items:center;gap:9px;margin-bottom:6px}
+.why-col .badge{font-size:11px;font-weight:700;letter-spacing:.04em;padding:2px 9px;border-radius:20px}
+.why-col.sci .badge{background:color-mix(in srgb,var(--indigo) 20%,transparent);color:var(--indigo)}
+.why-col.trad .badge{background:color-mix(in srgb,var(--brass) 22%,transparent);color:var(--brass-deep)}
+:root[data-theme="dark"] .why-col.trad .badge{color:var(--brass-bright)}
+.why-col>p{font-size:13.5px;color:var(--ink-soft);margin:8px 0 14px}
+.why-col ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px}
+.why-col li{font-size:13.5px;color:var(--ink);padding-left:26px;position:relative;line-height:1.5}
+.why-col li b{font-family:var(--serif)}
+.why-col.sci li:before{content:"◆";position:absolute;left:6px;top:1px;color:var(--indigo);font-size:9px}
+.why-col.trad li:before{content:"✦";position:absolute;left:4px;top:1px;color:var(--brass);font-size:11px}
+.why-col li small{display:block;color:var(--ink-faint);font-size:12px;margin-top:2px}
+.factors{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}
+@media (max-width:600px){.factors{grid-template-columns:1fr}}
+.factor{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:15px 16px}
+.factor .fk{font-family:var(--serif);font-size:15px;color:var(--brass-deep);margin-bottom:5px}
+:root[data-theme="dark"] .factor .fk{color:var(--brass-bright)}
+.factor .fv{font-size:12.5px;color:var(--ink-soft);line-height:1.5}
+.factor .fnum{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);margin-top:6px}
+.why-foot{font-size:12px;color:var(--ink-faint);font-style:italic;margin-top:20px;line-height:1.55;
+  border-top:1px solid var(--line);padding-top:16px}
+
+/* ============ reduced motion ============ ------------------------------------
+   Sitewide guard. The starfield already opts out on its own; this covers every
+   transition, animation and smooth-scroll added anywhere else, now or later. */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important;animation-iteration-count:1 !important;
+    animation-delay:0ms !important;transition-duration:.01ms !important;
+    transition-delay:0ms !important}
+  html,body,.jump-inner,.varga-grid{scroll-behavior:auto !important}
+  .btn:active,.mini-btn:active,.celeb:active,.jump-inner a:active{transform:none !important}
+}
+</style>
+
+<!-- ============ LOGIN SCREEN ============ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-brand">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="46" fill="none" stroke="var(--brass)" stroke-width="1.5"/>
+        <circle cx="50" cy="50" r="34" fill="none" stroke="var(--brass)" stroke-width="1" opacity=".6"/>
+        <g stroke="var(--brass)" stroke-width="1" opacity=".8"><line x1="50" y1="4" x2="50" y2="96"/><line x1="4" y1="50" x2="96" y2="50"/><line x1="17" y1="17" x2="83" y2="83"/><line x1="83" y1="17" x2="17" y2="83"/></g>
+        <circle cx="50" cy="50" r="7" fill="var(--brass)"/><circle cx="50" cy="50" r="3" fill="var(--ground)"/>
+      </svg>
+      <h1>Jāthaka <span class="om">ॐ</span></h1>
+    </div>
+    <div class="login-tag">All Mighty Īśvara</div>
+    <div class="login-sub">Sign in to save your charts on this device - or continue as a guest.</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-mode="signin" type="button">Sign in</button>
+      <button class="auth-tab" data-mode="signup" type="button">Create account</button>
+    </div>
+    <form id="authForm">
+      <input type="hidden" id="authMode" value="signin">
+      <div id="authTitle">Welcome back</div>
+      <div class="auth-field"><label for="authUser">Username</label><input id="authUser" type="text" autocomplete="username" placeholder="your name"></div>
+      <div class="auth-field"><label for="authPass">Password</label><input id="authPass" type="password" autocomplete="current-password" placeholder="••••••"></div>
+      <div class="auth-err" id="authErr"></div>
+      <button class="btn btn-primary btn-block" id="authSubmit" type="submit">Sign in</button>
+    </form>
+    <div class="auth-divider">or</div>
+    <button class="btn btn-ghost btn-block" id="guestBtn" type="button">Continue as guest</button>
+    <div class="login-note"><b>Private by design.</b> Your account lives only in this browser's storage - nothing is sent anywhere, there is no server. Passwords are hashed locally; use a throwaway password, not a reused one.</div>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="appWrap" style="display:none">
+<div class="print-watermark" aria-hidden="true"></div>
+<header class="top">
+  <canvas class="starfield" id="stars"></canvas>
+  <div class="wrap top-inner">
+    <div class="brand">
+      <svg class="sigil" viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="46" fill="none" stroke="var(--brass)" stroke-width="1.5"/>
+        <circle cx="50" cy="50" r="34" fill="none" stroke="var(--brass)" stroke-width="1" opacity=".6"/>
+        <g stroke="var(--brass)" stroke-width="1" opacity=".8">
+          <line x1="50" y1="4" x2="50" y2="96"/><line x1="4" y1="50" x2="96" y2="50"/>
+          <line x1="17" y1="17" x2="83" y2="83"/><line x1="83" y1="17" x2="17" y2="83"/>
+        </g>
+        <circle cx="50" cy="50" r="7" fill="var(--brass)"/>
+        <circle cx="50" cy="50" r="3" fill="var(--ground)"/>
+      </svg>
+      <div>
+        <h1>Jāthaka <span class="om">ॐ</span></h1>
+        <div class="sub"><b class="ishwara">All Mighty Īśvara</b> · Vedic horoscope calculator · Lahiri sidereal · computed offline</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <div class="user-badge" id="userBadge">
+        <span class="uname">Signed in as <b id="userName"></b></span>
+        <button class="theme-btn" id="logoutBtn" type="button">Sign out</button>
+      </div>
+      <button class="theme-btn" id="laymanBtn" type="button" aria-pressed="false"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5C10.8 5.2 9 4.5 6.5 4.5H4v13h2.5c2.5 0 4.3.7 5.5 2"/><path d="M12 6.5c1.2-1.3 3-2 5.5-2H20v13h-2.5c-2.5 0-4.3.7-5.5 2z"/><path d="M12 6.5v13"/></svg><span class="lbl">Plain English: Off</span></button>
+      <button class="theme-btn" id="themeBtn" type="button">◐ Theme</button>
+    </div>
+  </div>
+</header>
+
+<div id="mobileBar"></div>
+<nav class="jump" id="jumpNav" aria-label="Report sections">
+  <div class="wrap jump-rail" id="jumpRail">
+    <button class="jump-arrow" id="jumpPrev" type="button" aria-label="Scroll sections left">‹</button>
+    <div class="jump-inner" id="jumpInner"></div>
+    <button class="jump-arrow" id="jumpNext" type="button" aria-label="Scroll sections right">›</button>
+    <span class="jump-count" id="jumpCount" aria-hidden="true"></span>
+  </div>
+</nav>
+
+<main class="wrap">
+  <!-- ============ INPUT ============ -->
+  <section class="panel form-card" id="formCard">
+    <!-- two ways to use the app: one chart, or two charts matched against each other -->
+    <div class="mode-tabs" role="group" aria-label="What to cast">
+      <button class="mode-tab active" id="modeSingle" data-mode="single" type="button" aria-pressed="true">
+        <b>Horoscope</b><span>One birth chart - the full 30-section Janma Kundali</span></button>
+      <button class="mode-tab" id="modeMatch" data-mode="match" type="button" aria-pressed="false">
+        <b>Marriage compatibility</b><span>Two birth charts - the 36-point Guṇa Milan match</span></button>
+    </div>
+    <div class="eyebrow" id="formEyebrow">Birth particulars</div>
+    <h2 style="font-size:20px;margin:6px 0 18px" id="formTitle">Enter janma details</h2>
+    <div class="form-grid">
+      <div class="field col-span">
+        <label for="name">Name</label>
+        <input id="name" type="text" placeholder="Full name" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="dob">Date of birth</label>
+        <input id="dob" type="date" value="2000-01-01">
+      </div>
+      <div class="field">
+        <label for="tob">Time of birth</label>
+        <input id="tob" type="time" value="12:00" step="60">
+        <label class="unk"><input id="tobUnknown" type="checkbox"> Time not known / uncertain</label>
+      </div>
+      <div class="field" id="genderField">
+        <label for="gender">Gender</label>
+        <select id="gender"><option value="male">Male</option><option value="female">Female</option>
+          <option value="na">Prefer not to say</option></select>
+      </div>
+      <div class="field col-span">
+        <label for="place">Birth place</label>
+        <input id="place" type="text" placeholder="Start typing a town or city…" autocomplete="off">
+        <div class="ac-list" id="acList"></div>
+        <div class="hint" id="placeHint">Type to search the offline atlas, or enter coordinates manually below.</div>
+      </div>
+      <div class="field col-span">
+        <button class="manual-toggle" id="manualToggle" type="button">▸ Enter latitude / longitude / timezone manually</button>
+      </div>
+      <div class="field manual-row" id="mLat"><label for="lat">Latitude (°, + = North)</label>
+        <input id="lat" type="number" step="0.0001" placeholder="13.8500"></div>
+      <div class="field manual-row" id="mLon"><label for="lon">Longitude (°, + = East)</label>
+        <input id="lon" type="number" step="0.0001" placeholder="75.7000"></div>
+      <div class="field manual-row" id="mTz"><label for="tz">Timezone (hours from UTC)</label>
+        <input id="tz" type="number" step="0.25" placeholder="5.5" value="5.5"></div>
+    </div>
+
+    <!-- ---- second nativity, shown only in marriage-compatibility mode ---- -->
+    <div class="partner-block" id="partnerBlock">
+      <div class="eyebrow">Second nativity</div>
+      <h2 style="font-size:20px;margin:6px 0 6px" id="partnerTitle">Bride's janma details</h2>
+      <p class="hint partner-note">Both charts are cast in full - Rāśi (D-1) and Navāṁśa (D-9) - before any
+        matching begins. Time of birth is needed for both, since the Lagna, the Navāṁśa and the daśās all
+        depend on it.</p>
+      <div class="form-grid">
+        <div class="field col-span">
+          <label for="pName">Name</label>
+          <input id="pName" type="text" placeholder="Full name" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="pDob">Date of birth</label>
+          <input id="pDob" type="date" value="2000-01-01">
+        </div>
+        <div class="field">
+          <label for="pTob">Time of birth</label>
+          <input id="pTob" type="time" value="12:00" step="60">
+          <label class="unk"><input id="pTobUnknown" type="checkbox"> Time not known / uncertain</label>
+        </div>
+        <div class="field col-span">
+          <label for="pPlace">Birth place</label>
+          <input id="pPlace" type="text" placeholder="Start typing a town or city…" autocomplete="off">
+          <div class="ac-list" id="pAcList"></div>
+          <div class="hint" id="pPlaceHint">Type to search the offline atlas, or enter coordinates manually below.</div>
+        </div>
+        <div class="field col-span">
+          <button class="manual-toggle" id="pManualToggle" type="button">▸ Enter latitude / longitude / timezone manually</button>
+        </div>
+        <div class="field manual-row" id="pMLat"><label for="pLat">Latitude (°, + = North)</label>
+          <input id="pLat" type="number" step="0.0001" placeholder="13.8500"></div>
+        <div class="field manual-row" id="pMLon"><label for="pLon">Longitude (°, + = East)</label>
+          <input id="pLon" type="number" step="0.0001" placeholder="75.7000"></div>
+        <div class="field manual-row" id="pMTz"><label for="pTz">Timezone (hours from UTC)</label>
+          <input id="pTz" type="number" step="0.25" placeholder="5.5" value="5.5"></div>
+      </div>
+      <p class="hint partner-note">The koota tables (Varṇa, Gaṇa, Tārā) are written groom-first in the
+        classical texts, so the two roles above are what those tables are reckoned from.</p>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn btn-primary" id="calcBtn" type="button">Cast the chart</button>
+      <button class="btn btn-ghost" id="sampleBtn" type="button">Load a sample</button>
+    </div>
+    <div class="err" id="formErr" role="alert"></div>
+    <div id="history"></div>
+  </section>
+
+  <!-- ============ CELEBRITY SHOWCASE ============ -->
+  <section class="panel showcase-card" id="showcase">
+    <div class="eyebrow">Try a famous chart</div>
+    <div class="showcase-head"><h2>Bollywood showcase</h2></div>
+    <p class="showcase-sub">Admire a star? Tap any name to load their commonly-cited birth details and instantly cast their janma kundali - Lagna, nakṣatra, daśā, the works.</p>
+    <div class="celeb-group"><h4>Heroes</h4><div class="celeb-grid" id="heroGrid"></div></div>
+    <div class="celeb-group"><h4>Heroines</h4><div class="celeb-grid" id="heroineGrid"></div></div>
+    <div class="showcase-note"><b>A note on accuracy:</b> birth <i>dates</i> and <i>places</i> for public figures are well documented, but birth <i>times</i> circulate online with varying reliability. Where a dependable time isn't public we use 12:00 noon - in that case the planetary positions, Moon-sign and nakṣatra stay accurate, but the Lagna and house cusps are only approximate until a verified time is entered. These charts are for illustration and admiration, not authoritative readings of the individuals.</div>
+  </section>
+
+  <!-- ============ WHY THIS JATHAKA IS CORRECT ============ -->
+  <section class="panel why-card" id="whyCorrect">
+    <div class="eyebrow">Method & authenticity</div>
+    <h2>Why this jāthaka is correct</h2>
+    <p class="why-lead">A horoscope is only as true as the sky it is drawn from. This kundali is built on two foundations at once - the exact astronomy of the heavens, and the classical rules of Vedic jyotiṣa - so the numbers are astronomically real and the framework is shastra-sammat (scripture-consistent).</p>
+    <div class="why-cols">
+      <div class="why-col sci">
+        <h3><span class="badge">Astronomically exact</span></h3>
+        <p>Every planetary longitude comes from the same ephemeris model used by astronomers and space agencies - not an approximation.</p>
+        <ul>
+          <li><b>Swiss-Ephemeris-grade positions.</b> Sun, Moon and planets are computed to arc-second precision from the astronomy-engine ephemeris, entirely on your device.
+            <small>Validated arc-minute against pyswisseph (the Swiss Ephemeris) on real charts - every sign, degree, nakṣatra and pada matched.</small></li>
+          <li><b>Lahiri ayanāṁśa, exact.</b> The precession correction to the sidereal zodiac reproduces the Swiss Ephemeris to under 0.001 arc-second across 1900-2100.</li>
+          <li><b>Mean-node Rāhu &amp; Ketu.</b> The lunar nodes are the true astronomical points where the Moon's path crosses the ecliptic.</li>
+          <li><b>No internet, no artificial intelligence, no guesswork.</b> The mathematics is deterministic - the same inputs always yield the same chart, and nothing is ever invented.</li>
+        </ul>
+      </div>
+      <div class="why-col trad">
+        <h3><span class="badge">Traditionally authentic</span></h3>
+        <p>The interpretive framework follows the classical texts - Bṛhat Parāśara Horā Śāstra and Jaimini - as practised for centuries.</p>
+        <ul>
+          <li><b>Sidereal (Nirayaṇa) zodiac.</b> Uses the fixed-star zodiac with the Lahiri (Chitrapakṣa) ayanāṁśa - the Government of India's Rāṣṭrīya Pañcāṅga standard, not the Western tropical zodiac.</li>
+          <li><b>27 Nakṣatras &amp; Vimśottari Daśā.</b> The Moon's nakṣatra sets the 120-year daśā timeline exactly as the śāstra prescribes.</li>
+          <li><b>Whole-sign Bhāvas, Parāśari &amp; Jaimini.</b> Houses, aspects (dṛṣṭi), yogas, kārakas, Ashtakavarga, Shadbala, vargas and doshas all follow the classical rules.</li>
+          <li><b>Full Pañcāṅga.</b> Tithi, Vāra, Nakṣatra, Yoga and Karaṇa are computed traditionally - the same five limbs a purohit reads. <small>Śrī Gaṇeśāya Namaḥ <span class="om">ॐ</span></small></li>
+        </ul>
+      </div>
+    </div>
+    <div class="factors">
+      <div class="factor"><div class="fk">Why the time matters</div><div class="fv">The Lagna (ascendant) moves about <b>1° every 4 minutes</b> - a whole sign every ~2 hours. An accurate birth time is what fixes the rising sign, the house framework and every divisional chart.</div><div class="fnum">4 min ≈ 1° of Lagna</div></div>
+      <div class="factor"><div class="fk">Why the longitude matters</div><div class="fv">Your east-west position sets the <b>Local Sidereal Time</b> - which part of the zodiac is on the eastern horizon at your exact place and moment. A different longitude means a different Lagna degree.</div><div class="fnum">sets local sidereal time</div></div>
+      <div class="factor"><div class="fk">Why the latitude matters</div><div class="fv">Your north-south position sets the <b>angle at which the ecliptic meets the horizon</b>, shaping the ascendant and the house cusps. The timezone converts your clock time to Universal Time for the ephemeris.</div><div class="fnum">shapes ascendant &amp; cusps</div></div>
+    </div>
+    <!-- shown only in compatibility mode: how the matching itself is done -->
+    <div class="why-match">
+      <h3>How the matching is done</h3>
+      <p>A marriage decision deserves to know exactly what the score is and is not. Both charts are computed
+        in full from the same ephemeris - Rāśi and Navāṁśa - before any comparison starts; nothing is looked
+        up from a nakṣatra table.</p>
+      <ul>
+        <li><b>The classical tables, unmodified.</b> All eight kootas use the published Parāśari/melāpaka
+          tables, including the full 14×14 yoni matrix and the degree-sensitive vaśya classes for Sagittarius
+          and Capricorn. Each koota shows the rule and the values from your two charts that satisfied it.</li>
+        <li><b>Doshas are read with their exceptions.</b> Nāḍī and Bhakūṭa carry 15 of the 36 points, and both
+          have cancellation rules in the texts. Those rules are applied and shown either way - a score quoted
+          without them is the usual way automated matching misleads people.</li>
+        <li><b>The score is not the whole reading.</b> Ashtakoota compares two Moons and nothing else. The
+          7th lords, Venus and Jupiter, Manglik with its bhaṅga conditions, both daśās and the Navāṁśa overlay
+          are read separately - and on marital questions the tradition ranks the Navāṁśa above the total.</li>
+        <li><b>It does not decide.</b> 18 and 28 points are traditional guidelines, not a pass mark. Where
+          something needs a human, the report says so and names it rather than resolving it for you.</li>
+      </ul>
+    </div>
+    <!-- What the name means. Stated plainly and up front, because "AI" on an
+         astrology site will otherwise be read as a language model, which this
+         emphatically is not. -->
+    <div class="panel ishwara-panel">
+      <div class="ip-h">All Mighty Īśvara <span class="ip-expand">— the AI in Jāthaka AI</span></div>
+      <p><b>AI here stands for Almighty Īśvara</b>, the supreme being of the Vedic tradition - not
+      artificial intelligence. Every reading on this site is calculated by the power of Almighty
+      Īśvara, through the classical rules the ṛṣis set down and the real positions of the grahas at
+      the moment you were born.</p>
+      <p><b>And the calculation is real.</b> The Sun, Moon and planets are placed from the same
+      ephemeris astronomers use, to arc-second precision, validated against the Swiss Ephemeris. Your
+      Lagna is computed from the actual sidereal time at your exact latitude and longitude. The
+      Vimśottari daśā dates come from the Moon's true nakṣatra position. Nothing here is a template,
+      a horoscope column, or a guess dressed up as one.</p>
+      <p><b>No language model writes any of it.</b> Every sentence is the output of a fixed classical
+      test applied to your computed chart, which is why the same birth details always produce exactly
+      the same report - and why every reading opens to show you the rule it came from, the values in
+      your chart that satisfied it, how strongly it reads, and when it activates.</p>
+    </div>
+    <div class="why-foot">One honest boundary: the <i>astronomy</i> here is scientifically exact and the <i>jyotiṣa method</i> is faithful to the classical tradition. Astrology's predictive claims are not established by modern science - so the readings are offered in the spirit of the tradition, for reflection and cultural insight, not as proven fact or as medical, legal or financial advice.</div>
+  </section>
+
+  <!-- ============ REPORT ============ -->
+  <div id="report"></div>
+</main>
+
+<!-- ============ SITE FOOTER ============ -->
+<footer class="site-foot" id="siteFoot">
+  <div class="wrap foot-inner">
+    <div class="foot-mark">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="34" fill="none" stroke="var(--brass)" stroke-width="2" opacity=".65"/>
+        <g stroke="var(--brass)" stroke-width="2" opacity=".85">
+          <line x1="50" y1="8" x2="50" y2="92"/><line x1="8" y1="50" x2="92" y2="50"/>
+        </g>
+        <circle cx="50" cy="50" r="9" fill="var(--brass)"/>
+      </svg>
+      <div style="text-align:left">
+        <div class="fm-name">Jāthaka <span class="om">ॐ</span></div>
+        <div class="fm-sub">Lahiri sidereal · computed offline</div>
+      </div>
+    </div>
+    <div class="foot-credit"><span class="rule"></span>Powered by <a href="https://www.ayodhyaagarbatti.in" target="_blank" rel="noopener"><b>Ayodhya Agarbatti</b></a><span class="rule"></span></div>
+    <p class="foot-url"><a href="https://www.ayodhyaagarbatti.in" target="_blank" rel="noopener">www.ayodhyaagarbatti.in</a> - get your own reading and shop sacred incense</p>
+    <p class="foot-note">Every chart on this page is computed on your own device from the astronomy-engine ephemeris - no internet, no artificial intelligence, no tracking, and nothing sent to a server. Vedic astrology is a traditional interpretive system offered for reflection and cultural interest - not prediction, and not medical, legal or financial advice.</p>
+  </div>
+</footer>
+</div><!-- /appWrap -->

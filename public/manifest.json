@@ -1,0 +1,95 @@
+{
+  "short_name": "Ayodhya Agarbatti",
+  "name": "Ayodhya Agarbatti | Sacred Incense Hand-Rolled in Ayodhya",
+  "description": "100% Charcoal-Free, non-toxic luxury incense sticks created with natural temple flowers and organic essential oils. Buy premium agarbatti online from the holy city of Ayodhya.",
+  "icons": [
+    {
+      "src": "/images/ayodhya_logo.png",
+      "type": "image/png",
+      "sizes": "48x48",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/ayodhya_logo.png",
+      "type": "image/png",
+      "sizes": "72x72",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/ayodhya_logo.png",
+      "type": "image/png",
+      "sizes": "96x96",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/ayodhya_logo.png",
+      "type": "image/png",
+      "sizes": "128x128",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/ayodhya_logo.png",
+      "type": "image/png",
+      "sizes": "144x144",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/ayodhya_logo.png",
+      "type": "image/png",
+      "sizes": "152x152",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/ayodhya_logo.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/ayodhya_logo.png",
+      "type": "image/png",
+      "sizes": "384x384",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/ayodhya_logo.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#1A0505",
+  "theme_color": "#1A0505",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en-IN",
+  "dir": "ltr",
+  "categories": ["shopping", "lifestyle", "health"],
+  "shortcuts": [
+    {
+      "name": "Shop Incense",
+      "short_name": "Shop",
+      "description": "Browse our sacred fragrance collection",
+      "url": "/shop",
+      "icons": [{ "src": "/images/ayodhya_logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Contact Us",
+      "short_name": "Contact",
+      "description": "Get in touch with our team in Ayodhya",
+      "url": "/contact",
+      "icons": [{ "src": "/images/ayodhya_logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Our Journal",
+      "short_name": "Journal",
+      "description": "Read about the alchemy of scent and soul",
+      "url": "/blog",
+      "icons": [{ "src": "/images/ayodhya_logo.png", "sizes": "192x192" }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

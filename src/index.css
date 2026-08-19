@@ -1,0 +1,99 @@
+/* Import Fonts - MUST BE FIRST STATEMENT IN CSS */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Dancing+Script:wght@400;700&family=Inter:wght@300;400;500&family=Montserrat:wght@300;400;500;600&family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-charcoal: #1A1A1A;
+  --color-ivory: #FDFBF7;
+  --color-gold: #D4AF37;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Outfit', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #1A0505;
+  background-image: radial-gradient(circle at 50% 0%, #3E1414 0%, #1A0505 60%, #0F0202 100%);
+  color: #FDFBF7;
+  /* Ivory text on dark maroon bg */
+  overflow-x: hidden;
+}
+
+/* Premium Noise Texture */
+.noise-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 40;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Custom Buttons matching the 'Haute' style */
+.btn-primary {
+  @apply bg-charcoal text-white px-8 py-3 uppercase tracking-widest text-xs font-bold border border-transparent shadow-lg transition-all duration-300;
+}
+
+.btn-primary:hover {
+  @apply bg-terracotta text-white transform -translate-y-1 shadow-xl;
+}
+
+.text-gold {
+  color: #D4AF37;
+}
+
+/* Smooth Scrolling */
+/* Smooth Scrolling handled by Lenis, hide default bars */
+html {
+  scroll-behavior: auto;
+  /* Let Lenis handle it */
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+/* Mobile Responsiveness & Touch UI Optimizations */
+@media (max-width: 768px) {
+  /* Prevent iOS Safari 16px auto-zoom on input focus */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  
+  /* Enable smooth touch scrolling on mobile drawers & containers */
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Safe padding for mobile bottom bars */
+  .mobile-safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 1rem);
+  }
+}
+
+/* Mobile Touch Tap Highlight */
+* {
+  -webkit-tap-highlight-color: transparent;
+}

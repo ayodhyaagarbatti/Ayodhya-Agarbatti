@@ -1,0 +1,51 @@
+# User-agent directives for Search Crawlers & AI Engine Bots
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /checkout
+Disallow: /success
+Disallow: /cart
+Disallow: /search
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 10
+
+# Specific AI Engine Crawlers (AEO / GEO Optimization)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+# Host directive for international targeting
+Host: https://www.ayodhyaagarbatti.in
+
+# Sitemap Location
+Sitemap: https://www.ayodhyaagarbatti.in/sitemap.xml
