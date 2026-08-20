@@ -37,7 +37,6 @@ const AccountModal = ({ isOpen, onClose, user }) => {
     const [authMode, setAuthMode] = useState('signin'); // 'signin' | 'signup'
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [justSignedUp, setJustSignedUp] = useState(false);
     const [isResendingVerification, setIsResendingVerification] = useState(false);
 
     const resetFormState = () => {
@@ -45,7 +44,6 @@ const AccountModal = ({ isOpen, onClose, user }) => {
         setInfoMessage('');
         setEmail('');
         setPassword('');
-        setJustSignedUp(false);
     };
 
     const handleGoogleSignIn = async () => {
@@ -83,10 +81,13 @@ const AccountModal = ({ isOpen, onClose, user }) => {
         setIsSigningIn(true);
         try {
             if (authMode === 'signup') {
+                // createUserWithEmailAndPassword signs the user in immediately, so the
+                // modal's `user` prop flips true right after this resolves - the signed-in
+                // view below (with its own "verify your email" banner) takes over rather
+                // than this function needing to render a separate transitional screen.
                 const result = await createUserWithEmailAndPassword(auth, email, password);
                 await sendEmailVerification(result.user);
                 await createOrUpdateAccount(result.user, 'password');
-                setJustSignedUp(true);
             } else {
                 const result = await signInWithEmailAndPassword(auth, email, password);
                 await createOrUpdateAccount(result.user, 'password');
@@ -203,22 +204,6 @@ const AccountModal = ({ isOpen, onClose, user }) => {
                                 className="w-full flex items-center justify-center gap-2 bg-charcoal text-white py-3 rounded-lg font-bold text-xs uppercase tracking-widest hover:bg-gold hover:text-charcoal transition-all"
                             >
                                 <LogOut size={14} /> Sign Out
-                            </button>
-                        </div>
-                    ) : justSignedUp ? (
-                        <div className="text-center">
-                            <div className="w-14 h-14 rounded-full bg-green-100 text-green-600 flex items-center justify-center mx-auto mb-4">
-                                <Mail size={24} />
-                            </div>
-                            <h3 className="font-heading text-lg mb-2">Check your inbox</h3>
-                            <p className="text-xs text-gray-500 mb-6">
-                                We've sent a verification link to <b>{email}</b>. Verify your email to unlock referral rewards and the wallet.
-                            </p>
-                            <button
-                                onClick={handleClose}
-                                className="w-full bg-charcoal text-white py-3 rounded-lg font-bold text-xs uppercase tracking-widest hover:bg-gold hover:text-charcoal transition-all"
-                            >
-                                Done
                             </button>
                         </div>
                     ) : viewMode === 'email' ? (
