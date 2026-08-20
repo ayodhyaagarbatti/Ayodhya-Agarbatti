@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { Download, ArrowLeft } from 'lucide-react';
 import SEO from '../../components/SEO';
@@ -8,6 +8,7 @@ const HoroscopeResult = () => {
     const location = useLocation();
     const { subject, partner, product } = location.state || {};
     const iframeRef = useRef(null);
+    const [isIframeLoaded, setIsIframeLoaded] = useState(false);
 
     const engineUrl = useMemo(() => (subject ? buildHoroscopeEngineUrl(subject, partner) : null), [subject, partner]);
 
@@ -21,11 +22,12 @@ const HoroscopeResult = () => {
     }
 
     const downloadPdf = () => {
+        if (!isIframeLoaded) return;
         iframeRef.current?.contentWindow?.print();
     };
 
     return (
-        <div className="min-h-screen bg-ivory/50 pt-24 pb-0 flex flex-col">
+        <div className="min-h-screen bg-ivory/50 pt-28 pb-0 flex flex-col">
             <SEO
                 title={`${product?.name || 'Your Horoscope'} | Ayodhya Agarbatti`}
                 description="Your computed Vedic horoscope report."
@@ -38,9 +40,10 @@ const HoroscopeResult = () => {
                 </Link>
                 <button
                     onClick={downloadPdf}
-                    className="btn-primary flex items-center gap-2 hover:bg-gold hover:text-charcoal"
+                    disabled={!isIframeLoaded}
+                    className="btn-primary flex items-center gap-2 hover:bg-gold hover:text-charcoal disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    <Download size={14} /> Download PDF
+                    <Download size={14} /> {isIframeLoaded ? 'Download PDF' : 'Preparing report...'}
                 </button>
             </div>
             <iframe
@@ -49,6 +52,7 @@ const HoroscopeResult = () => {
                 title="Vedic horoscope report"
                 className="w-full flex-grow border-0"
                 style={{ minHeight: '85vh' }}
+                onLoad={() => setIsIframeLoaded(true)}
             />
         </div>
     );

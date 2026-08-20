@@ -13,8 +13,14 @@ const razorpayApiDevPlugin = (env) => ({
   configureServer(server) {
     Object.assign(process.env, env)
     const routes = {
-      '/api/create-order': path.resolve(process.cwd(), 'api/create-order.js'),
+      '/api/create-horoscope-order': path.resolve(process.cwd(), 'api/create-horoscope-order.js'),
+      '/api/create-shop-order': path.resolve(process.cwd(), 'api/create-shop-order.js'),
+      '/api/preview-horoscope-price': path.resolve(process.cwd(), 'api/preview-horoscope-price.js'),
       '/api/verify-payment': path.resolve(process.cwd(), 'api/verify-payment.js'),
+      '/api/verify-horoscope-payment': path.resolve(process.cwd(), 'api/verify-horoscope-payment.js'),
+      '/api/get-wallet-summary': path.resolve(process.cwd(), 'api/get-wallet-summary.js'),
+      '/api/create-redemption-request': path.resolve(process.cwd(), 'api/create-redemption-request.js'),
+      '/api/admin-resolve-redemption': path.resolve(process.cwd(), 'api/admin-resolve-redemption.js'),
     }
     for (const [route, modulePath] of Object.entries(routes)) {
       server.middlewares.use(route, async (req, res) => {

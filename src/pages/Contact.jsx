@@ -113,7 +113,7 @@ const Contact = () => {
     };
 
     return (
-        <div className="pt-24 pb-20 bg-white min-h-screen">
+        <div className="pt-28 pb-20 bg-white min-h-screen">
             <SEO
                 title="Contact Us | Ayodhya Agarbatti - Get in Touch for Orders & Support"
                 description="Contact Ayodhya Agarbatti for orders, wholesale inquiries, or support. Based in the holy city of Ayodhya, Uttar Pradesh. Call +91 98765 43210 or email namaste@ayodhyaagarbatti.com. Mon-Sat, 9am-6pm IST."

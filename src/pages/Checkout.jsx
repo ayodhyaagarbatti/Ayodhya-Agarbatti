@@ -177,13 +177,22 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                 }
 
                 // Order is created server-side so the amount can't be tampered with
-                // from the browser, matching the horoscope checkout flow.
+                // from the browser - the server recomputes the total from
+                // {id, selectedPackName, quantity} against the canonical catalog,
+                // it never trusts a client-supplied amount.
                 let order;
                 try {
-                    const createRes = await fetch('/api/create-order', {
+                    const createRes = await fetch('/api/create-shop-order', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ amount: total * 100, currency: 'INR', receipt: orderNumber })
+                        body: JSON.stringify({
+                            cartItems: cartItems.map(item => ({
+                                id: item.id,
+                                selectedPackName: item.selectedPackName || null,
+                                quantity: item.quantity
+                            })),
+                            receipt: orderNumber
+                        })
                     });
                     const createData = await createRes.json();
                     if (!createRes.ok) throw new Error(createData.error || 'Failed to create order');
@@ -244,9 +253,9 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                                     quantity: item.quantity,
                                     image: item.image || ''
                                 })),
-                                subtotal: subtotal,
-                                shipping: shippingFee,
-                                total: total,
+                                subtotal: order.subtotal,
+                                shipping: order.shippingFee,
+                                total: order.total,
                                 paymentStatus: 'Paid & Verified',
                                 status: 'Order Placed',
                                 date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),

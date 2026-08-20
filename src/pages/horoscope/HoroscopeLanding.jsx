@@ -1,10 +1,19 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Sparkles, Check, ArrowRight } from 'lucide-react';
 import SEO from '../../components/SEO';
 import { horoscopeProducts } from '../../data/horoscopeProducts';
+import ReferAndEarn from '../../components/ReferAndEarn';
+import { storeReferralCode } from '../../utils/referral';
 
 const HoroscopeLanding = () => {
+    const [searchParams] = useSearchParams();
+
+    useEffect(() => {
+        const ref = searchParams.get('ref');
+        if (ref) storeReferralCode(ref);
+    }, [searchParams]);
+
     return (
         <div className="min-h-screen bg-ivory/50 pt-32 pb-20">
             <SEO
@@ -58,6 +67,10 @@ const HoroscopeLanding = () => {
                         </Link>
                     </div>
                 ))}
+            </div>
+
+            <div className="max-w-5xl mx-auto px-6 mt-12">
+                <ReferAndEarn />
             </div>
 
             <p className="text-center text-xs text-gray-400 max-w-xl mx-auto mt-12 px-6">

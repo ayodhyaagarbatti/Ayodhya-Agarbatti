@@ -4,13 +4,13 @@ import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDZ8SroAsDtJnmkO2Ujbu9GqsEFl0kkZrk",
-    authDomain: "ayodhya-agarbatti.firebaseapp.com",
-    projectId: "ayodhya-agarbatti",
-    storageBucket: "ayodhya-agarbatti.firebasestorage.app",
-    messagingSenderId: "562396230666",
-    appId: "1:562396230666:web:75db728a3391bdf5791bf3",
-    measurementId: "G-JSEME84EMY"
+    apiKey: "AIzaSyD2CSxREZ2OghjhCM_AyX-yNN_6xsY_PAA",
+    authDomain: "ayodhya-agarbatti-562e2.firebaseapp.com",
+    projectId: "ayodhya-agarbatti-562e2",
+    storageBucket: "ayodhya-agarbatti-562e2.firebasestorage.app",
+    messagingSenderId: "811796036465",
+    appId: "1:811796036465:web:8a321520534ec2dd4314d0",
+    measurementId: "G-HXQGTZF7WV"
 };
 
 // Initialize Firebase

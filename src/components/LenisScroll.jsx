@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import Lenis from '@studio-freight/lenis';
+import { setLenisInstance } from '../utils/lenisInstance';
 
 const LenisScroll = ({ children }) => {
     useEffect(() => {
@@ -12,6 +13,7 @@ const LenisScroll = ({ children }) => {
             wheelMultiplier: 1,
             touchMultiplier: 2,
         });
+        setLenisInstance(lenis);
 
         function raf(time) {
             lenis.raf(time);
@@ -21,6 +23,7 @@ const LenisScroll = ({ children }) => {
         requestAnimationFrame(raf);
 
         return () => {
+            setLenisInstance(null);
             lenis.destroy();
         };
     }, []);

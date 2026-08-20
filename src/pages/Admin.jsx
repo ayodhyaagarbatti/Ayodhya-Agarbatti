@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { 
-    Package, CheckCircle, Download, KeyRound, Lock, Trash2, 
-    Search, Mail, Users, Star, IndianRupee, Eye, AlertCircle, RefreshCw, 
-    Clock, Check, Filter, ExternalLink, PlusCircle, Activity, ShoppingCart, 
-    Compass, Monitor, Smartphone, Globe
+import {
+    Package, CheckCircle, Download, KeyRound, Lock, Trash2,
+    Search, Mail, Users, Star, IndianRupee, Eye, AlertCircle, RefreshCw,
+    Clock, Check, Filter, ExternalLink, PlusCircle, Activity, ShoppingCart,
+    Compass, Monitor, Smartphone, Globe, Wallet, X as XIcon
 } from 'lucide-react';
 import { collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc, addDoc, serverTimestamp, limit } from "firebase/firestore";
 import { db } from '../firebase';
@@ -14,7 +14,7 @@ const Admin = () => {
     const [password, setPassword] = useState('');
     const [isLoggingIn, setIsLoggingIn] = useState(false);
     const [error, setError] = useState('');
-    const [activeTab, setActiveTab] = useState('orders'); // 'orders' | 'activity' | 'messages' | 'subscribers' | 'reviews'
+    const [activeTab, setActiveTab] = useState('orders'); // 'orders' | 'activity' | 'messages' | 'subscribers' | 'reviews' | 'redemptions'
     const [firestorePermissionError, setFirestorePermissionError] = useState(false);
 
     // Realtime Database Data
@@ -23,12 +23,26 @@ const Admin = () => {
     const [messages, setMessages] = useState([]);
     const [subscribers, setSubscribers] = useState([]);
     const [reviews, setReviews] = useState([]);
+    const [redemptions, setRedemptions] = useState([]);
     const [loading, setLoading] = useState(true);
 
     // Filters & Search
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('ALL');
     const [activityFilter, setActivityFilter] = useState('ALL');
+    const [redemptionFilter, setRedemptionFilter] = useState('pending');
+
+    // Tracks in-flight write/delete actions (keyed e.g. "order-delete-123") so their
+    // triggering buttons can be disabled and rapid double-clicks can't fire duplicate writes.
+    const [isCreatingOrder, setIsCreatingOrder] = useState(false);
+    const [pendingActions, setPendingActions] = useState(new Set());
+
+    const beginPending = (key) => setPendingActions(prev => new Set(prev).add(key));
+    const endPending = (key) => setPendingActions(prev => {
+        const next = new Set(prev);
+        next.delete(key);
+        return next;
+    });
 
     const loadLocalBackup = (key) => {
         try {
@@ -178,12 +192,24 @@ const Admin = () => {
             });
         } catch (e) {}
 
+        // 6. Subscribe to Wallet Redemption Requests Collection in Firestore
+        let unsubRedemptions = () => {};
+        try {
+            const qRedemptions = query(collection(db, "redemption_requests"), orderBy("createdAt", "desc"));
+            unsubRedemptions = onSnapshot(qRedemptions, (snapshot) => {
+                setRedemptions(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+            }, (err) => {
+                if (err.code === 'permission-denied') setFirestorePermissionError(true);
+            });
+        } catch (e) {}
+
         return () => {
             unsubOrders();
             unsubLogs();
             unsubMessages();
             unsubSubscribers();
             unsubReviews();
+            unsubRedemptions();
         };
     }, []);
 
@@ -218,6 +244,8 @@ const Admin = () => {
 
     // --- Create Test Order in Database ---
     const handleCreateTestOrder = async () => {
+        if (isCreatingOrder) return;
+        setIsCreatingOrder(true);
         try {
             const testOrderNumber = `AYD-${Date.now().toString().slice(-6)}-TEST`;
             const testOrder = {
@@ -246,6 +274,8 @@ const Admin = () => {
         } catch (err) {
             console.error("Error creating test order in database:", err);
             alert("Failed to write to database: " + err.message);
+        } finally {
+            setIsCreatingOrder(false);
         }
     };
 
@@ -265,59 +295,114 @@ const Admin = () => {
 
     const handleDeleteOrder = async (orderId) => {
         if (!window.confirm("Are you sure you want to delete this order from database?")) return;
+        const key = `order-delete-${orderId}`;
+        if (pendingActions.has(key)) return;
+        beginPending(key);
         try {
             await deleteDoc(doc(db, "orders", orderId));
         } catch (err) {
             console.error("Failed to delete order from database:", err);
             alert("Error deleting order: " + err.message);
+        } finally {
+            endPending(key);
         }
     };
 
     // --- Activity Log Deletion ---
     const handleDeleteLog = async (logId) => {
+        const key = `log-delete-${logId}`;
+        if (pendingActions.has(key)) return;
+        beginPending(key);
         try {
             await deleteDoc(doc(db, "activity_logs", logId));
         } catch (err) {
             console.error("Error deleting log:", err);
+        } finally {
+            endPending(key);
         }
     };
 
     // --- Message Database Operations ---
     const handleToggleMessageRead = async (messageId, currentStatus) => {
+        const key = `message-toggle-${messageId}`;
+        if (pendingActions.has(key)) return;
+        beginPending(key);
         try {
             const nextStatus = currentStatus === 'read' ? 'unread' : 'read';
             await updateDoc(doc(db, "contact_messages", messageId), { status: nextStatus });
         } catch (err) {
             console.error("Error updating message status:", err);
+        } finally {
+            endPending(key);
         }
     };
 
     const handleDeleteMessage = async (messageId) => {
         if (!window.confirm("Delete this message from database?")) return;
+        const key = `message-delete-${messageId}`;
+        if (pendingActions.has(key)) return;
+        beginPending(key);
         try {
             await deleteDoc(doc(db, "contact_messages", messageId));
         } catch (err) {
             console.error("Error deleting message:", err);
+        } finally {
+            endPending(key);
         }
     };
 
     // --- Subscriber Database Operations ---
     const handleDeleteSubscriber = async (subId) => {
         if (!window.confirm("Remove subscriber from database?")) return;
+        const key = `subscriber-delete-${subId}`;
+        if (pendingActions.has(key)) return;
+        beginPending(key);
         try {
             await deleteDoc(doc(db, "subscribers", subId));
         } catch (err) {
             console.error("Error deleting subscriber:", err);
+        } finally {
+            endPending(key);
         }
     };
 
     // --- Review Database Operations ---
     const handleDeleteReview = async (reviewId) => {
         if (!window.confirm("Delete review from database?")) return;
+        const key = `review-delete-${reviewId}`;
+        if (pendingActions.has(key)) return;
+        beginPending(key);
         try {
             await deleteDoc(doc(db, "reviews", reviewId));
         } catch (err) {
             console.error("Error deleting review:", err);
+        } finally {
+            endPending(key);
+        }
+    };
+
+    // --- Wallet Redemption Operations (money-mutating, so this goes through the
+    // server endpoint with the admin session token, never a direct Firestore write) ---
+    const handleResolveRedemption = async (requestId, action) => {
+        const verb = action === 'paid' ? 'mark this redemption as paid' : 'reject this redemption';
+        if (!window.confirm(`Are you sure you want to ${verb}? This cannot be undone.`)) return;
+        const key = `redemption-resolve-${requestId}`;
+        if (pendingActions.has(key)) return;
+        beginPending(key);
+        try {
+            const token = sessionStorage.getItem('adminAuth');
+            const res = await fetch('/api/admin-resolve-redemption', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token, requestId, action })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Failed to resolve redemption request');
+        } catch (err) {
+            console.error("Error resolving redemption request:", err);
+            alert("Error: " + err.message);
+        } finally {
+            endPending(key);
         }
     };
 
@@ -373,10 +458,13 @@ const Admin = () => {
         return log.type === activityFilter;
     });
 
+    const filteredRedemptions = redemptions.filter(r => redemptionFilter === 'ALL' || r.status === redemptionFilter);
+
     const totalRevenue = orders.reduce((acc, o) => acc + (parseInt(o.total) || 0), 0);
     const unreadMessagesCount = messages.filter(m => m.status === 'unread').length;
     const pageViewCount = activityLogs.filter(l => l.type === 'PAGE_VIEW').length;
     const cartActionCount = activityLogs.filter(l => l.type === 'CART_ACTION').length;
+    const pendingRedemptionCount = redemptions.filter(r => r.status === 'pending').length;
 
     if (checkingSession) {
         return <div className="min-h-screen bg-ivory flex items-center justify-center pt-32" />;
@@ -434,9 +522,10 @@ const Admin = () => {
                     <div className="flex flex-wrap items-center gap-3">
                         <button
                             onClick={handleCreateTestOrder}
-                            className="bg-gold text-charcoal px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-charcoal hover:text-gold transition-all flex items-center gap-2 shadow-sm"
+                            disabled={isCreatingOrder}
+                            className="bg-gold text-charcoal px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-charcoal hover:text-gold transition-all flex items-center gap-2 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            <PlusCircle size={15} /> Create Sample Order in Database
+                            <PlusCircle size={15} /> {isCreatingOrder ? 'Creating...' : 'Create Sample Order in Database'}
                         </button>
                         <button
                             onClick={downloadCSV}
@@ -574,6 +663,17 @@ service cloud.firestore {
                     >
                         <Star size={16} /> Reviews ({reviews.length})
                     </button>
+                    <button
+                        onClick={() => setActiveTab('redemptions')}
+                        className={`flex items-center gap-2 px-5 py-3 rounded-lg text-xs font-bold uppercase tracking-wider transition-all relative whitespace-nowrap ${activeTab === 'redemptions' ? 'bg-charcoal text-white shadow' : 'text-gray-600 hover:bg-gray-100'}`}
+                    >
+                        <Wallet size={16} /> Redemptions ({redemptions.length})
+                        {pendingRedemptionCount > 0 && (
+                            <span className="bg-gold text-charcoal font-bold text-[10px] px-1.5 py-0.5 rounded-full ml-1">
+                                {pendingRedemptionCount} pending
+                            </span>
+                        )}
+                    </button>
                 </div>
 
                 {/* TAB 1: ORDERS */}
@@ -688,7 +788,8 @@ service cloud.firestore {
                                             <div className="flex items-center lg:self-center">
                                                 <button
                                                     onClick={() => handleDeleteOrder(order.id)}
-                                                    className="text-gray-400 hover:text-red-600 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                                                    disabled={pendingActions.has(`order-delete-${order.id}`)}
+                                                    className="text-gray-400 hover:text-red-600 p-2 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                                     title="Delete order from database"
                                                 >
                                                     <Trash2 size={18} />
@@ -812,7 +913,8 @@ service cloud.firestore {
                                             {log.id && (
                                                 <button
                                                     onClick={() => handleDeleteLog(log.id)}
-                                                    className="text-gray-300 hover:text-red-600 p-1"
+                                                    disabled={pendingActions.has(`log-delete-${log.id}`)}
+                                                    className="text-gray-300 hover:text-red-600 p-1 disabled:opacity-50 disabled:cursor-not-allowed"
                                                     title="Delete log"
                                                 >
                                                     <Trash2 size={14} />
@@ -853,13 +955,15 @@ service cloud.firestore {
                                             <div className="flex items-center gap-2 shrink-0">
                                                 <button
                                                     onClick={() => handleToggleMessageRead(msg.id, msg.status)}
-                                                    className="px-3 py-1.5 rounded-lg border text-xs font-bold hover:bg-gray-100 transition-colors"
+                                                    disabled={pendingActions.has(`message-toggle-${msg.id}`)}
+                                                    className="px-3 py-1.5 rounded-lg border text-xs font-bold hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                                 >
                                                     {msg.status === 'unread' ? 'Mark Read' : 'Mark Unread'}
                                                 </button>
                                                 <button
                                                     onClick={() => handleDeleteMessage(msg.id)}
-                                                    className="text-gray-400 hover:text-red-600 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                                                    disabled={pendingActions.has(`message-delete-${msg.id}`)}
+                                                    className="text-gray-400 hover:text-red-600 p-2 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                                     title="Delete message from database"
                                                 >
                                                     <Trash2 size={18} />
@@ -893,7 +997,8 @@ service cloud.firestore {
                                             </div>
                                             <button
                                                 onClick={() => handleDeleteSubscriber(sub.id)}
-                                                className="text-gray-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 transition-colors"
+                                                disabled={pendingActions.has(`subscriber-delete-${sub.id}`)}
+                                                className="text-gray-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                                 title="Remove subscriber from database"
                                             >
                                                 <Trash2 size={16} />
@@ -933,11 +1038,81 @@ service cloud.firestore {
 
                                         <button
                                             onClick={() => handleDeleteReview(rev.id)}
-                                            className="text-gray-400 hover:text-red-600 p-2 rounded-lg hover:bg-red-50 transition-colors shrink-0"
+                                            disabled={pendingActions.has(`review-delete-${rev.id}`)}
+                                            className="text-gray-400 hover:text-red-600 p-2 rounded-lg hover:bg-red-50 transition-colors shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
                                             title="Delete review from database"
                                         >
                                             <Trash2 size={18} />
                                         </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* TAB 6: WALLET REDEMPTIONS */}
+                {activeTab === 'redemptions' && (
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div className="p-4 border-b border-gray-200 bg-gray-50/50 flex items-center gap-2">
+                            <Filter size={14} className="text-gray-400" />
+                            <span className="text-xs font-bold text-gray-500 uppercase">Status:</span>
+                            <select
+                                value={redemptionFilter}
+                                onChange={(e) => setRedemptionFilter(e.target.value)}
+                                className="bg-white border border-gray-300 rounded-lg px-3 py-1.5 text-xs font-semibold text-charcoal focus:outline-none"
+                            >
+                                <option value="ALL">All</option>
+                                <option value="pending">Pending</option>
+                                <option value="paid">Paid</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </div>
+
+                        {filteredRedemptions.length === 0 ? (
+                            <div className="p-12 text-center text-gray-400">No {redemptionFilter !== 'ALL' ? redemptionFilter : ''} redemption requests.</div>
+                        ) : (
+                            <div className="divide-y divide-gray-100">
+                                {filteredRedemptions.map((r) => (
+                                    <div key={r.id} className="p-6 flex flex-col lg:flex-row justify-between items-start gap-4">
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-bold text-charcoal">₹{(r.netPayoutPaise / 100).toFixed(2)} net payout</span>
+                                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ${
+                                                    r.status === 'pending' ? 'bg-amber-100 text-amber-700' :
+                                                    r.status === 'paid' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                                                }`}>
+                                                    {r.status}
+                                                </span>
+                                            </div>
+                                            <p className="text-xs text-gray-400 mt-1">
+                                                Requested ₹{(r.requestedAmountPaise / 100).toFixed(2)}{r.feePaise > 0 ? ` · ₹${(r.feePaise / 100).toFixed(2)} fee` : ' · no fee'} · uid {r.uid}
+                                            </p>
+                                            <div className="text-xs text-gray-600 mt-2 bg-gray-50 p-3 rounded border border-gray-100 font-mono">
+                                                {r.payoutMethod === 'upi'
+                                                    ? `UPI: ${r.payoutDetails?.upiId}`
+                                                    : `Bank: ${r.payoutDetails?.accountHolderName} · ${r.payoutDetails?.accountNumber} · ${r.payoutDetails?.ifsc}`}
+                                            </div>
+                                        </div>
+
+                                        {r.status === 'pending' && (
+                                            <div className="flex items-center gap-2 shrink-0">
+                                                <button
+                                                    onClick={() => handleResolveRedemption(r.id, 'paid')}
+                                                    disabled={pendingActions.has(`redemption-resolve-${r.id}`)}
+                                                    className="flex items-center gap-1.5 bg-green-600 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-green-700 transition-colors disabled:opacity-50"
+                                                >
+                                                    <CheckCircle size={14} /> Mark Paid
+                                                </button>
+                                                <button
+                                                    onClick={() => handleResolveRedemption(r.id, 'rejected')}
+                                                    disabled={pendingActions.has(`redemption-resolve-${r.id}`)}
+                                                    className="flex items-center gap-1.5 border border-gray-300 text-red-600 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-red-50 transition-colors disabled:opacity-50"
+                                                >
+                                                    <XIcon size={14} /> Reject
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
                                 ))}
                             </div>

@@ -24,6 +24,14 @@ const Navbar = ({ cartCount, onCartClick, onSearchClick }) => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    // Lets pages outside the Navbar (e.g. the "Refer & Earn" prompt) open the
+    // sign-in modal without needing the account-open state lifted into a context.
+    useEffect(() => {
+        const openAccount = () => setIsAccountOpen(true);
+        window.addEventListener('ayodhya:open-account', openAccount);
+        return () => window.removeEventListener('ayodhya:open-account', openAccount);
+    }, []);
+
     const handleNavClick = (item, e) => {
         if (item.key === 'navRituals' || item.name === 'Rituals') {
             e.preventDefault();
@@ -133,22 +141,15 @@ const Navbar = ({ cartCount, onCartClick, onSearchClick }) => {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: '100%' }}
                         className="fixed inset-0 bg-charcoal z-50 flex flex-col items-center justify-center p-8 space-y-8 text-ivory"
+                        onClick={() => setIsMobileMenuOpen(false)}
                     >
                         <button className="absolute top-8 right-8 p-2" onClick={() => setIsMobileMenuOpen(false)}>
                             <X className="w-8 h-8 text-ivory hover:text-gold" />
                         </button>
 
-                        {[
-                            { name: 'Home', path: '/' },
-                            { name: '✨ Horoscope', path: '/horoscope' },
-                            { name: 'Shop', path: '/shop' },
-                            { name: 'Rituals', path: '/#ritual' },
-                            { name: 'Journal', path: '/blog' },
-                            { name: 'Contact', path: '/contact' },
-                            { name: 'Admin Dashboard', path: '/admin' }
-                        ].map((item) => (
+                        {navItems.map((item) => (
                             <Link
-                                key={item.name}
+                                key={item.key}
                                 to={item.path}
                                 onClick={(e) => {
                                     setIsMobileMenuOpen(false);

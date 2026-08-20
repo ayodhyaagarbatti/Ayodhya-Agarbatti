@@ -7,6 +7,7 @@ import { Globe } from 'lucide-react';
 // Analytics & Fine-grained Event Logging
 import { logPageView, logCartAction } from './utils/analyticsLogger';
 import { trackPageView, trackAddToCart } from './utils/googleAnalytics';
+import { getLenisInstance } from './utils/lenisInstance';
 
 // Components
 import Navbar from './components/Navbar';
@@ -35,6 +36,7 @@ import HoroscopeLanding from './pages/horoscope/HoroscopeLanding';
 import HoroscopeDetailsForm from './pages/horoscope/HoroscopeDetailsForm';
 import HoroscopePayment from './pages/horoscope/HoroscopePayment';
 import HoroscopeResult from './pages/horoscope/HoroscopeResult';
+import AccountWallet from './pages/AccountWallet';
 
 const TopBar = () => {
     const { t, i18n } = useTranslation();
@@ -91,6 +93,15 @@ const PageTracker = () => {
     const location = useLocation();
 
     useEffect(() => {
+        // Lenis persists across route changes and otherwise clamps the old scroll
+        // position onto the new (often shorter) page instead of resetting to top.
+        const lenis = getLenisInstance();
+        if (lenis) {
+            lenis.scrollTo(0, { immediate: true });
+        } else {
+            window.scrollTo(0, 0);
+        }
+
         logPageView(location.pathname, document.title);
         trackPageView(location.pathname, document.title);
     }, [location]);
@@ -260,6 +271,7 @@ function AppContent() {
                         <Route path="/horoscope/:productId/details" element={<HoroscopeDetailsForm />} />
                         <Route path="/horoscope/:productId/payment" element={<HoroscopePayment />} />
                         <Route path="/horoscope/result" element={<HoroscopeResult />} />
+                        <Route path="/account/wallet" element={<AccountWallet />} />
                         <Route path="*" element={<NotFound />} />
                     </Routes>
                 </main>
