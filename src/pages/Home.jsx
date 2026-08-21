@@ -15,7 +15,7 @@ const homeSchema = {
     "@context": "https://schema.org",
     "@type": "WebPage",
     "name": "Ayodhya Agarbatti - Best Agarbatti Online, Pure Sacred Incense Sticks Hand-Rolled in Ayodhya",
-    "description": "Shop the best agarbatti online - 100% natural, charcoal-free premium incense sticks hand-rolled in the holy city of Ayodhya. Sourced from organic temple flowers, pure Mysore sandalwood, and therapeutic essential oils. Free shipping on orders above ₹500.",
+    "description": "Shop the best agarbatti online - premium incense sticks with a divine fragrance, hand-rolled in the holy city of Ayodhya. Sourced from sacred temple flowers, pure Mysore sandalwood, and therapeutic essential oils. Free shipping on orders above ₹500.",
     "url": "https://www.ayodhyaagarbatti.in/",
     "publisher": {
         "@type": "Organization",
@@ -105,8 +105,8 @@ const Home = ({ addToCart }) => {
         <div className="overflow-x-hidden">
             <SEO
                 title="Ayodhya Agarbatti | Best Agarbatti Online - Pure Sacred Incense Sticks"
-                description="Shop the best agarbatti online from Ayodhya - 100% natural, charcoal-free incense sticks hand-rolled with organic temple flowers and pure Mysore sandalwood. Free shipping on orders above ₹500. Also home to India's most accurate Vedic horoscope reading, computed instantly from your exact birth details."
-                keywords="best agarbatti, best agarbatti online, Ayodhya Agarbatti, natural incense sticks, charcoal free agarbatti, Mysore sandalwood incense, temple flower agarbatti, organic incense sticks India, luxury agarbatti, pooja incense, Ayodhya incense online buy, buy agarbatti online, hand rolled incense, non toxic incense, premium incense India, accurate horoscope reading"
+                description="Shop the best agarbatti online from Ayodhya - incense sticks with a divine fragrance, hand-rolled with sacred temple flowers and pure Mysore sandalwood. Free shipping on orders above ₹500. Also home to India's most accurate Vedic horoscope reading, computed instantly from your exact birth details."
+                keywords="best agarbatti, best agarbatti online, Ayodhya Agarbatti, natural incense sticks, divine fragrance incense, Mysore sandalwood incense, temple flower agarbatti, organic incense sticks India, luxury agarbatti, pooja incense, Ayodhya incense online buy, buy agarbatti online, hand rolled incense, sacred incense sticks, premium incense India, accurate horoscope reading"
                 canonical="https://www.ayodhyaagarbatti.in/"
                 ogImage="https://www.ayodhyaagarbatti.in/images/ayodhya_package.png"
                 schema={homeSchema}
@@ -210,8 +210,8 @@ const Home = ({ addToCart }) => {
                                         <p className="text-ivory/80">Sourced directly from Ayodhya temple flowers and blessed in the holy city. Every stick carries the vibrational energy of sacred rituals performed for generations.</p>
                                     </div>
                                     <div>
-                                        <h4 className="font-heading text-sm uppercase tracking-widest text-gold mb-3">🌿 100% Natural & Non-Toxic</h4>
-                                        <p className="text-ivory/80">Zero charcoal, zero synthetic binders, zero phthalates. Pure plant resins, sandalwood, essential oils, and sacred botanicals — safe for daily use around children, pets, and elders.</p>
+                                        <h4 className="font-heading text-sm uppercase tracking-widest text-gold mb-3">🌿 Divine, Temple-Grade Fragrance</h4>
+                                        <p className="text-ivory/80">Pure plant resins, sandalwood, essential oils, and sacred botanicals, crafted to fill your space with a warm, divine fragrance for daily rituals.</p>
                                     </div>
                                     <div>
                                         <h4 className="font-heading text-sm uppercase tracking-widest text-gold mb-3">🧬 Science-Backed Fragrance Design</h4>
@@ -248,7 +248,7 @@ const Home = ({ addToCart }) => {
                         </div>
                         <div className="bg-white p-6 rounded-xl border border-gray-100">
                             <div className="font-serif text-4xl font-bold text-gold mb-1">100%</div>
-                            <div className="text-sm text-gray-600">Charcoal-Free</div>
+                            <div className="text-sm text-gray-600">Divine Fragrance</div>
                         </div>
                         <div className="bg-white p-6 rounded-xl border border-gray-100">
                             <div className="font-serif text-4xl font-bold text-gold mb-1">3-5</div>

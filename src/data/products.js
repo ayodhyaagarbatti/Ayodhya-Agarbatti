@@ -32,7 +32,7 @@ export const products = [
             "Sacred Ayodhya Temple Flower Powder",
             "Natural Tree Gum (Jigzat Resin)",
             "Pure Sandalwood Powder",
-            "Zero Charcoal, 100% Non-Toxic & Charcoal-Free"
+            "Divine, Long-Lasting Fragrance"
         ],
         images: ["/images/espresso.png", "/images/product_coffee.jpg"],
         packOptions: [
@@ -106,7 +106,7 @@ export const products = [
             "Sacred Lotus Flower Petal Extract",
             "White Sandalwood Bark",
             "Natural Plant Resin Binder",
-            "100% Charcoal-Free & Organic Oils"
+            "Divine Fragrance & Organic Oils"
         ],
         images: ["/images/vanilla.png", "/images/product_vanilla_group.jpg"],
         packOptions: [
@@ -168,7 +168,7 @@ export const products = [
             "Wild Lemongrass & Tulsi Powder",
             "Sacred Temple Flower Resins",
             "Natural Eco-Wood Powder",
-            "100% Charcoal-Free"
+            "Divine, Uplifting Fragrance"
         ],
         images: ["/images/lemon.png", "/images/product_lemon.jpg"],
         packOptions: [
@@ -226,7 +226,7 @@ export const products = [
             "Sacred Holy Basil (Tulsi) Leaf Powder",
             "Natural Plant Gums & Resins",
             "Pure Bamboo-Free Natural Base",
-            "100% Charcoal-Free"
+            "Divine, Joyful Fragrance"
         ],
         images: ["/images/orange.png", "/images/product_orange.jpg"],
         packOptions: [

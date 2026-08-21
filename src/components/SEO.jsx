@@ -93,7 +93,7 @@ const localBusinessSchema = {
     "@id": "https://www.ayodhyaagarbatti.in/#localbusiness",
     "name": "Ayodhya Agarbatti",
     "alternateName": "अयोध्या अगरबत्ती",
-    "description": "Premium 100% natural, charcoal-free incense sticks hand-rolled in the holy city of Ayodhya using sacred temple flowers, Mysore sandalwood, and therapeutic essential oils.",
+    "description": "Premium incense sticks with a divine fragrance, hand-rolled in the holy city of Ayodhya using sacred temple flowers, Mysore sandalwood, and therapeutic essential oils.",
     "url": "https://www.ayodhyaagarbatti.in",
     "telephone": "+91-98765-43210",
     "email": "namaste@ayodhyaagarbatti.com",
@@ -199,8 +199,8 @@ const faqSchema = (faqs) => ({
 
 const SEO = ({
     title = "Ayodhya Agarbatti | Pure Sacred Incense Sticks Hand-Rolled in Ayodhya",
-    description = "Experience 100% natural, charcoal-free premium incense sticks hand-rolled in the holy city of Ayodhya. Sourced from organic temple flowers, pure Mysore sandalwood, and therapeutic essential oils.",
-    keywords = "Ayodhya Agarbatti, natural incense sticks, charcoal free agarbatti, Mysore sandalwood incense, temple flower agarbatti, organic incense sticks India, luxury agarbatti, pooja incense, Ayodhya incense online buy, buy agarbatti online India",
+    description = "Experience premium incense sticks with a divine fragrance, hand-rolled in the holy city of Ayodhya. Sourced from sacred temple flowers, pure Mysore sandalwood, and therapeutic essential oils.",
+    keywords = "Ayodhya Agarbatti, natural incense sticks, divine fragrance incense, Mysore sandalwood incense, temple flower agarbatti, organic incense sticks India, luxury agarbatti, pooja incense, Ayodhya incense online buy, buy agarbatti online India",
     canonical = "https://www.ayodhyaagarbatti.in/",
     ogImage = "https://www.ayodhyaagarbatti.in/images/ayodhya_package.png",
     ogType = "website",

@@ -7,7 +7,7 @@ const returnPolicySchema = {
     "@context": "https://schema.org",
     "@type": "WebPage",
     "name": "Return & Refund Policy | Ayodhya Agarbatti",
-    "description": "Ayodhya Agarbatti's 7-Day hassle-free Return, Replacement, and Refund policy for natural charcoal-free incense sticks hand-rolled in Ayodhya.",
+    "description": "Ayodhya Agarbatti's 7-Day hassle-free Return, Replacement, and Refund policy for divine-fragrance incense sticks hand-rolled in Ayodhya.",
     "url": "https://www.ayodhyaagarbatti.in/return-policy",
     "publisher": {
         "@type": "Organization",
@@ -63,7 +63,7 @@ const ReturnPolicy = () => {
         <div className="pt-32 pb-24 bg-ivory text-charcoal min-h-screen">
             <SEO
                 title="Return & Refund Policy | Ayodhya Agarbatti - 7 Day Hassle-Free Replacement"
-                description="Read Ayodhya Agarbatti's 7-Day hassle-free Return, Replacement, and Refund policy for natural charcoal-free incense sticks. Free reverse pickup across India. Prepaid refunds in 5-7 days, COD refunds in 48 hours."
+                description="Read Ayodhya Agarbatti's 7-Day hassle-free Return, Replacement, and Refund policy for divine-fragrance incense sticks. Free reverse pickup across India. Prepaid refunds in 5-7 days, COD refunds in 48 hours."
                 keywords="Ayodhya Agarbatti return policy, agarbatti refund policy, incense replacement policy, 7 day return incense, free pickup return India, COD refund incense"
                 canonical="https://www.ayodhyaagarbatti.in/return-policy"
                 ogImage="https://www.ayodhyaagarbatti.in/images/ayodhya_package.png"
@@ -110,8 +110,8 @@ const ReturnPolicy = () => {
                         <div className="w-12 h-12 bg-green-100 text-green-700 rounded-full flex items-center justify-center mb-4">
                             <ShieldCheck size={22} />
                         </div>
-                        <h3 className="font-heading text-base text-charcoal mb-1">100% Soot-Free</h3>
-                        <p className="text-xs text-gray-500">Guaranteed 100% charcoal-free & non-toxic formulation.</p>
+                        <h3 className="font-heading text-base text-charcoal mb-1">Divine, Soot-Free Fragrance</h3>
+                        <p className="text-xs text-gray-500">A warm, divine fragrance with a clean, soot-free burn.</p>
                     </div>
 
                     <div className="bg-white p-6 rounded-xl border border-gray-200/80 shadow-sm flex flex-col items-center text-center">

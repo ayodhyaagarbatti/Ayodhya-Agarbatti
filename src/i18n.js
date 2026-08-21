@@ -5,7 +5,7 @@ const resources = {
     en: {
         translation: {
             // TopBar
-            topBar: "✨ Hand-Rolled in Ayodhya • 100% Charcoal-Free",
+            topBar: "✨ Hand-Rolled in Ayodhya • Divine Fragrance",
             freeShipping: "Complimentary Shipping on Orders Over ₹500",
 
             // Navbar
@@ -27,7 +27,7 @@ const resources = {
             heroDiscover: "Discover",
 
             // TrustBar
-            trust1Title: "100% Natural",
+            trust1Title: "Divine Fragrance",
             trust1Desc: "Plant-based ingredients",
             trust2Title: "Temple Grade",
             trust2Desc: "Hand-rolled clarity",
@@ -116,7 +116,7 @@ const resources = {
             phil4Desc: "Each formula is frequency-tested to align with specific energetic states (calm, focus, flow).",
 
             // Footer
-            footerBrandDesc: "Crafting 100% natural, charcoal-free sacred fragrances. Hand-rolled in the holy city of Ayodhya.",
+            footerBrandDesc: "Crafting sacred fragrances with a divine scent. Hand-rolled in the holy city of Ayodhya.",
             footerCollection: "Collection",
             footerCompany: "Company & Legal",
             footerNewsletter: "Newsletter",
@@ -136,7 +136,7 @@ const resources = {
     hi: {
         translation: {
             // TopBar
-            topBar: "✨ पवित्र अयोध्या में हस्त-निर्मित • 100% कोयला-मुक्त",
+            topBar: "✨ पवित्र अयोध्या में हस्त-निर्मित • दिव्य सुगंध",
             freeShipping: "₹500 से अधिक के ऑर्डर पर मुफ्त शिपिंग",
 
             // Navbar
@@ -158,7 +158,7 @@ const resources = {
             heroDiscover: "खोजें",
 
             // TrustBar
-            trust1Title: "100% प्राकृतिक",
+            trust1Title: "दिव्य सुगंध",
             trust1Desc: "पौधे-आधारित सामग्री",
             trust2Title: "मंदिर श्रेणी",
             trust2Desc: "हस्त-निर्मित शुद्धता",
@@ -247,7 +247,7 @@ const resources = {
             phil4Desc: "प्रत्येक फ़ॉर्मूला विशिष्ट ऊर्जावान अवस्थाओं (शांति, फोकस, प्रवाह) के साथ संरेखित करने के लिए आवृत्ति-परीक्षण किया जाता है।",
 
             // Footer
-            footerBrandDesc: "100% प्राकृतिक, कोयला-मुक्त पवित्र सुगंध तैयार करना। अयोध्या की पवित्र नगरी में हस्त-निर्मित।",
+            footerBrandDesc: "दिव्य सुगंध वाली पवित्र खुशबू तैयार करना। अयोध्या की पवित्र नगरी में हस्त-निर्मित।",
             footerCollection: "संग्रह",
             footerCompany: "कंपनी और कानूनी",
             footerNewsletter: "न्यूज़लेटर",

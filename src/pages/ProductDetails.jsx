@@ -109,7 +109,7 @@ const ProductDetails = ({ addToCart }) => {
         },
         {
             question: "What ingredients are used in Ayodhya Agarbatti?",
-            answer: "Our incense sticks contain 100% natural ingredients: sacred Ayodhya temple flower powder, pure Mysore sandalwood powder, natural tree gum (Jigzat resin), bamboo-free natural base, and therapeutic essential oils. Zero synthetic chemicals, phthalates, or charcoal."
+            answer: "Our incense sticks are crafted from sacred Ayodhya temple flower powder, pure Mysore sandalwood powder, natural tree gum (Jigzat resin), bamboo-free natural base, and therapeutic essential oils, blended for a warm, divine fragrance."
         },
         {
             question: "Do you ship across India?",
@@ -246,8 +246,8 @@ const ProductDetails = ({ addToCart }) => {
             },
             {
                 "@type": "PropertyValue",
-                "name": "Charcoal Free",
-                "value": "Yes"
+                "name": "Fragrance",
+                "value": "Divine"
             },
             {
                 "@type": "PropertyValue",
@@ -267,7 +267,7 @@ const ProductDetails = ({ addToCart }) => {
             <SEO
                 title={`${product.name} | Ayodhya Agarbatti (₹${product.numericPrice})`}
                 description={product.shortDesc}
-                keywords={`${product.name}, ${product.variant}, ${product.category}, Ayodhya Agarbatti, natural incense sticks, charcoal free agarbatti, temple flower incense, buy agarbatti online India, Mysore sandalwood incense`}
+                keywords={`${product.name}, ${product.variant}, ${product.category}, Ayodhya Agarbatti, natural incense sticks, divine fragrance incense, temple flower incense, buy agarbatti online India, Mysore sandalwood incense`}
                 canonical={canonicalUrl}
                 ogImage={product.images?.[0] ? `https://www.ayodhyaagarbatti.in${product.images[0]}` : undefined}
                 ogType="product"
@@ -428,8 +428,8 @@ const ProductDetails = ({ addToCart }) => {
                                 <span className="font-serif font-bold text-sm text-gold">5 / 5 ★★★★★</span>
                             </div>
                             <div>
-                                <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Formulation</span>
-                                <span className="font-serif font-bold text-sm text-charcoal">100% Charcoal-Free</span>
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Fragrance</span>
+                                <span className="font-serif font-bold text-sm text-charcoal">Divine & Sacred</span>
                             </div>
                         </div>
                     </div>
@@ -548,7 +548,7 @@ const ProductDetails = ({ addToCart }) => {
                         <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200 opacity-80 text-xs">
                             <div className="flex items-center gap-2">
                                 <ShieldCheck size={20} className="text-gold shrink-0" />
-                                <span className="font-semibold text-[11px]">100% Non-Toxic</span>
+                                <span className="font-semibold text-[11px]">Divine Fragrance</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <Truck size={20} className="text-gold shrink-0" />

@@ -360,11 +360,11 @@ const Blog = () => {
                                 </div>
                                 <div className="space-y-4">
                                     <h4 className="font-heading text-sm uppercase tracking-widest text-gold mb-2">🌿 Botanical Integrity Guaranteed</h4>
-                                    <p className="text-ivory/80">Zero synthetic binders, zero charcoal, zero phthalates. Only steam-distilled essential oils, sacred temple flower powder, pure Mysore sandalwood, and natural plant resins (Jigzat gum). Every stick is hand-rolled in Ayodhya by artisans preserving generational knowledge.</p>
+                                    <p className="text-ivory/80">A divine, temple-grade fragrance from steam-distilled essential oils, sacred temple flower powder, pure Mysore sandalwood, and natural plant resins (Jigzat gum). Every stick is hand-rolled in Ayodhya by artisans preserving generational knowledge.</p>
                                 </div>
                                 <div className="space-y-4">
                                     <h4 className="font-heading text-sm uppercase tracking-widest text-gold mb-2">🔬 Quality You Can Trust</h4>
-                                    <p className="text-ivory/80">45-50 minute burn time per stick. 100% non-toxic, soot-free formulation. Third-party tested for purity. Free express shipping across India on orders above ₹500. 7-day replacement guarantee with zero-cost pickup.</p>
+                                    <p className="text-ivory/80">45-50 minute burn time per stick. A divine, soot-free fragrance. Third-party tested for purity. Free express shipping across India on orders above ₹500. 7-day replacement guarantee with zero-cost pickup.</p>
                                 </div>
                             </div>
                         </motion.div>
