@@ -47,8 +47,8 @@ const Navbar = ({ cartCount, onCartClick, onSearchClick }) => {
     };
 
     const navClass = scrolled
-        ? "bg-charcoal/95 backdrop-blur-md shadow-xl py-3 border-b border-gold/20"
-        : "bg-gradient-to-b from-charcoal/70 to-transparent py-4";
+        ? "bg-charcoal/95 backdrop-blur-md shadow-xl py-2 border-b border-gold/20"
+        : "bg-gradient-to-b from-charcoal/70 to-transparent py-2.5";
 
     const textClass = "text-ivory";
 
@@ -67,11 +67,11 @@ const Navbar = ({ cartCount, onCartClick, onSearchClick }) => {
 
             <div className="container mx-auto px-6 flex justify-between items-center relative z-10">
                 {/* Logo */}
-                <Link to="/" className="block w-28 md:w-36 transition-transform hover:scale-105">
+                <Link to="/" className="block transition-transform hover:scale-105">
                     <img
-                        src="/images/ayodhya_logo.png"
+                        src="/images/ayodhya_logo_horizontal.png"
                         alt="Ayodhya Agarbatti Logo"
-                        className="w-full h-auto block drop-shadow-md"
+                        className="h-8 md:h-10 w-auto block drop-shadow-md"
                     />
                 </Link>
 

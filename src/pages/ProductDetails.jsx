@@ -25,8 +25,10 @@ const ProductDetails = ({ addToCart }) => {
     const [reviewSuccess, setReviewSuccess] = useState(false);
 
     useEffect(() => {
-        window.scrollTo(0, 0);
-        
+        // Route-change scroll reset is handled centrally by PageTracker (App.jsx) via
+        // Lenis - a plain window.scrollTo here bypasses Lenis's virtual scroll state
+        // and can make it clamp onto the old (often taller) page's scroll position.
+
         // Fetch product reviews live from Firestore database
         const q = query(collection(db, "reviews"), where("productId", "==", product.id));
         const unsubscribe = onSnapshot(q, (snapshot) => {

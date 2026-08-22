@@ -5,6 +5,7 @@ import { ShoppingBag, MapPin, Lock, CreditCard, Banknote, CheckCircle, ShieldChe
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import { logCheckoutStep } from '../utils/analyticsLogger';
+import { getLenisInstance } from '../utils/lenisInstance';
 import SEO from '../components/SEO';
 
 const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID || '';
@@ -87,7 +88,15 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
     const [isProcessing, setIsProcessing] = useState(false);
 
     useEffect(() => {
-        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        // Route-mount reset is handled by PageTracker (App.jsx); this only needs to
+        // fire on step changes within Checkout itself. Goes through Lenis rather than
+        // a plain window.scrollTo so it doesn't desync Lenis's virtual scroll state.
+        const lenis = getLenisInstance();
+        if (lenis) {
+            lenis.scrollTo(0, { immediate: true });
+        } else {
+            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        }
         const stepNames = { 1: 'Address Form', 2: 'Order Review', 3: 'Payment Method Selection' };
         logCheckoutStep(step, stepNames[step] || 'Checkout', { total, itemCount: cartItems.length });
     }, [step]);
