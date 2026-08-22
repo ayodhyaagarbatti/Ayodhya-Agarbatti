@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Check, Truck, Home, Search } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
@@ -6,11 +6,6 @@ import { Link, useLocation } from 'react-router-dom';
 const PaymentSuccess = () => {
     const location = useLocation();
     const order = location.state?.order;
-
-    useEffect(() => {
-        // Scroll to top on load
-        window.scrollTo(0, 0);
-    }, []);
 
     if (!order) {
         return (
