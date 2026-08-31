@@ -1,7 +1,7 @@
 import { horoscopeProducts } from '../src/data/horoscopeProducts.js';
 
 const COUPONS = {
-    WEKNOWTHEOWNER: { amountPaise: 100 } // ₹1 flat, horoscope only
+    WEKNOWTHEOWNER: { amountPaise: 1000 } // ₹10 flat, horoscope only
 };
 
 // Server is the sole source of truth for what a horoscope reading costs -

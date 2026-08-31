@@ -61,6 +61,13 @@ const Navbar = ({ cartCount, onCartClick, onSearchClick }) => {
         { name: t('navContact'), key: 'navContact', path: '/contact' }
     ];
 
+    // Mobile slide-out shows Horoscope first - on phone/tablet it's otherwise
+    // buried behind the hamburger with nothing in the collapsed header hinting it exists.
+    const mobileNavItems = [
+        navItems.find((item) => item.key === 'navHoroscope'),
+        ...navItems.filter((item) => item.key !== 'navHoroscope')
+    ];
+
     return (
         <nav className={`relative w-full z-40 transition-all duration-500 ease-in-out ${navClass}`}>
             {scrolled && <div className="absolute inset-0 opacity-[0.05] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>}
@@ -90,8 +97,17 @@ const Navbar = ({ cartCount, onCartClick, onSearchClick }) => {
                     ))}
                 </div>
 
+                {/* Mobile/Tablet Horoscope Quick Link - stays visible in the collapsed
+                    header itself, so it doesn't depend on someone opening the hamburger menu */}
+                <Link
+                    to="/horoscope"
+                    className="md:hidden flex items-center gap-1 bg-gold text-charcoal text-[11px] font-bold uppercase tracking-wider px-2.5 py-1.5 rounded-full shadow-md hover:bg-white transition-all shrink-0 whitespace-nowrap"
+                >
+                    ✨ Horoscope
+                </Link>
+
                 {/* Icons */}
-                <div className={`flex items-center space-x-6 ${textClass}`}>
+                <div className={`flex items-center space-x-3 sm:space-x-4 md:space-x-6 ${textClass}`}>
                     <button
                         onClick={onSearchClick}
                         aria-label="Search fragrances"
@@ -147,7 +163,7 @@ const Navbar = ({ cartCount, onCartClick, onSearchClick }) => {
                             <X className="w-8 h-8 text-ivory hover:text-gold" />
                         </button>
 
-                        {navItems.map((item) => (
+                        {mobileNavItems.map((item) => (
                             <Link
                                 key={item.key}
                                 to={item.path}

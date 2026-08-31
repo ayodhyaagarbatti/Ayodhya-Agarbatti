@@ -173,7 +173,7 @@ const AccountWallet = () => {
                                         ? 'Your balance is below ₹500 - a ₹50 fee will be deducted from your payout.'
                                         : 'No fee - your full balance will be paid out.'}
                                 </p>
-                                <div className="flex gap-4 text-sm">
+                                <div className="flex gap-4 text-sm text-charcoal">
                                     <label className="flex items-center gap-2">
                                         <input type="radio" checked={payoutMethod === 'upi'} onChange={() => setPayoutMethod('upi')} /> UPI
                                     </label>

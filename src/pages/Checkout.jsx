@@ -385,7 +385,7 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                                     exit={{ opacity: 0, x: -20 }}
                                     className="bg-white p-8 rounded-xl shadow-sm border border-gray-100"
                                 >
-                                    <h2 className="font-heading text-xl mb-6 flex items-center gap-2">
+                                    <h2 className="font-heading text-xl mb-6 flex items-center gap-2 text-charcoal">
                                         <MapPin className="text-gold" size={20} /> Shipping Address
                                     </h2>
                                     <form id="address-form" onSubmit={nextStep} className="space-y-5 sm:space-y-6">
@@ -440,7 +440,7 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                                 >
                                     <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
                                         <div className="flex justify-between items-center mb-6">
-                                            <h2 className="font-heading text-xl flex items-center gap-2">
+                                            <h2 className="font-heading text-xl flex items-center gap-2 text-charcoal">
                                                 <ShoppingBag className="text-gold" size={20} /> Order Review
                                             </h2>
                                             <button onClick={() => setStep(1)} className="text-xs text-gold underline">Edit Address</button>
@@ -485,7 +485,7 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                                     exit={{ opacity: 0, x: -20 }}
                                     className="bg-white p-8 rounded-xl shadow-sm border border-gray-100"
                                 >
-                                    <h2 className="font-heading text-xl mb-6 flex items-center gap-2">
+                                    <h2 className="font-heading text-xl mb-6 flex items-center gap-2 text-charcoal">
                                         <Lock className="text-gold" size={20} /> Payment Method
                                     </h2>
 
