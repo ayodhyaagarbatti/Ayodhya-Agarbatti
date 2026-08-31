@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { Download, ArrowLeft } from 'lucide-react';
 import SEO from '../../components/SEO';
@@ -8,9 +8,17 @@ const HoroscopeResult = () => {
     const location = useLocation();
     const { subject, partner, product } = location.state || {};
     const iframeRef = useRef(null);
+    const resizeObserverRef = useRef(null);
     const [isIframeLoaded, setIsIframeLoaded] = useState(false);
+    // Iframes don't auto-size to their content, so on mobile a fixed-height
+    // iframe traps a tall report behind its own tiny internal scrollbar.
+    // Same-origin, so we can read the real content height and grow to fit -
+    // the outer page scrolls naturally instead.
+    const [iframeHeight, setIframeHeight] = useState('85vh');
 
     const engineUrl = useMemo(() => (subject ? buildHoroscopeEngineUrl(subject, partner) : null), [subject, partner]);
+
+    useEffect(() => () => resizeObserverRef.current?.disconnect(), []);
 
     if (!subject || !engineUrl) {
         return (
@@ -24,6 +32,23 @@ const HoroscopeResult = () => {
     const downloadPdf = () => {
         if (!isIframeLoaded) return;
         iframeRef.current?.contentWindow?.print();
+    };
+
+    const handleIframeLoad = () => {
+        setIsIframeLoaded(true);
+        try {
+            const root = iframeRef.current?.contentWindow?.document?.documentElement;
+            if (!root) return;
+
+            const syncHeight = () => setIframeHeight(`${root.scrollHeight}px`);
+            syncHeight();
+
+            resizeObserverRef.current?.disconnect();
+            resizeObserverRef.current = new ResizeObserver(syncHeight);
+            resizeObserverRef.current.observe(root);
+        } catch (err) {
+            // Same-origin, so this shouldn't throw - if it ever does, the 85vh fallback still works.
+        }
     };
 
     return (
@@ -51,8 +76,8 @@ const HoroscopeResult = () => {
                 src={engineUrl}
                 title="Vedic horoscope report"
                 className="w-full flex-grow border-0"
-                style={{ minHeight: '85vh' }}
-                onLoad={() => setIsIframeLoaded(true)}
+                style={{ minHeight: '85vh', height: iframeHeight }}
+                onLoad={handleIframeLoad}
             />
         </div>
     );
