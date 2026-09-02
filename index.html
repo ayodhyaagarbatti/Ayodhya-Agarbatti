@@ -15,15 +15,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K0D3Q6BJ2G"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-K0D3Q6BJ2G');
-  </script>
+  <!-- GA4 is initialized in src/utils/googleAnalytics.js (called from main.jsx) so
+       page_view firing stays in one place and doesn't double-count the first load. -->
 
   <meta charset="UTF-8" />
   <link rel="icon" type="image/png" sizes="32x32" href="/images/ayodhya_logo.png" />
@@ -75,117 +68,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Dancing+Script:wght@400;700&family=Inter:wght@300;400;500;600&family=Montserrat:wght@300;400;500;600&family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
 
-  <!-- JSON-LD Structured Data for SEO, AEO & GEO -->
+  <!-- JSON-LD Structured Data for SEO, AEO & GEO.
+       Organization/WebSite/LocalBusiness schema is injected by src/components/SEO.jsx
+       on every route instead of living here too - keeping one source of truth avoids
+       duplicate structured data blocks on every page. -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@graph": [
-      {
-        "@type": "Organization",
-        "@id": "https://www.ayodhyaagarbatti.in/#organization",
-        "name": "Ayodhya Agarbatti",
-        "alternateName": "अयोध्या अगरबत्ती",
-        "url": "https://www.ayodhyaagarbatti.in/",
-        "logo": "https://www.ayodhyaagarbatti.in/images/ayodhya_logo.png",
-        "description": "Crafting sacred incense sticks with a divine fragrance, hand-rolled in the holy city of Ayodhya using upcycled temple flowers and organic essential oils.",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "123 Temple Road",
-          "addressLocality": "Ayodhya",
-          "addressRegion": "Uttar Pradesh",
-          "postalCode": "224001",
-          "addressCountry": "IN"
-        },
-        "contactPoint": {
-          "@type": "ContactPoint",
-          "telephone": "+91-98765-43210",
-          "contactType": "customer service",
-          "email": "namaste@ayodhyaagarbatti.com",
-          "areaServed": "IN",
-          "availableLanguage": ["en", "hi"],
-          "hoursAvailable": {
-            "@type": "OpeningHoursSpecification",
-            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-            "opens": "09:00",
-            "closes": "18:00",
-            "timeZone": "Asia/Kolkata"
-          }
-        },
-        "sameAs": [
-          "https://www.instagram.com/ayodhyaagarbatti/",
-          "https://www.linkedin.com/in/ayodhya-agarbatti-122b22418/",
-          "https://www.facebook.com/ayodhyaagarbatti",
-          "https://www.youtube.com/@ayodhyaagarbatti"
-        ],
-        "foundingLocation": {
-          "@type": "Place",
-          "name": "Ayodhya, Uttar Pradesh, India"
-        },
-        "brand": {
-          "@type": "Brand",
-          "name": "Ayodhya Agarbatti"
-        }
-      },
-      {
-        "@type": "WebSite",
-        "@id": "https://www.ayodhyaagarbatti.in/#website",
-        "url": "https://www.ayodhyaagarbatti.in/",
-        "name": "Ayodhya Agarbatti Official Store",
-        "alternateName": "अयोध्या अगरबत्ती आधिकारिक स्टोर",
-        "publisher": { "@id": "https://www.ayodhyaagarbatti.in/#organization" },
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": "https://www.ayodhyaagarbatti.in/shop?q={search_term_string}",
-          "query-input": "required name=search_term_string"
-        },
-        "inLanguage": ["en", "hi"]
-      },
-      {
-        "@type": "LocalBusiness",
-        "@id": "https://www.ayodhyaagarbatti.in/#localbusiness",
-        "name": "Ayodhya Agarbatti",
-        "alternateName": "अयोध्या अगरबत्ती",
-        "description": "Premium incense sticks with a divine fragrance, hand-rolled in the holy city of Ayodhya using sacred temple flowers, Mysore sandalwood, and therapeutic essential oils.",
-        "url": "https://www.ayodhyaagarbatti.in",
-        "telephone": "+91-98765-43210",
-        "email": "namaste@ayodhyaagarbatti.com",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "123 Temple Road",
-          "addressLocality": "Ayodhya",
-          "addressRegion": "Uttar Pradesh",
-          "postalCode": "224001",
-          "addressCountry": "IN"
-        },
-        "geo": {
-          "@type": "GeoCoordinates",
-          "latitude": 26.7962,
-          "longitude": 82.1994
-        },
-        "openingHoursSpecification": [
-          {
-            "@type": "OpeningHoursSpecification",
-            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-            "opens": "09:00",
-            "closes": "18:00",
-            "timeZone": "Asia/Kolkata"
-          }
-        ],
-        "priceRange": "₹299 - ₹1299",
-        "currenciesAccepted": "INR",
-        "paymentAccepted": "Cash, Credit Card, UPI, Razorpay, COD",
-        "areaServed": {
-          "@type": "Country",
-          "name": "India"
-        },
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "4.9",
-          "reviewCount": "608",
-          "bestRating": "5",
-          "worstRating": "1"
-        }
-      },
       {
         "@type": "FAQPage",
         "@id": "https://www.ayodhyaagarbatti.in/#faq",

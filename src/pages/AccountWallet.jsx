@@ -64,6 +64,7 @@ const AccountWallet = () => {
 
     const handleRedeemSubmit = async (e) => {
         e.preventDefault();
+        if (isSubmittingRedeem) return;
         setIsSubmittingRedeem(true);
         setRedeemError('');
         setRedeemSuccess('');
@@ -119,6 +120,7 @@ const AccountWallet = () => {
                 description="View your referral wallet balance and request a redemption."
                 canonical="https://www.ayodhyaagarbatti.in/account/wallet"
                 ogType="website"
+                noindex={true}
             />
             <div className="max-w-3xl mx-auto">
                 <Link to="/horoscope" className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gold mb-6">

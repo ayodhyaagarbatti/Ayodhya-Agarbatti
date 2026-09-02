@@ -31,6 +31,7 @@ import ReturnPolicy from './pages/ReturnPolicy';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsAndConditions from './pages/TermsAndConditions';
 import ShippingPolicy from './pages/ShippingPolicy';
+import CompletionRitual from './pages/CompletionRitual';
 import NotFound from './pages/NotFound';
 import HoroscopeLanding from './pages/horoscope/HoroscopeLanding';
 import HoroscopeDetailsForm from './pages/horoscope/HoroscopeDetailsForm';
@@ -266,6 +267,7 @@ function AppContent() {
                         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
                         <Route path="/shipping-policy" element={<ShippingPolicy />} />
+                        <Route path="/completion-ritual" element={<CompletionRitual />} />
                         <Route path="/product/:id" element={<ProductDetails addToCart={addToCart} />} />
                         <Route path="/horoscope" element={<HoroscopeLanding />} />
                         <Route path="/horoscope/:productId/details" element={<HoroscopeDetailsForm />} />
@@ -320,18 +322,8 @@ function App() {
                 {/* Admin route - standalone layout */}
                 <Route path="/admin" element={<AdminApp />} />
 
-                {/* All other routes - full layout */}
-                <Route element={<AppContent />}>
-                    <Route index element={<Home />} />
-                    <Route path="shop" element={<ProductSection />} />
-                    <Route path="blog" element={<Blog />} />
-                    <Route path="contact" element={<Contact />} />
-                    <Route path="checkout" element={<Checkout />} />
-                    <Route path="success" element={<PaymentSuccess />} />
-                    <Route path="return-policy" element={<ReturnPolicy />} />
-                    <Route path="product/:id" element={<ProductDetails />} />
-                    <Route path="*" element={<NotFound />} />
-                </Route>
+                {/* Every other route - AppContent owns its own <Routes> internally */}
+                <Route path="/*" element={<AppContent />} />
             </Routes>
         </Router>
     );

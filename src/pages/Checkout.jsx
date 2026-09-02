@@ -86,6 +86,7 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
     const [step, setStep] = useState(1);
     const [paymentMethod, setPaymentMethod] = useState('razorpay');
     const [isProcessing, setIsProcessing] = useState(false);
+    const [payError, setPayError] = useState('');
 
     useEffect(() => {
         // Route-mount reset is handled by PageTracker (App.jsx); this only needs to
@@ -133,6 +134,8 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
     const total = subtotal + shippingFee;
 
     const handlePlaceOrder = async () => {
+        if (isProcessing) return;
+        setPayError('');
         setIsProcessing(true);
         const orderNumber = `AYD-${Date.now().toString().slice(-6)}-${Math.floor(1000 + Math.random() * 9000)}`;
         
@@ -172,7 +175,7 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                 await saveAndRedirect(newOrder);
             } else {
                 if (!RAZORPAY_KEY_ID) {
-                    alert('Payment gateway is not configured yet. Set VITE_RAZORPAY_KEY_ID to enable online payments.');
+                    setPayError('Payment gateway is not configured yet. Set VITE_RAZORPAY_KEY_ID to enable online payments.');
                     setIsProcessing(false);
                     return;
                 }
@@ -180,7 +183,7 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                 // Razorpay Logic - Ensure Razorpay script loaded
                 const res = await loadRazorpayScript();
                 if (!res || typeof window.Razorpay === 'undefined') {
-                    alert('Razorpay Payment Gateway failed to load. Please check your internet connection.');
+                    setPayError('Razorpay Payment Gateway failed to load. Please check your internet connection.');
                     setIsProcessing(false);
                     return;
                 }
@@ -208,7 +211,7 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                     order = createData;
                 } catch (error) {
                     console.error('Error creating Razorpay order:', error);
-                    alert('Could not start payment: ' + error.message);
+                    setPayError('Could not start payment: ' + error.message);
                     setIsProcessing(false);
                     return;
                 }
@@ -234,7 +237,7 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                             });
                             const verifyData = await verifyRes.json();
                             if (!verifyRes.ok || !verifyData.verified) {
-                                alert('Payment could not be verified. If you were charged, please contact support with payment ID ' + response.razorpay_payment_id + '.');
+                                setPayError('Payment could not be verified. If you were charged, please contact support with payment ID ' + response.razorpay_payment_id + '.');
                                 setIsProcessing(false);
                                 return;
                             }
@@ -273,7 +276,7 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                             await saveAndRedirect(newOrder);
                         } catch (error) {
                             console.error("Error saving razorpay order:", error);
-                            alert("Payment completed but failed to write order to database. Please contact support.");
+                            setPayError("Payment completed but failed to write order to database. Please contact support.");
                             setIsProcessing(false);
                         }
                     },
@@ -293,7 +296,7 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                 };
                 const rzp1 = new window.Razorpay(options);
                 rzp1.on('payment.failed', function (response) {
-                    alert('Payment Failed: ' + (response.error.description || 'Transaction unsuccessful'));
+                    setPayError('Payment Failed: ' + (response.error.description || 'Transaction unsuccessful'));
                     setIsProcessing(false);
                 });
                 rzp1.open();
@@ -301,7 +304,7 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
         } catch (error) {
             console.error("Order processing failed:", error);
             setIsProcessing(false);
-            alert("Order placement error: " + (error.message || "Please check internet connection"));
+            setPayError("Order placement error: " + (error.message || "Please check internet connection"));
         }
     };
 
@@ -327,7 +330,6 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                     createdAt: serverTimestamp()
                 });
                 docId = docRef.id;
-                console.log("Order successfully written to Firestore DB with ID: ", docId);
             } catch (firestoreError) {
                 console.warn("Firestore write notice (using backup store):", firestoreError);
             }
@@ -341,7 +343,7 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
             navigate("/success", { state: { order: finalOrder } });
         } catch (e) {
             console.error("Error processing order storage: ", e);
-            alert("Failed to place order. Error: " + (e.message || "Unknown error"));
+            setPayError("Failed to place order. Error: " + (e.message || "Unknown error"));
             setIsProcessing(false);
         }
     };
@@ -365,12 +367,14 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                 canonical="https://www.ayodhyaagarbatti.in/checkout"
                 ogImage="https://www.ayodhyaagarbatti.in/images/ayodhya_package.png"
                 ogType="website"
+                noindex={true}
                 schema={checkoutSchema}
                 breadcrumbs={breadcrumbs}
                 ogTitle="Secure Checkout | Ayodhya Agarbatti"
                 ogDescription="Complete your order of hand-rolled sacred incense from Ayodhya. Secure payment with Razorpay or COD."
             />
             <div className="max-w-6xl mx-auto px-6">
+                <h1 className="sr-only">Checkout</h1>
                 <Steps currentStep={step} />
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -459,7 +463,7 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                                         <div className="space-y-4">
                                             {cartItems.map(item => (
                                                 <div key={item.id} className="flex gap-4 py-4 border-b border-gray-100 last:border-0">
-                                                    <img src={item.image} className="w-20 h-20 object-cover rounded-md" alt="" />
+                                                    <img src={item.image} className="w-20 h-20 object-cover rounded-md" alt={item.name} loading="lazy" />
                                                     <div className="flex-1">
                                                         <div className="flex justify-between mb-1">
                                                             <h4 className="font-heading text-sm text-charcoal">{item.name}</h4>
@@ -518,6 +522,12 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                                             {paymentMethod === 'cod' && <CheckCircle className="text-gold" />}
                                         </div>
                                     </div>
+
+                                    {payError && (
+                                        <div className="flex items-start gap-2 bg-red-50 border border-red-200 text-red-700 text-xs p-3 rounded-lg mb-4">
+                                            {payError}
+                                        </div>
+                                    )}
 
                                     <button
                                         onClick={handlePlaceOrder}

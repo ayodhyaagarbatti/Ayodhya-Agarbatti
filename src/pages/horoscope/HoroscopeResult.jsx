@@ -58,6 +58,7 @@ const HoroscopeResult = () => {
                 description="Your computed Vedic horoscope report."
                 canonical="https://www.ayodhyaagarbatti.in/horoscope/result"
                 ogType="website"
+                noindex={true}
             />
             <div className="max-w-6xl mx-auto w-full px-6 py-4 flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 bg-ivory/80 sticky top-0 z-10">
                 <Link to="/horoscope" className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gold">

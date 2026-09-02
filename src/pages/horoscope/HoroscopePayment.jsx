@@ -96,6 +96,7 @@ const HoroscopePayment = () => {
     const displayPrice = couponStatus?.couponApplied ? couponStatus.amountRupees : product.price;
 
     const handlePay = async () => {
+        if (isProcessing) return;
         if (!RAZORPAY_KEY_ID) {
             setPayError('Payment gateway is not configured yet. Set VITE_RAZORPAY_KEY_ID to enable payments.');
             return;
@@ -219,6 +220,7 @@ const HoroscopePayment = () => {
                 description="Secure payment for your Vedic horoscope reading."
                 canonical={`https://www.ayodhyaagarbatti.in/horoscope/${productId}/payment`}
                 ogType="website"
+                noindex={true}
             />
             <div className="max-w-xl mx-auto px-6">
                 <Link to={`/horoscope/${productId}/details`} className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gold mb-6">

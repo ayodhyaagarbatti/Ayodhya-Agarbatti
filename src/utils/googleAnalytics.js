@@ -1,6 +1,3 @@
-import { logEvent } from "firebase/analytics";
-import { analytics } from "../firebase";
-
 // Initialize GA4 gtag script dynamically if measurement ID is present
 const GA_MEASUREMENT_ID = "G-K0D3Q6BJ2G";
 
@@ -30,9 +27,6 @@ export const trackPageView = (path, title) => {
                 page_title: title || document.title
             });
         }
-        if (analytics) {
-            logEvent(analytics, 'page_view', { page_path: path });
-        }
     } catch (err) {
         console.warn("GA4 trackPageView note:", err);
     }
@@ -56,9 +50,6 @@ export const trackAddToCart = (product, quantity = 1) => {
                 items: [itemData]
             });
         }
-        if (analytics) {
-            logEvent(analytics, 'add_to_cart', { items: [itemData] });
-        }
     } catch (err) {
         console.warn("GA4 trackAddToCart note:", err);
     }
@@ -81,9 +72,6 @@ export const trackBeginCheckout = (cartItems, totalValue) => {
                 items: items
             });
         }
-        if (analytics) {
-            logEvent(analytics, 'begin_checkout', { value: totalValue, items });
-        }
     } catch (err) {
         console.warn("GA4 trackBeginCheckout note:", err);
     }
@@ -105,13 +93,6 @@ export const trackPurchase = (order) => {
                 }))
             });
         }
-        if (analytics) {
-            logEvent(analytics, 'purchase', {
-                transaction_id: order.orderNumber || order.id,
-                value: order.total,
-                currency: 'INR'
-            });
-        }
     } catch (err) {
         console.warn("GA4 trackPurchase note:", err);
     }
@@ -122,9 +103,6 @@ export const trackSearch = (searchQuery) => {
     try {
         if (window.gtag) {
             window.gtag('event', 'search', { search_term: searchQuery });
-        }
-        if (analytics) {
-            logEvent(analytics, 'search', { search_term: searchQuery });
         }
     } catch (err) {
         console.warn("GA4 trackSearch note:", err);

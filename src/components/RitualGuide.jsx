@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 const RitualGuide = () => {
@@ -35,6 +36,13 @@ const RitualGuide = () => {
                             <p className="text-charcoal/60 text-sm">{t('step3Desc')}</p>
                         </div>
                     </div>
+
+                    <Link
+                        to="/completion-ritual"
+                        className="inline-flex items-center gap-2 mt-10 text-xs font-bold uppercase tracking-widest text-gold hover:text-charcoal transition-colors"
+                    >
+                        Discover the Completion Ritual &rarr;
+                    </Link>
                 </div>
 
                 {/* Visual/Video Placeholder */}
@@ -43,7 +51,8 @@ const RitualGuide = () => {
                         <div className="w-full h-full bg-gray-100 overflow-hidden relative">
                             <img
                                 src="/images/ritual_moment.png"
-                                alt="Ritual Moment"
+                                alt="Fragrant smoke rising from a lit incense stick in a dark, meditative room"
+                                loading="lazy"
                                 className="w-full h-full object-cover opacity-60 hover:scale-105 transition-transform duration-[2s]"
                             />
                             <div className="absolute bottom-8 left-8">

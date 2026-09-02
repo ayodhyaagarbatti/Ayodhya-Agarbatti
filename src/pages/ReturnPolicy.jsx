@@ -42,7 +42,7 @@ const returnFaqs = [
     },
     {
         question: "How do I request a return or replacement?",
-        answer: "Contact our support team at support@ayodhyaagarbatti.com or WhatsApp +91 98765 43210 with your Order Number (e.g., AYD-123456) and a photo/video showing the issue. We verify within 24 hours and dispatch a fresh replacement at zero additional shipping cost."
+        answer: "Contact our support team at support@ayodhyaagarbatti.com with your Order Number (e.g., AYD-123456) and a photo/video showing the issue. We verify within 24 hours and dispatch a fresh replacement at zero additional shipping cost."
     },
     {
         question: "How long does a refund take to process?",
@@ -165,7 +165,7 @@ const ReturnPolicy = () => {
                         </p>
                         <ol className="list-decimal pl-6 space-y-3 text-gray-600">
                             <li>
-                                <strong>Contact Us:</strong> Email our support team at <a href="mailto:support@ayodhyaagarbatti.com" className="text-gold font-bold hover:underline">support@ayodhyaagarbatti.com</a> or WhatsApp us at <strong>+91 98765 43210</strong>.
+                                <strong>Contact Us:</strong> Email our support team at <a href="mailto:support@ayodhyaagarbatti.com" className="text-gold font-bold hover:underline">support@ayodhyaagarbatti.com</a>.
                             </li>
                             <li>
                                 <strong>Provide Details:</strong> Share your Order Number (e.g. <code>AYD-123456</code>) along with a short photo or video unboxing clip showing the issue.

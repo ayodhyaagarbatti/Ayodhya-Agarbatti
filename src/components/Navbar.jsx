@@ -79,6 +79,8 @@ const Navbar = ({ cartCount, onCartClick, onSearchClick }) => {
                         src="/images/ayodhya_logo_horizontal.png"
                         alt="Ayodhya Agarbatti Logo"
                         className="h-8 md:h-10 w-auto block drop-shadow-md"
+                        loading="eager"
+                        fetchpriority="high"
                     />
                 </Link>
 

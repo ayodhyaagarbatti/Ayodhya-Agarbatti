@@ -209,6 +209,7 @@ const HoroscopeDetailsForm = () => {
                 description={product.tagline}
                 canonical={`https://www.ayodhyaagarbatti.in/horoscope/${productId}/details`}
                 ogType="website"
+                noindex={true}
             />
             <div className="max-w-3xl mx-auto px-6">
                 <Link to="/horoscope" className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gold mb-6">

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, MapPin, Phone, CheckCircle, Send, Loader2, Instagram, Facebook, Linkedin, Youtube } from 'lucide-react';
+import { Mail, MapPin, CheckCircle, Send, Loader2, Instagram, Facebook, Linkedin, Youtube } from 'lucide-react';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import SEO from '../components/SEO';
@@ -19,7 +19,7 @@ const contactSchema = {
         "contactPoint": [
             {
                 "@type": "ContactPoint",
-                "telephone": "+91-98765-43210",
+                "email": "namaste@ayodhyaagarbatti.com",
                 "contactType": "customer service",
                 "availableLanguage": ["English", "Hindi"],
                 "hoursAvailable": {
@@ -29,20 +29,12 @@ const contactSchema = {
                     "closes": "18:00",
                     "timeZone": "Asia/Kolkata"
                 }
-            },
-            {
-                "@type": "ContactPoint",
-                "telephone": "+91-98765-43210",
-                "contactType": "wholesale",
-                "availableLanguage": ["English", "Hindi"]
             }
         ],
         "address": {
             "@type": "PostalAddress",
-            "streetAddress": "123 Temple Road",
             "addressLocality": "Ayodhya",
             "addressRegion": "Uttar Pradesh",
-            "postalCode": "224001",
             "addressCountry": "IN"
         },
         "email": "namaste@ayodhyaagarbatti.com",
@@ -116,7 +108,7 @@ const Contact = () => {
         <div className="pt-28 pb-20 bg-white min-h-screen">
             <SEO
                 title="Contact Us | Ayodhya Agarbatti - Get in Touch for Orders & Support"
-                description="Contact Ayodhya Agarbatti for orders, wholesale inquiries, or support. Based in the holy city of Ayodhya, Uttar Pradesh. Call +91 98765 43210 or email namaste@ayodhyaagarbatti.com. Mon-Sat, 9am-6pm IST."
+                description="Contact Ayodhya Agarbatti for orders, wholesale inquiries, or support. Based in the holy city of Ayodhya, Uttar Pradesh. Email namaste@ayodhyaagarbatti.com and our team will respond promptly."
                 keywords="contact Ayodhya Agarbatti, agarbatti customer support, wholesale incense inquiry, Ayodhya incense contact, buy incense support India"
                 canonical="https://www.ayodhyaagarbatti.in/contact"
                 ogImage="https://www.ayodhyaagarbatti.in/images/ayodhya_logo.png"
@@ -136,16 +128,6 @@ const Contact = () => {
                     <div className="space-y-8">
                         <div className="flex items-start gap-6">
                             <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center text-charcoal">
-                                <MapPin size={24} />
-                            </div>
-                            <div>
-                                <h3 className="font-heading text-xl mb-1 text-charcoal">Visit Us</h3>
-                                <p className="text-gray-500">123 Temple Road, Ayodhya<br />Uttar Pradesh, India</p>
-                            </div>
-                        </div>
-
-                        <div className="flex items-start gap-6">
-                            <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center text-charcoal">
                                 <Mail size={24} />
                             </div>
                             <div>
@@ -156,11 +138,11 @@ const Contact = () => {
 
                         <div className="flex items-start gap-6">
                             <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center text-charcoal">
-                                <Phone size={24} />
+                                <MapPin size={24} />
                             </div>
                             <div>
-                                <h3 className="font-heading text-xl mb-1 text-charcoal">Call Us</h3>
-                                <p className="text-gray-500">+91 98765 43210<br />Mon-Sat, 9am - 6pm IST</p>
+                                <h3 className="font-heading text-xl mb-1 text-charcoal">Based In</h3>
+                                <p className="text-gray-500">Ayodhya, Uttar Pradesh, India</p>
                             </div>
                         </div>
 
