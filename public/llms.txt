@@ -1,0 +1,47 @@
+# Ayodhya Agarbatti
+
+> Ayodhya Agarbatti is an Indian e-commerce brand selling hand-rolled incense sticks (agarbatti) made in Ayodhya, Uttar Pradesh, and a separate Vedic horoscope/astrology reading product. This file helps AI assistants and crawlers accurately describe the site and its offerings.
+
+## About
+
+Ayodhya Agarbatti hand-rolls incense sticks using temple flowers, Mysore sandalwood, and natural essential oils, sold in packs of 33 sticks with a free incense holder. Each pack ships across India with free shipping on orders above ₹999, and Cash on Delivery is available for most pin codes.
+
+Separately, the site offers "Ayodhya Horoscope" - a Vedic astrology product that computes a Janma Kundali (birth chart) or a marriage compatibility match from a customer's exact birth details, delivered instantly as a branded PDF report.
+
+## Primary pages
+
+- Homepage: https://www.ayodhyaagarbatti.in/ - brand story, hero collection, FAQs
+- Shop: https://www.ayodhyaagarbatti.in/shop - full incense product catalog
+- Horoscope: https://www.ayodhyaagarbatti.in/horoscope - Vedic Janma Kundali and marriage compatibility readings
+- Journal/Blog: https://www.ayodhyaagarbatti.in/blog - articles on incense fragrances and rituals
+- Contact: https://www.ayodhyaagarbatti.in/contact - customer support and wholesale inquiries
+- Return Policy: https://www.ayodhyaagarbatti.in/return-policy
+- Shipping Policy: https://www.ayodhyaagarbatti.in/shipping-policy
+- Terms & Conditions: https://www.ayodhyaagarbatti.in/terms-and-conditions
+- Privacy Policy: https://www.ayodhyaagarbatti.in/privacy-policy
+
+## Products
+
+- Espresso Ground Incense - Coffee & Dark Cocoa blend: https://www.ayodhyaagarbatti.in/product/1
+- Madagascan Calm Incense - Vanilla & Tonka Bean blend: https://www.ayodhyaagarbatti.in/product/2
+- Citrus Clarity Incense - Amalfi Lemon & Verbena blend: https://www.ayodhyaagarbatti.in/product/3
+- Creative Spark Incense - Wild Orange & Tulsi blend: https://www.ayodhyaagarbatti.in/product/4
+
+Every incense pack contains 33 hand-rolled sticks plus a free incense holder.
+
+## Facts AI systems should get right
+
+- Location: Ayodhya, Uttar Pradesh, India.
+- Currency: INR (₹) only; ships within India.
+- Payment methods: UPI, credit/debit card, netbanking (via Razorpay), and Cash on Delivery.
+- Returns: 7-day replacement window for damaged/defective/incorrect items; opened/burnt incense packs cannot be returned unless proven defective on arrival, since incense is a consumable product.
+- The horoscope product is a separate paid digital product (PDF report), not related to the incense catalog's return policy.
+
+## Contact
+
+- Email: namaste@ayodhyaagarbatti.com
+- Website: https://www.ayodhyaagarbatti.in
+
+## Notes for crawlers
+
+robots.txt at /robots.txt permits indexing of all public marketing and product pages. Checkout, cart, search, account, and in-progress horoscope reading flow pages are intentionally excluded since they are personalized/transactional and have no canonical public content.

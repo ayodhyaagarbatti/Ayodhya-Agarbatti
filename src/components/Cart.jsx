@@ -60,7 +60,7 @@ const Cart = ({ isOpen, onClose, items, onRemove, onUpdateQuantity }) => {
                             return (
                                 <div key={item.id} className="flex gap-4">
                                     <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden shrink-0 border border-charcoal/5">
-                                        <img src={imageSrc} alt={item.name} className="w-full h-full object-cover mix-blend-multiply" />
+                                        <img src={imageSrc} alt={item.name} loading="lazy" className="w-full h-full object-cover mix-blend-multiply" />
                                     </div>
                                     <div className="flex-1">
                                         <div className="flex justify-between items-start">

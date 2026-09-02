@@ -130,7 +130,7 @@ const ParallaxSection = ({ index, title, subtitle, image, color, align = "left",
                     <div className="w-full md:w-1/2">
                         <div className="relative h-[600px] w-full overflow-hidden rounded-sm group">
                             <motion.div style={{ y }} className="absolute inset-0 h-[120%] w-full">
-                                <img src={image} alt={title} className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-1000" />
+                                <img src={image} alt={title} loading="lazy" className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-1000" />
                             </motion.div>
                             <div className="absolute inset-0 bg-charcoal/5 group-hover:bg-transparent transition-all duration-700"></div>
 

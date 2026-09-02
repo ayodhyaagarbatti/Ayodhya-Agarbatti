@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Instagram, Linkedin, Facebook, Youtube, Check } from 'lucide-react';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -7,7 +7,24 @@ import { useTranslation } from 'react-i18next';
 
 const Footer = () => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
+    const location = useLocation();
     const [email, setEmail] = useState('');
+
+    // App.jsx's PageTracker resets scroll to top on every route change, which races
+    // ahead of a plain `#heritage` anchor jump and silently wins - navigate first (if
+    // needed) then scroll into view once the reset has already happened.
+    const goToHeritage = (e) => {
+        e.preventDefault();
+        if (location.pathname !== '/') {
+            navigate('/');
+            setTimeout(() => {
+                document.getElementById('heritage')?.scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+        } else {
+            document.getElementById('heritage')?.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
     const [status, setStatus] = useState({ loading: false, success: false, error: '' });
 
     const handleSubscribe = async (e) => {
@@ -38,6 +55,7 @@ const Footer = () => {
                         <img
                             src="/images/ayodhya_logo.png"
                             alt="Ayodhya Agarbatti"
+                            loading="lazy"
                             className="w-full h-auto"
                         />
                     </Link>
@@ -104,7 +122,7 @@ const Footer = () => {
                 <div className="col-span-1">
                     <h4 className="font-heading text-xs font-bold uppercase tracking-[0.2em] mb-8 text-gray-500">{t('footerCompany')}</h4>
                     <ul className="space-y-4 text-sm font-medium text-gray-300">
-                        <li><Link to="/#heritage" className="hover:text-gold transition-colors">{t('footerOurStory')}</Link></li>
+                        <li><Link to="/#heritage" onClick={goToHeritage} className="hover:text-gold transition-colors">{t('footerOurStory')}</Link></li>
                         <li><Link to="/blog" className="hover:text-gold transition-colors">{t('footerJournal')}</Link></li>
                         <li><Link to="/contact" className="hover:text-gold transition-colors">{t('footerContact')}</Link></li>
                         <li><Link to="/horoscope" className="hover:text-gold transition-colors">✨ Vedic Horoscope</Link></li>

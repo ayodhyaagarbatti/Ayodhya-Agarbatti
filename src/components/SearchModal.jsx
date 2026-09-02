@@ -115,6 +115,7 @@ const SearchModal = ({ isOpen, onClose, addToCart }) => {
                                     <img
                                         src={product.images[0]}
                                         alt={product.name}
+                                        loading="lazy"
                                         className="w-20 h-20 object-cover rounded-md shrink-0 bg-gray-50"
                                     />
                                     <div className="flex-1 min-w-0">

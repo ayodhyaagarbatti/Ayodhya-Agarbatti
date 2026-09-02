@@ -47,6 +47,7 @@ const AccountModal = ({ isOpen, onClose, user }) => {
     };
 
     const handleGoogleSignIn = async () => {
+        if (isSigningIn) return;
         setError('');
         setIsSigningIn(true);
         try {
@@ -76,6 +77,7 @@ const AccountModal = ({ isOpen, onClose, user }) => {
 
     const handleEmailSubmit = async (e) => {
         e.preventDefault();
+        if (isSigningIn) return;
         setError('');
         setInfoMessage('');
         setIsSigningIn(true);

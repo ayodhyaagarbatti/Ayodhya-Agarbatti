@@ -40,7 +40,7 @@ const organizationSchema = {
     ],
     "contactPoint": {
         "@type": "ContactPoint",
-        "telephone": "+91-98765-43210",
+        "email": "namaste@ayodhyaagarbatti.com",
         "contactType": "customer service",
         "availableLanguage": ["English", "Hindi"],
         "hoursAvailable": {
@@ -95,14 +95,11 @@ const localBusinessSchema = {
     "alternateName": "अयोध्या अगरबत्ती",
     "description": "Premium incense sticks with a divine fragrance, hand-rolled in the holy city of Ayodhya using sacred temple flowers, Mysore sandalwood, and therapeutic essential oils.",
     "url": "https://www.ayodhyaagarbatti.in",
-    "telephone": "+91-98765-43210",
     "email": "namaste@ayodhyaagarbatti.com",
     "address": {
         "@type": "PostalAddress",
-        "streetAddress": "123 Temple Road",
         "addressLocality": "Ayodhya",
         "addressRegion": "Uttar Pradesh",
-        "postalCode": "224001",
         "addressCountry": "IN"
     },
     "geo": {
@@ -208,7 +205,8 @@ const SEO = ({
     breadcrumbs = null,
     faqs = null,
     locale = "en_IN",
-    alternateLocales = ["hi_IN"]
+    alternateLocales = ["hi_IN"],
+    noindex = false
 }) => {
     useEffect(() => {
         document.title = title;
@@ -230,7 +228,7 @@ const SEO = ({
 
         setMeta('name', 'description', description);
         setMeta('name', 'keywords', keywords);
-        setMeta('name', 'robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
+        setMeta('name', 'robots', noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
         setMeta('name', 'viewport', 'width=device-width, initial-scale=1');
         setMeta('name', 'theme-color', '#1a1a1a');
         setMeta('name', 'format-detection', 'telephone=yes');
@@ -300,7 +298,7 @@ const SEO = ({
             const existing = document.getElementById('dynamic-page-schema');
             if (existing) existing.remove();
         }
-    }, [title, description, keywords, canonical, ogImage, ogType, schema, breadcrumbs, faqs, locale, alternateLocales]);
+    }, [title, description, keywords, canonical, ogImage, ogType, schema, breadcrumbs, faqs, locale, alternateLocales, noindex]);
 
     return null;
 };

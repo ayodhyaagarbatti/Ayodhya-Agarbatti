@@ -320,8 +320,10 @@ const ProductDetails = ({ addToCart }) => {
                                     exit={{ opacity: 0, scale: 0.96 }}
                                     transition={{ duration: 0.3 }}
                                     src={product.images[selectedImage] || product.images[0]}
-                                    alt={product.name}
+                                    alt={`${product.name} - ${product.category} incense sticks`}
                                     className="w-full h-full object-cover"
+                                    loading="eager"
+                                    fetchpriority="high"
                                 />
                             </AnimatePresence>
 
@@ -764,7 +766,7 @@ const ProductDetails = ({ addToCart }) => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {relatedProducts.map((rel) => (
                             <div key={rel.id} className="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all p-4">
-                                <img src={rel.images[0]} alt={rel.name} className="w-full h-48 object-cover rounded-xl mb-4" />
+                                <img src={rel.images[0]} alt={rel.name} loading="lazy" className="w-full h-48 object-cover rounded-xl mb-4" />
                                 <h4 className="font-serif font-bold text-xl mb-1">{rel.name}</h4>
                                 <p className="text-xs text-gray-500 mb-3">{rel.variant}</p>
                                 <div className="flex justify-between items-center">

@@ -4,9 +4,16 @@ import { Link } from 'react-router-dom';
 import { Star, ShoppingBag, Eye, Sparkles, Filter, CheckCircle, ShieldCheck, Flame } from 'lucide-react';
 import { products, categories } from '../data/products';
 import { useTranslation } from 'react-i18next';
+import SEO from './SEO';
+
+const breadcrumbs = [
+    { name: 'Home', url: 'https://www.ayodhyaagarbatti.in/' },
+    { name: 'Shop', url: 'https://www.ayodhyaagarbatti.in/shop' }
+];
 
 const ProductSection = ({ addToCart, isStandaloneShop = false }) => {
     const { t } = useTranslation();
+    const HeadingTag = isStandaloneShop ? 'h1' : 'h2';
     const [selectedCategory, setSelectedCategory] = useState("All Incense");
     const [sortBy, setSortBy] = useState("featured");
     const [quickViewProduct, setQuickViewProduct] = useState(null);
@@ -32,6 +39,16 @@ const ProductSection = ({ addToCart, isStandaloneShop = false }) => {
 
     return (
         <section className={`py-16 md:py-24 relative overflow-hidden ${isStandaloneShop ? 'bg-ivory text-charcoal pt-28 md:pt-36' : 'bg-transparent text-ivory'}`}>
+            {isStandaloneShop && (
+                <SEO
+                    title="Shop Incense Sticks Online | Ayodhya Agarbatti - Coffee, Vanilla, Lemon & Orange"
+                    description="Browse the full Ayodhya Agarbatti collection - hand-rolled incense sticks in Espresso, Madagascan Vanilla, Citrus Lemon, and Wild Orange. 33 sticks per pack with a free holder, free shipping above ₹999, COD available."
+                    keywords="buy agarbatti online, incense sticks shop, Ayodhya Agarbatti collection, coffee incense, vanilla incense, lemon incense, orange incense, hand rolled agarbatti India"
+                    canonical="https://www.ayodhyaagarbatti.in/shop"
+                    ogType="website"
+                    breadcrumbs={breadcrumbs}
+                />
+            )}
             {/* Added to Cart Toast Notification - Mobile Centered Bottom */}
             <AnimatePresence>
                 {addedToast && (
@@ -57,10 +74,10 @@ const ProductSection = ({ addToCart, isStandaloneShop = false }) => {
                         <span className="font-heading text-xs font-bold tracking-[0.3em] text-gold uppercase mb-3 block flex items-center gap-2">
                             <Sparkles size={14} /> {t('royalCollection')}
                         </span>
-                        <h2 className={`font-serif text-4xl md:text-6xl leading-tight ${isStandaloneShop ? 'text-charcoal' : 'text-ivory'}`}>
+                        <HeadingTag className={`font-serif text-4xl md:text-6xl leading-tight ${isStandaloneShop ? 'text-charcoal' : 'text-ivory'}`}>
                             {t('sacredFragrances')} <br />
                             <span className="italic font-light opacity-80">{t('handRolled')}</span>
-                        </h2>
+                        </HeadingTag>
                     </div>
 
                     {/* Filter & Sort Controls */}
@@ -135,6 +152,7 @@ const ProductSection = ({ addToCart, isStandaloneShop = false }) => {
                                 <img
                                     src={product.images[0]}
                                     alt={product.name}
+                                    loading="lazy"
                                     className={`w-full h-full object-cover transition-all duration-700 ease-out ${product.images[1] ? 'group-hover:opacity-0' : 'group-hover:scale-105'}`}
                                 />
                                 {product.images[1] && (
@@ -204,7 +222,7 @@ const ProductSection = ({ addToCart, isStandaloneShop = false }) => {
                                             <ShoppingBag size={14} /> {t('quickAdd')}
                                         </button>
                                         <Link
-                                            to={`/product/${product.id}`}
+                                            to="/completion-ritual"
                                             className="border border-charcoal/20 text-charcoal hover:border-gold hover:text-gold font-bold uppercase tracking-widest text-[11px] py-3.5 px-4 rounded-lg transition-all text-center block"
                                         >
                                             {t('viewRitual')}
