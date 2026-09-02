@@ -69,8 +69,8 @@ const PaymentSuccess = () => {
                     <Link to="/" className="inline-block bg-gray-900 text-white px-6 py-3 rounded-lg font-bold uppercase tracking-widest text-xs hover:bg-terracotta transition-colors flex-1">
                         Continue Shopping
                     </Link>
-                    <Link to="/admin" className="inline-block bg-white border border-gray-200 text-gray-900 px-6 py-3 rounded-lg font-bold uppercase tracking-widest text-xs hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
-                        <Search size={14} /> Track
+                    <Link to="/contact" className="inline-block bg-white border border-gray-200 text-gray-900 px-6 py-3 rounded-lg font-bold uppercase tracking-widest text-xs hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+                        <Search size={14} /> Order Help
                     </Link>
                 </div>
 
