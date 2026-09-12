@@ -8,6 +8,7 @@ export const horoscopeProducts = [
         name: 'Janma Kundali',
         shortName: 'Life Horoscope',
         price: 99,
+        usdPrice: 49,
         tagline: 'Your complete Vedic birth chart - career, marriage, health, timing and remedies.',
         includes: [
             '30-section Janma Kundali report',
@@ -24,6 +25,7 @@ export const horoscopeProducts = [
         name: 'Marriage Compatibility',
         shortName: 'Guṇa Milan',
         price: 149,
+        usdPrice: 99,
         tagline: 'The full 36-point Ashtakoota match for two birth charts, with dosha analysis.',
         includes: [
             '8-section Ashtakoota (36-point) Guṇa Milan',

@@ -10,10 +10,13 @@ import { collection, addDoc, serverTimestamp, query, where, onSnapshot, orderBy 
 import { db } from '../firebase';
 import SEO, { breadcrumbSchema, faqSchema } from '../components/SEO';
 import { products } from '../data/products';
+import { useRegion } from '../hooks/useRegion';
+import { formatPackOptionPrice } from '../utils/currency';
 
 const ProductDetails = ({ addToCart }) => {
     const { id } = useParams();
     const product = products.find(p => p.id === parseInt(id)) || products[0];
+    const { isIndia } = useRegion();
 
     const [selectedPack, setSelectedPack] = useState(0);
     const [quantity, setQuantity] = useState(1);
@@ -45,8 +48,14 @@ const ProductDetails = ({ addToCart }) => {
         return () => unsubscribe();
     }, [id, product.id]);
 
+    const relatedProducts = products.filter(p => p.id !== product.id).slice(0, 3);
+
     const currentPrice = product.packOptions?.[selectedPack]?.price || product.numericPrice;
+    const currentUsdPrice = product.packOptions?.[selectedPack]?.usdPrice || product.usdPrice;
     const totalPrice = currentPrice * quantity;
+    const totalUsdPrice = currentUsdPrice * quantity;
+    const displayPrice = isIndia ? `₹${currentPrice}` : `$${currentUsdPrice}`;
+    const displayTotalPrice = isIndia ? `₹${totalPrice}` : `$${totalUsdPrice}`;
     const canonicalUrl = `https://www.ayodhyaagarbatti.in/product/${product.id}`;
 
     const handleAddToCart = () => {
@@ -458,11 +467,17 @@ const ProductDetails = ({ addToCart }) => {
                             <p className="text-sm text-gray-500 font-medium mb-4">{product.variant}</p>
 
                             <div className="flex items-baseline gap-3 mb-6 bg-white p-4 rounded-xl border border-gray-100 shadow-sm w-fit">
-                                <span className="font-serif text-3xl font-bold text-charcoal">₹{currentPrice}</span>
-                                <span className="text-base text-gray-400 line-through">{product.originalPrice}</span>
-                                <span className="text-xs font-bold text-green-700 bg-green-50 px-2 py-1 rounded">
-                                    Free Shipping Above ₹500
-                                </span>
+                                <span className="font-serif text-3xl font-bold text-charcoal">{displayPrice}</span>
+                                {isIndia ? (
+                                    <>
+                                        <span className="text-base text-gray-400 line-through">{product.originalPrice}</span>
+                                        <span className="text-xs font-bold text-green-700 bg-green-50 px-2 py-1 rounded">
+                                            Free Shipping Above ₹500
+                                        </span>
+                                    </>
+                                ) : (
+                                    <span className="text-xs font-bold text-green-700 bg-green-50 px-2 py-1 rounded">USD</span>
+                                )}
                             </div>
 
                             <p className="text-base text-gray-600 leading-relaxed border-l-2 border-gold pl-4 py-1 mb-6 italic">
@@ -493,7 +508,7 @@ const ProductDetails = ({ addToCart }) => {
                                         >
                                             <span className="text-xs font-bold text-charcoal block mb-1">{pack.size}</span>
                                             <div className="flex justify-between items-center mt-2">
-                                                <span className="font-serif font-bold text-lg">₹{pack.price}</span>
+                                                <span className="font-serif font-bold text-lg">{formatPackOptionPrice(pack, isIndia)}</span>
                                                 {pack.tag && (
                                                     <span className="text-[9px] font-bold uppercase tracking-widest text-gold bg-charcoal px-2 py-0.5 rounded">
                                                         {pack.tag}
@@ -526,13 +541,22 @@ const ProductDetails = ({ addToCart }) => {
                                 </button>
                             </div>
 
-                            <button
-                                type="button"
-                                onClick={handleAddToCart}
-                                className="flex-1 bg-charcoal text-white hover:bg-gold hover:text-charcoal transition-all py-4 px-8 rounded-xl font-bold uppercase tracking-widest text-xs shadow-xl flex items-center justify-center gap-3 transform active:scale-98"
-                            >
-                                <ShoppingBag size={18} /> Add to Sanctuary — ₹{totalPrice}
-                            </button>
+                            {isIndia ? (
+                                <button
+                                    type="button"
+                                    onClick={handleAddToCart}
+                                    className="flex-1 bg-charcoal text-white hover:bg-gold hover:text-charcoal transition-all py-4 px-8 rounded-xl font-bold uppercase tracking-widest text-xs shadow-xl flex items-center justify-center gap-3 transform active:scale-98"
+                                >
+                                    <ShoppingBag size={18} /> Add to Sanctuary — {displayTotalPrice}
+                                </button>
+                            ) : (
+                                <Link
+                                    to="/contact"
+                                    className="flex-1 bg-gray-100 text-gray-500 transition-all py-4 px-8 rounded-xl font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-3 text-center"
+                                >
+                                    International Checkout Coming Soon — {displayTotalPrice}
+                                </Link>
+                            )}
                         </div>
 
                         {/* Key Benefits List */}

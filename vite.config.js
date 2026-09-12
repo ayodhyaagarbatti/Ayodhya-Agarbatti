@@ -21,6 +21,7 @@ const razorpayApiDevPlugin = (env) => ({
       '/api/get-wallet-summary': path.resolve(process.cwd(), 'api/get-wallet-summary.js'),
       '/api/create-redemption-request': path.resolve(process.cwd(), 'api/create-redemption-request.js'),
       '/api/admin-resolve-redemption': path.resolve(process.cwd(), 'api/admin-resolve-redemption.js'),
+      '/api/detect-region': path.resolve(process.cwd(), 'api/detect-region.js'),
     }
     for (const [route, modulePath] of Object.entries(routes)) {
       server.middlewares.use(route, async (req, res) => {
