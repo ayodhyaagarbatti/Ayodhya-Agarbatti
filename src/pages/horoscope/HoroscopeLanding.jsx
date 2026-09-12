@@ -5,9 +5,12 @@ import SEO from '../../components/SEO';
 import { horoscopeProducts } from '../../data/horoscopeProducts';
 import ReferAndEarn from '../../components/ReferAndEarn';
 import { storeReferralCode } from '../../utils/referral';
+import { useRegion } from '../../hooks/useRegion';
+import { formatHoroscopePrice } from '../../utils/currency';
 
 const HoroscopeLanding = () => {
     const [searchParams] = useSearchParams();
+    const { isIndia } = useRegion();
 
     useEffect(() => {
         const ref = searchParams.get('ref');
@@ -47,7 +50,7 @@ const HoroscopeLanding = () => {
                                 <p className="text-xs uppercase tracking-widest text-gold font-bold mt-1">{product.shortName}</p>
                             </div>
                             <div className="text-right shrink-0">
-                                <div className="font-serif text-3xl font-bold text-charcoal">₹{product.price}</div>
+                                <div className="font-serif text-3xl font-bold text-charcoal">{formatHoroscopePrice(product, isIndia)}</div>
                             </div>
                         </div>
                         <p className="text-gray-600 text-sm mb-6">{product.tagline}</p>
@@ -59,12 +62,21 @@ const HoroscopeLanding = () => {
                                 </li>
                             ))}
                         </ul>
-                        <Link
-                            to={`/horoscope/${product.id}/details`}
-                            className="btn-primary flex items-center justify-center gap-2 hover:bg-gold hover:text-charcoal"
-                        >
-                            Get Started <ArrowRight size={14} />
-                        </Link>
+                        {isIndia ? (
+                            <Link
+                                to={`/horoscope/${product.id}/details`}
+                                className="btn-primary flex items-center justify-center gap-2 hover:bg-gold hover:text-charcoal"
+                            >
+                                Get Started <ArrowRight size={14} />
+                            </Link>
+                        ) : (
+                            <Link
+                                to="/contact"
+                                className="btn-primary bg-gray-100 text-gray-500 flex items-center justify-center gap-2"
+                            >
+                                International Checkout Coming Soon
+                            </Link>
+                        )}
                     </div>
                 ))}
             </div>

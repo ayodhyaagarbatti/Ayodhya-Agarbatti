@@ -4,8 +4,11 @@ import { Search, X, Star, ArrowRight, ShoppingBag } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { products } from '../data/products';
 import { logSearchQuery } from '../utils/analyticsLogger';
+import { useRegion } from '../hooks/useRegion';
+import { formatProductPrice } from '../utils/currency';
 
 const SearchModal = ({ isOpen, onClose, addToCart }) => {
+    const { isIndia } = useRegion();
     const [query, setQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
 
@@ -132,19 +135,22 @@ const SearchModal = ({ isOpen, onClose, addToCart }) => {
                                         </h4>
                                         <p className="text-xs text-gray-500 truncate">{product.variant}</p>
                                         <p className="text-xs font-bold text-charcoal mt-1">
-                                            {product.price} <span className="text-gray-400 line-through text-[11px] font-normal">{product.originalPrice}</span>
+                                            {formatProductPrice(product, isIndia)}
+                                            {isIndia && <span className="text-gray-400 line-through text-[11px] font-normal"> {product.originalPrice}</span>}
                                         </p>
                                     </div>
                                     <div className="flex flex-col md:flex-row gap-2 shrink-0">
-                                        <button
-                                            onClick={() => {
-                                                addToCart(product);
-                                                onClose();
-                                            }}
-                                            className="bg-charcoal text-ivory hover:bg-gold hover:text-white text-[10px] uppercase font-bold tracking-widest px-3 py-2.5 rounded transition-all flex items-center gap-1.5"
-                                        >
-                                            <ShoppingBag size={12} /> Add
-                                        </button>
+                                        {isIndia && (
+                                            <button
+                                                onClick={() => {
+                                                    addToCart(product);
+                                                    onClose();
+                                                }}
+                                                className="bg-charcoal text-ivory hover:bg-gold hover:text-white text-[10px] uppercase font-bold tracking-widest px-3 py-2.5 rounded transition-all flex items-center gap-1.5"
+                                            >
+                                                <ShoppingBag size={12} /> Add
+                                            </button>
+                                        )}
                                         <Link
                                             to={`/product/${product.id}`}
                                             onClick={onClose}

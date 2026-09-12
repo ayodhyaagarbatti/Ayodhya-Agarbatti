@@ -6,6 +6,7 @@ export const products = [
         variant: "Roasted Coffee & Dark Cocoa Blend",
         price: "₹70",
         numericPrice: 70,
+        usdPrice: 30,
         originalPrice: "₹120",
         discount: "42% OFF",
         category: "Focus & Energy",
@@ -36,9 +37,9 @@ export const products = [
         ],
         images: ["/images/espresso.png", "/images/product_coffee.jpg"],
         packOptions: [
-            { size: "Single Pack (33 Sticks)", price: 70, tag: "Standard" },
-            { size: "Trio Value Pack (99 Sticks)", price: 190, tag: "Save 10%" },
-            { size: "Sanctuary Gift Set (33 Sticks + Brass Burner)", price: 300, tag: "Best Value" }
+            { size: "Single Pack (33 Sticks)", price: 70, usdPrice: 30, tag: "Standard" },
+            { size: "Trio Value Pack (99 Sticks)", price: 190, usdPrice: 81, tag: "Save 10%" },
+            { size: "Sanctuary Gift Set (33 Sticks + Brass Burner)", price: 300, usdPrice: 129, tag: "Best Value" }
         ],
         faqs: [
             {
@@ -80,6 +81,7 @@ export const products = [
         variant: "French Vanilla & Botanical Pods",
         price: "₹70",
         numericPrice: 70,
+        usdPrice: 30,
         originalPrice: "₹120",
         discount: "42% OFF",
         category: "Relaxation & Sleep",
@@ -110,9 +112,9 @@ export const products = [
         ],
         images: ["/images/vanilla.png", "/images/product_vanilla_group.jpg"],
         packOptions: [
-            { size: "Single Pack (33 Sticks)", price: 70, tag: "Standard" },
-            { size: "Trio Value Pack (99 Sticks)", price: 190, tag: "Save 10%" },
-            { size: "Sanctuary Gift Set (33 Sticks + Brass Burner)", price: 300, tag: "Best Value" }
+            { size: "Single Pack (33 Sticks)", price: 70, usdPrice: 30, tag: "Standard" },
+            { size: "Trio Value Pack (99 Sticks)", price: 190, usdPrice: 81, tag: "Save 10%" },
+            { size: "Sanctuary Gift Set (33 Sticks + Brass Burner)", price: 300, usdPrice: 129, tag: "Best Value" }
         ],
         faqs: [
             {
@@ -142,6 +144,7 @@ export const products = [
         variant: "Amalfi Zest Lemon & Verbena",
         price: "₹70",
         numericPrice: 70,
+        usdPrice: 30,
         originalPrice: "₹105",
         discount: "33% OFF",
         category: "Purification & Cleansing",
@@ -172,9 +175,9 @@ export const products = [
         ],
         images: ["/images/lemon.png", "/images/product_lemon.jpg"],
         packOptions: [
-            { size: "Single Pack (33 Sticks)", price: 70, tag: "Standard" },
-            { size: "Trio Value Pack (99 Sticks)", price: 190, tag: "Save 10%" },
-            { size: "Sanctuary Gift Set (33 Sticks + Brass Burner)", price: 300, tag: "Best Value" }
+            { size: "Single Pack (33 Sticks)", price: 70, usdPrice: 30, tag: "Standard" },
+            { size: "Trio Value Pack (99 Sticks)", price: 190, usdPrice: 81, tag: "Save 10%" },
+            { size: "Sanctuary Gift Set (33 Sticks + Brass Burner)", price: 300, usdPrice: 129, tag: "Best Value" }
         ],
         faqs: [
             {
@@ -200,6 +203,7 @@ export const products = [
         variant: "Nagpur Wild Orange & Sacred Tulsi",
         price: "₹70",
         numericPrice: 70,
+        usdPrice: 30,
         originalPrice: "₹105",
         discount: "33% OFF",
         category: "Joy & Creative Flow",
@@ -230,9 +234,9 @@ export const products = [
         ],
         images: ["/images/orange.png", "/images/product_orange.jpg"],
         packOptions: [
-            { size: "Single Pack (33 Sticks)", price: 70, tag: "Standard" },
-            { size: "Trio Value Pack (99 Sticks)", price: 190, tag: "Save 10%" },
-            { size: "Sanctuary Gift Set (33 Sticks + Brass Burner)", price: 300, tag: "Best Value" }
+            { size: "Single Pack (33 Sticks)", price: 70, usdPrice: 30, tag: "Standard" },
+            { size: "Trio Value Pack (99 Sticks)", price: 190, usdPrice: 81, tag: "Save 10%" },
+            { size: "Sanctuary Gift Set (33 Sticks + Brass Burner)", price: 300, usdPrice: 129, tag: "Best Value" }
         ],
         faqs: [
             {
