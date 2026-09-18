@@ -1,6 +1,7 @@
 import razorpay from './_razorpay.js';
 import readJsonBody from './_readJsonBody.js';
 import { computeCartTotal } from './_shopPricing.js';
+import { isIndiaRequest } from './_region.js';
 
 const sendJson = (res, status, payload) => {
     res.statusCode = status;
@@ -24,9 +25,11 @@ export default async function handler(req, res) {
 
     const receipt = body.receipt || `receipt_${Date.now()}`;
 
+    const isIndia = isIndiaRequest(req);
+
     let pricing;
     try {
-        pricing = computeCartTotal(body.cartItems);
+        pricing = computeCartTotal(body.cartItems, isIndia);
     } catch (err) {
         sendJson(res, 400, { error: err.message });
         return;
@@ -35,7 +38,7 @@ export default async function handler(req, res) {
     try {
         const order = await razorpay.orders.create({
             amount: pricing.totalPaise,
-            currency: 'INR',
+            currency: pricing.currency,
             receipt
         });
         sendJson(res, 200, {

@@ -140,17 +140,18 @@ const SearchModal = ({ isOpen, onClose, addToCart }) => {
                                         </p>
                                     </div>
                                     <div className="flex flex-col md:flex-row gap-2 shrink-0">
-                                        {isIndia && (
-                                            <button
-                                                onClick={() => {
-                                                    addToCart(product);
-                                                    onClose();
-                                                }}
-                                                className="bg-charcoal text-ivory hover:bg-gold hover:text-white text-[10px] uppercase font-bold tracking-widest px-3 py-2.5 rounded transition-all flex items-center gap-1.5"
-                                            >
-                                                <ShoppingBag size={12} /> Add
-                                            </button>
-                                        )}
+                                        <button
+                                            onClick={() => {
+                                                const itemToAdd = isIndia
+                                                    ? { ...product, currency: 'INR' }
+                                                    : { ...product, price: `$${product.usdPrice}`, numericPrice: product.usdPrice, currency: 'USD' };
+                                                addToCart(itemToAdd);
+                                                onClose();
+                                            }}
+                                            className="bg-charcoal text-ivory hover:bg-gold hover:text-white text-[10px] uppercase font-bold tracking-widest px-3 py-2.5 rounded transition-all flex items-center gap-1.5"
+                                        >
+                                            <ShoppingBag size={12} /> Add
+                                        </button>
                                         <Link
                                             to={`/product/${product.id}`}
                                             onClick={onClose}

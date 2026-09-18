@@ -67,7 +67,11 @@ export default async function handler(req, res) {
 
     const notes = order.notes || {};
     const productId = notes.productId || body.productId;
-    const referrerUid = notes.referrerUid || null;
+    // The wallet/commission system is entirely INR-denominated (payouts go out via
+    // UPI/bank transfer in India) - crediting 10% of a USD order as if it were paise
+    // would under-credit the referrer by the full INR/USD exchange rate. International
+    // orders just don't generate a commission for now.
+    const referrerUid = order.currency === 'INR' ? (notes.referrerUid || null) : null;
     const couponApplied = notes.couponApplied === 'true';
     const amountRupees = order.amount / 100;
     const product = horoscopeProducts.find((p) => p.id === productId);

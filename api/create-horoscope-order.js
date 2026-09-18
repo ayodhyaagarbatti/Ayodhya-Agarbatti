@@ -2,6 +2,7 @@ import razorpay from './_razorpay.js';
 import readJsonBody from './_readJsonBody.js';
 import { computeHoroscopePrice } from './_horoscopePricing.js';
 import { adminDb } from './_firebaseAdmin.js';
+import { isIndiaRequest } from './_region.js';
 
 const sendJson = (res, status, payload) => {
     res.statusCode = status;
@@ -52,9 +53,11 @@ export default async function handler(req, res) {
     const { productId, couponCode, referralCode, customerEmail } = body;
     const receipt = body.receipt || `receipt_${Date.now()}`;
 
+    const isIndia = isIndiaRequest(req);
+
     let pricing;
     try {
-        pricing = computeHoroscopePrice(productId, couponCode);
+        pricing = computeHoroscopePrice(productId, couponCode, isIndia);
     } catch (err) {
         sendJson(res, 400, { error: err.message });
         return;
@@ -72,7 +75,7 @@ export default async function handler(req, res) {
     try {
         const order = await razorpay.orders.create({
             amount: pricing.amountPaise,
-            currency: 'INR',
+            currency: pricing.currency,
             receipt,
             notes
         });

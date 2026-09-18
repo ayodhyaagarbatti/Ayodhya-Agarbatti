@@ -7,6 +7,7 @@ import { db } from '../firebase';
 import { logCheckoutStep } from '../utils/analyticsLogger';
 import { getLenisInstance } from '../utils/lenisInstance';
 import SEO from '../components/SEO';
+import { useRegion } from '../hooks/useRegion';
 
 const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID || '';
 
@@ -83,6 +84,8 @@ const Steps = ({ currentStep }) => {
 
 const Checkout = ({ cartItems = [], onClearCart }) => {
     const navigate = useNavigate();
+    const { isIndia } = useRegion();
+    const currencySymbol = isIndia ? '₹' : '$';
     const [step, setStep] = useState(1);
     const [paymentMethod, setPaymentMethod] = useState('razorpay');
     const [isProcessing, setIsProcessing] = useState(false);
@@ -127,11 +130,18 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
     const DELIVERY_CHARGE = 79;
 
     const subtotal = cartItems.reduce((acc, item) => {
-        const priceNum = parseInt(item.price.replace(/[^0-9]/g, '')) || 0;
+        const priceNum = item.numericPrice || parseInt(item.price.replace(/[^0-9]/g, '')) || 0;
         return acc + priceNum * item.quantity;
     }, 0);
-    const shippingFee = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : DELIVERY_CHARGE;
+    // International prices already fold shipping in (flat launch pricing, not a live
+    // conversion) - only the India free-shipping-threshold logic applies to INR orders.
+    const shippingFee = isIndia ? (subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : DELIVERY_CHARGE) : 0;
     const total = subtotal + shippingFee;
+
+    // Cash on Delivery only works within India - force online payment for everyone else.
+    useEffect(() => {
+        if (!isIndia && paymentMethod === 'cod') setPaymentMethod('razorpay');
+    }, [isIndia, paymentMethod]);
 
     const handlePlaceOrder = async () => {
         if (isProcessing) return;
@@ -467,7 +477,7 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                                                     <div className="flex-1">
                                                         <div className="flex justify-between mb-1">
                                                             <h4 className="font-heading text-sm text-charcoal">{item.name}</h4>
-                                                            <span className="font-bold text-sm">₹{parseInt(item.price.replace(/[^0-9]/g, '')) * item.quantity}</span>
+                                                            <span className="font-bold text-sm">{currencySymbol}{(item.numericPrice || parseInt(item.price.replace(/[^0-9]/g, '')) || 0) * item.quantity}</span>
                                                         </div>
                                                         <p className="text-xs text-gray-500 mb-2">{item.price} x {item.quantity}</p>
                                                     </div>
@@ -508,19 +518,21 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                                             {paymentMethod === 'razorpay' && <CheckCircle className="text-gold" />}
                                         </div>
 
-                                        <div
-                                            onClick={() => setPaymentMethod('cod')}
-                                            className={`p-6 border rounded-xl cursor-pointer flex items-center justify-between transition-all ${paymentMethod === 'cod' ? 'border-gold bg-gold/5' : 'border-gray-200 hover:border-gray-300'}`}
-                                        >
-                                            <div className="flex items-center gap-4">
-                                                <Banknote className={paymentMethod === 'cod' ? 'text-charcoal' : 'text-gray-400'} />
-                                                <div>
-                                                    <p className="font-bold text-gray-900">Cash on Delivery</p>
-                                                    <p className="text-xs text-gray-500">Pay when your order arrives</p>
+                                        {isIndia && (
+                                            <div
+                                                onClick={() => setPaymentMethod('cod')}
+                                                className={`p-6 border rounded-xl cursor-pointer flex items-center justify-between transition-all ${paymentMethod === 'cod' ? 'border-gold bg-gold/5' : 'border-gray-200 hover:border-gray-300'}`}
+                                            >
+                                                <div className="flex items-center gap-4">
+                                                    <Banknote className={paymentMethod === 'cod' ? 'text-charcoal' : 'text-gray-400'} />
+                                                    <div>
+                                                        <p className="font-bold text-gray-900">Cash on Delivery</p>
+                                                        <p className="text-xs text-gray-500">Pay when your order arrives</p>
+                                                    </div>
                                                 </div>
+                                                {paymentMethod === 'cod' && <CheckCircle className="text-gold" />}
                                             </div>
-                                            {paymentMethod === 'cod' && <CheckCircle className="text-gold" />}
-                                        </div>
+                                        )}
                                     </div>
 
                                     {payError && (
@@ -534,7 +546,7 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                                         disabled={isProcessing}
                                         className="w-full bg-gold text-charcoal py-5 rounded-lg font-bold uppercase tracking-widest hover:bg-charcoal hover:text-white transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50"
                                     >
-                                        <Lock size={16} /> {isProcessing ? 'Processing Order...' : `Pay ₹${total} & Place Order`}
+                                        <Lock size={16} /> {isProcessing ? 'Processing Order...' : `Pay ${currencySymbol}${total} & Place Order`}
                                     </button>
                                     <div className="text-center mt-4 text-[10px] uppercase tracking-widest text-gray-400 flex items-center justify-center gap-2">
                                         <ShieldCheck size={14} /> SSL Secured • 256-Bit Encrypted
@@ -551,17 +563,17 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                             <div className="space-y-3 mb-6">
                                 <div className="flex justify-between text-sm text-gray-600">
                                     <span>Subtotal ({cartItems.length} items)</span>
-                                    <span>₹{subtotal}</span>
+                                    <span>{currencySymbol}{subtotal}</span>
                                 </div>
                                 <div className="flex justify-between text-sm text-gray-600">
                                     <span>Delivery Charge</span>
                                     {shippingFee === 0 ? (
                                         <span className="text-green-600">FREE</span>
                                     ) : (
-                                        <span>₹{shippingFee}</span>
+                                        <span>{currencySymbol}{shippingFee}</span>
                                     )}
                                 </div>
-                                {shippingFee > 0 && (
+                                {isIndia && shippingFee > 0 && (
                                     <p className="text-[11px] text-gray-400">
                                         Add ₹{FREE_SHIPPING_THRESHOLD - subtotal} more to unlock free delivery.
                                     </p>
@@ -569,13 +581,17 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                             </div>
                             <div className="border-t border-gray-100 pt-4 flex justify-between items-center mb-6">
                                 <span className="font-bold text-lg text-charcoal">Total Amount</span>
-                                <span className="font-bold text-xl text-gold">₹{total}</span>
+                                <span className="font-bold text-xl text-gold">{currencySymbol}{total}</span>
                             </div>
                             <div className="bg-gray-50 p-4 rounded-lg flex items-start gap-3">
                                 <Truck size={20} className="text-charcoal shrink-0 mt-1" />
                                 <div>
                                     <p className="text-xs font-bold text-gray-900 uppercase">Estimated Delivery</p>
-                                    <p className="text-xs text-gray-500 mt-1">3-5 Business Days provided by our premium logistics partners. Free delivery on orders above ₹{FREE_SHIPPING_THRESHOLD}, else a flat ₹{DELIVERY_CHARGE} charge applies.</p>
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        {isIndia
+                                            ? `3-5 Business Days provided by our premium logistics partners. Free delivery on orders above ₹${FREE_SHIPPING_THRESHOLD}, else a flat ₹${DELIVERY_CHARGE} charge applies.`
+                                            : 'International shipping included in the listed price. Delivery times vary by destination.'}
+                                    </p>
                                 </div>
                             </div>
                         </div>

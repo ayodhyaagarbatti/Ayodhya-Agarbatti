@@ -4,6 +4,7 @@ import { Lock, ShieldCheck, ArrowLeft, AlertTriangle } from 'lucide-react';
 import SEO from '../../components/SEO';
 import { getHoroscopeProduct } from '../../data/horoscopeProducts';
 import { getStoredReferralCode, clearStoredReferralCode } from '../../utils/referral';
+import { useRegion } from '../../hooks/useRegion';
 
 const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID || '';
 
@@ -36,6 +37,8 @@ const HoroscopePayment = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const product = getHoroscopeProduct(productId);
+    const { isIndia } = useRegion();
+    const currencySymbol = isIndia ? '₹' : '$';
     const { subject, partner, contact } = location.state || {};
     const [isProcessing, setIsProcessing] = useState(false);
     const [payError, setPayError] = useState('');
@@ -93,7 +96,9 @@ const HoroscopePayment = () => {
         }
     };
 
-    const displayPrice = couponStatus?.couponApplied ? couponStatus.amountRupees : product.price;
+    const displayPrice = !isIndia
+        ? product.usdPrice
+        : (couponStatus?.couponApplied ? couponStatus.amountRupees : product.price);
 
     const handlePay = async () => {
         if (isProcessing) return;
@@ -238,31 +243,33 @@ const HoroscopePayment = () => {
                         {couponStatus?.couponApplied && (
                             <div className="flex justify-between text-xs"><span className="text-gray-500">Coupon</span><span className="font-semibold text-green-600">Applied</span></div>
                         )}
-                        <div className="flex justify-between border-t border-gray-200 pt-2 mt-2"><span className="font-bold text-charcoal">Total</span><span className="font-bold text-gold text-lg">₹{displayPrice}</span></div>
+                        <div className="flex justify-between border-t border-gray-200 pt-2 mt-2"><span className="font-bold text-charcoal">Total</span><span className="font-bold text-gold text-lg">{currencySymbol}{displayPrice}</span></div>
                     </div>
 
-                    <div className="mb-6">
-                        <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Coupon Code</label>
-                        <div className="flex gap-2">
-                            <input
-                                type="text"
-                                value={couponCode}
-                                onChange={(e) => { setCouponCode(e.target.value); setCouponStatus(null); setCouponError(''); }}
-                                placeholder="Enter code"
-                                className="flex-1 bg-white border border-gray-200 p-3 text-sm focus:outline-none focus:border-gold transition-colors uppercase"
-                            />
-                            <button
-                                type="button"
-                                onClick={applyCoupon}
-                                disabled={isApplyingCoupon || !couponCode.trim()}
-                                className="px-5 border border-charcoal text-charcoal text-xs font-bold uppercase tracking-widest hover:bg-charcoal hover:text-white transition-all disabled:opacity-50"
-                            >
-                                {isApplyingCoupon ? '...' : 'Apply'}
-                            </button>
+                    {isIndia && (
+                        <div className="mb-6">
+                            <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Coupon Code</label>
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    value={couponCode}
+                                    onChange={(e) => { setCouponCode(e.target.value); setCouponStatus(null); setCouponError(''); }}
+                                    placeholder="Enter code"
+                                    className="flex-1 bg-white border border-gray-200 p-3 text-sm focus:outline-none focus:border-gold transition-colors uppercase"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={applyCoupon}
+                                    disabled={isApplyingCoupon || !couponCode.trim()}
+                                    className="px-5 border border-charcoal text-charcoal text-xs font-bold uppercase tracking-widest hover:bg-charcoal hover:text-white transition-all disabled:opacity-50"
+                                >
+                                    {isApplyingCoupon ? '...' : 'Apply'}
+                                </button>
+                            </div>
+                            {couponError && <p className="text-red-500 text-xs mt-2">{couponError}</p>}
+                            {couponStatus?.couponApplied && <p className="text-green-600 text-xs mt-2">Coupon applied - total is now ₹{couponStatus.amountRupees}.</p>}
                         </div>
-                        {couponError && <p className="text-red-500 text-xs mt-2">{couponError}</p>}
-                        {couponStatus?.couponApplied && <p className="text-green-600 text-xs mt-2">Coupon applied - total is now ₹{couponStatus.amountRupees}.</p>}
-                    </div>
+                    )}
 
                     {!RAZORPAY_KEY_ID && (
                         <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 text-amber-800 text-xs p-3 rounded-lg mb-4">
@@ -283,7 +290,7 @@ const HoroscopePayment = () => {
                         disabled={isProcessing}
                         className="w-full bg-gold text-charcoal py-5 rounded-lg font-bold uppercase tracking-widest hover:bg-charcoal hover:text-white transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50"
                     >
-                        <Lock size={16} /> {isProcessing ? 'Processing...' : `Pay ₹${displayPrice}`}
+                        <Lock size={16} /> {isProcessing ? 'Processing...' : `Pay ${currencySymbol}${displayPrice}`}
                     </button>
                     <div className="text-center mt-4 text-[10px] uppercase tracking-widest text-gray-400 flex items-center justify-center gap-2">
                         <ShieldCheck size={14} /> SSL Secured · 256-Bit Encrypted
