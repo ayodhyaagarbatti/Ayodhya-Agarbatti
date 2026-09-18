@@ -10,8 +10,8 @@ import {
 // customer PII, and the admin password gate below is invisible to Firestore rules -
 // they can't tell an authenticated admin apart from any other signed-in visitor). So
 // this page never touches the Firestore client SDK: everything goes through
-// /api/admin-list and /api/admin-mutate, gated server-side by the same admin session
-// token, using the Admin SDK which bypasses Firestore rules entirely.
+// /api/admin-data (and /api/admin-auth for login), gated server-side by the same
+// admin session token, using the Admin SDK which bypasses Firestore rules entirely.
 const POLL_INTERVAL_MS = 20000;
 
 const Admin = () => {
@@ -23,7 +23,7 @@ const Admin = () => {
     const [activeTab, setActiveTab] = useState('orders'); // 'orders' | 'activity' | 'messages' | 'subscribers' | 'reviews' | 'redemptions'
     const [dataLoadError, setDataLoadError] = useState('');
 
-    // Server-backed admin data (fetched via /api/admin-list, never the client Firestore SDK)
+    // Server-backed admin data (fetched via /api/admin-data, never the client Firestore SDK)
     const [orders, setOrders] = useState([]);
     const [activityLogs, setActivityLogs] = useState([]);
     const [messages, setMessages] = useState([]);
@@ -57,7 +57,7 @@ const Admin = () => {
         const token = sessionStorage.getItem('adminAuth');
         if (!token) return [];
         try {
-            const res = await fetch('/api/admin-list', {
+            const res = await fetch('/api/admin-data', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ token, collection: name })
@@ -92,10 +92,10 @@ const Admin = () => {
             setCheckingSession(false);
             return;
         }
-        fetch('/api/admin-verify', {
+        fetch('/api/admin-auth', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token })
+            body: JSON.stringify({ mode: 'verify', token })
         })
             .then((r) => r.json())
             .then((data) => {
@@ -123,10 +123,10 @@ const Admin = () => {
         setError('');
         setIsLoggingIn(true);
         try {
-            const res = await fetch('/api/admin-login', {
+            const res = await fetch('/api/admin-auth', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ password })
+                body: JSON.stringify({ mode: 'login', password })
             });
             const data = await res.json();
             if (!res.ok || !data.token) {
@@ -147,14 +147,14 @@ const Admin = () => {
         sessionStorage.removeItem('adminAuth');
     };
 
-    // Every mutation below calls /api/admin-mutate with the admin session token -
+    // Every mutation below calls /api/admin-data with the admin session token -
     // never the client Firestore SDK - then refetches so the UI reflects the change.
     const adminMutate = async (action, extra = {}) => {
         const token = sessionStorage.getItem('adminAuth');
-        const res = await fetch('/api/admin-mutate', {
+        const res = await fetch('/api/admin-data', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token, action, ...extra })
+            body: JSON.stringify({ token, mode: 'mutate', action, ...extra })
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Action failed.');
