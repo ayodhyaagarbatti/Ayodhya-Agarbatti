@@ -5,8 +5,14 @@ import {
     Clock, Check, Filter, ExternalLink, PlusCircle, Activity, ShoppingCart,
     Compass, Monitor, Smartphone, Globe, Wallet, X as XIcon
 } from 'lucide-react';
-import { collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc, addDoc, serverTimestamp, limit } from "firebase/firestore";
-import { db } from '../firebase';
+// Firestore rules deny all direct client reads/writes of admin data (orders, contact
+// messages, subscribers, reviews, activity logs, redemption requests all contain
+// customer PII, and the admin password gate below is invisible to Firestore rules -
+// they can't tell an authenticated admin apart from any other signed-in visitor). So
+// this page never touches the Firestore client SDK: everything goes through
+// /api/admin-list and /api/admin-mutate, gated server-side by the same admin session
+// token, using the Admin SDK which bypasses Firestore rules entirely.
+const POLL_INTERVAL_MS = 20000;
 
 const Admin = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -15,9 +21,9 @@ const Admin = () => {
     const [isLoggingIn, setIsLoggingIn] = useState(false);
     const [error, setError] = useState('');
     const [activeTab, setActiveTab] = useState('orders'); // 'orders' | 'activity' | 'messages' | 'subscribers' | 'reviews' | 'redemptions'
-    const [firestorePermissionError, setFirestorePermissionError] = useState(false);
+    const [dataLoadError, setDataLoadError] = useState('');
 
-    // Realtime Database Data
+    // Server-backed admin data (fetched via /api/admin-list, never the client Firestore SDK)
     const [orders, setOrders] = useState([]);
     const [activityLogs, setActivityLogs] = useState([]);
     const [messages, setMessages] = useState([]);
@@ -44,12 +50,38 @@ const Admin = () => {
         return next;
     });
 
-    const loadLocalBackup = (key) => {
+    // Fetches one collection from the server-side admin API. Returns the items so
+    // callers awaiting a Promise.all get the data directly, in addition to the setter
+    // updating state for the normal render path.
+    const fetchCollection = async (name, setter) => {
+        const token = sessionStorage.getItem('adminAuth');
+        if (!token) return [];
         try {
-            return JSON.parse(localStorage.getItem(key) || '[]');
-        } catch (e) {
+            const res = await fetch('/api/admin-list', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token, collection: name })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || `Failed to load ${name}`);
+            setter(data.items);
+            return data.items;
+        } catch (err) {
+            setDataLoadError(err.message || `Failed to load ${name}.`);
             return [];
         }
+    };
+
+    const fetchAllData = async () => {
+        await Promise.all([
+            fetchCollection('orders', setOrders),
+            fetchCollection('activity_logs', setActivityLogs),
+            fetchCollection('contact_messages', setMessages),
+            fetchCollection('subscribers', setSubscribers),
+            fetchCollection('reviews', setReviews),
+            fetchCollection('redemption_requests', setRedemptions)
+        ]);
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -58,160 +90,33 @@ const Admin = () => {
         const token = sessionStorage.getItem('adminAuth');
         if (!token) {
             setCheckingSession(false);
-        } else {
-            fetch('/api/admin-verify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token })
+            return;
+        }
+        fetch('/api/admin-verify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token })
+        })
+            .then((r) => r.json())
+            .then((data) => {
+                if (data.valid) {
+                    setIsAuthenticated(true);
+                } else {
+                    sessionStorage.removeItem('adminAuth');
+                }
             })
-                .then((r) => r.json())
-                .then((data) => {
-                    if (data.valid) {
-                        setIsAuthenticated(true);
-                    } else {
-                        sessionStorage.removeItem('adminAuth');
-                    }
-                })
-                .catch(() => sessionStorage.removeItem('adminAuth'))
-                .finally(() => setCheckingSession(false));
-        }
-
-        // Initialize with LocalStorage backup data first
-        const localOrders = loadLocalBackup('ayodhya_orders');
-        const localLogs = loadLocalBackup('ayodhya_activity_logs');
-        const localMessages = loadLocalBackup('ayodhya_messages');
-        const localSubs = loadLocalBackup('ayodhya_subscribers');
-        const localRevs = loadLocalBackup('ayodhya_reviews');
-
-        setOrders(localOrders);
-        setActivityLogs(localLogs);
-        setMessages(localMessages);
-        setSubscribers(localSubs);
-        setReviews(localRevs);
-
-        // 1. Subscribe to Orders Collection in Firestore
-        let unsubOrders = () => {};
-        try {
-            const qOrders = query(collection(db, "orders"), orderBy("createdAt", "desc"));
-            unsubOrders = onSnapshot(qOrders, (snapshot) => {
-                const fsOrders = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                const mergedMap = new Map();
-                [...fsOrders, ...localOrders].forEach(item => {
-                    const key = item.orderNumber || item.id;
-                    if (key && !mergedMap.has(key)) {
-                        mergedMap.set(key, item);
-                    }
-                });
-                setOrders(Array.from(mergedMap.values()));
-                setLoading(false);
-            }, (err) => {
-                if (err.code === 'permission-denied') setFirestorePermissionError(true);
-                setLoading(false);
-            });
-        } catch (e) {
-            setLoading(false);
-        }
-
-        // 2. Subscribe to Activity Logs Collection in Firestore (Fine-grained minute activity)
-        let unsubLogs = () => {};
-        try {
-            const qLogs = query(collection(db, "activity_logs"), orderBy("createdAt", "desc"), limit(200));
-            unsubLogs = onSnapshot(qLogs, (snapshot) => {
-                const fsLogs = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                const mergedMap = new Map();
-                [...fsLogs, ...localLogs].forEach(item => {
-                    const key = item.id || `${item.type}-${item.timestamp}`;
-                    if (key && !mergedMap.has(key)) mergedMap.set(key, item);
-                });
-                setActivityLogs(Array.from(mergedMap.values()));
-            }, (err) => {
-                if (err.code === 'permission-denied') setFirestorePermissionError(true);
-            });
-        } catch (e) {}
-
-        // 3. Subscribe to Contact Messages Collection in Firestore
-        let unsubMessages = () => {};
-        try {
-            const qMessages = query(collection(db, "contact_messages"), orderBy("createdAt", "desc"));
-            unsubMessages = onSnapshot(qMessages, (snapshot) => {
-                const fsMessages = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                const mergedMap = new Map();
-                [...fsMessages, ...localMessages].forEach(item => {
-                    if (item.id && !mergedMap.has(item.id)) mergedMap.set(item.id, item);
-                });
-                setMessages(Array.from(mergedMap.values()));
-            }, (err) => {
-                if (err.code === 'permission-denied') setFirestorePermissionError(true);
-            });
-        } catch (e) {}
-
-        // 4. Subscribe to Subscribers Collection in Firestore
-        let unsubSubscribers = () => {};
-        try {
-            const qSubscribers = query(collection(db, "subscribers"), orderBy("createdAt", "desc"));
-            unsubSubscribers = onSnapshot(qSubscribers, (snapshot) => {
-                const fsSubscribers = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                const mergedMap = new Map();
-                [...fsSubscribers, ...localSubs].forEach(item => {
-                    if (item.email && !mergedMap.has(item.email)) mergedMap.set(item.email, item);
-                });
-                setSubscribers(Array.from(mergedMap.values()));
-            }, (err) => {
-                if (err.code === 'permission-denied') setFirestorePermissionError(true);
-            });
-        } catch (e) {}
-
-        // 5. Subscribe to Reviews Collection in Firestore
-        let unsubReviews = () => {};
-        try {
-            const qReviews = query(collection(db, "reviews"), orderBy("createdAt", "desc"));
-            unsubReviews = onSnapshot(qReviews, (snapshot) => {
-                const fsReviews = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                const mergedMap = new Map();
-                [...fsReviews, ...localRevs].forEach(item => {
-                    if (item.id && !mergedMap.has(item.id)) mergedMap.set(item.id, item);
-                });
-                setReviews(Array.from(mergedMap.values()));
-            }, (err) => {
-                if (err.code === 'permission-denied') setFirestorePermissionError(true);
-            });
-        } catch (e) {}
-
-        // 6. Subscribe to Wallet Redemption Requests Collection in Firestore
-        let unsubRedemptions = () => {};
-        try {
-            const qRedemptions = query(collection(db, "redemption_requests"), orderBy("createdAt", "desc"));
-            unsubRedemptions = onSnapshot(qRedemptions, (snapshot) => {
-                setRedemptions(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-            }, (err) => {
-                if (err.code === 'permission-denied') setFirestorePermissionError(true);
-            });
-        } catch (e) {}
-
-        return () => {
-            unsubOrders();
-            unsubLogs();
-            unsubMessages();
-            unsubSubscribers();
-            unsubReviews();
-            unsubRedemptions();
-        };
+            .catch(() => sessionStorage.removeItem('adminAuth'))
+            .finally(() => setCheckingSession(false));
     }, []);
+
+    useEffect(() => {
+        if (!isAuthenticated) return;
+        fetchAllData();
+        // Not true real-time (that would need the client Firestore SDK, which rules now
+        // deny for these collections) - poll instead so the dashboard still feels live.
+        const interval = setInterval(fetchAllData, POLL_INTERVAL_MS);
+        return () => clearInterval(interval);
+    }, [isAuthenticated]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -242,35 +147,28 @@ const Admin = () => {
         sessionStorage.removeItem('adminAuth');
     };
 
+    // Every mutation below calls /api/admin-mutate with the admin session token -
+    // never the client Firestore SDK - then refetches so the UI reflects the change.
+    const adminMutate = async (action, extra = {}) => {
+        const token = sessionStorage.getItem('adminAuth');
+        const res = await fetch('/api/admin-mutate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token, action, ...extra })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Action failed.');
+        return data;
+    };
+
     // --- Create Test Order in Database ---
     const handleCreateTestOrder = async () => {
         if (isCreatingOrder) return;
         setIsCreatingOrder(true);
         try {
-            const testOrderNumber = `AYD-${Date.now().toString().slice(-6)}-TEST`;
-            const testOrder = {
-                orderNumber: testOrderNumber,
-                customer: {
-                    name: "Ayodhya Test Buyer",
-                    email: "test.buyer@ayodhyaagarbatti.in",
-                    phone: "+91 98765 00000",
-                    address: "Temple View, Ayodhya - 224123",
-                    paymentMethod: "Razorpay Online"
-                },
-                items: [
-                    { id: 1, name: "Espresso Ground Incense", variant: "Coffee & Cocoa", price: "₹70", quantity: 2 }
-                ],
-                subtotal: 598,
-                shipping: 0,
-                total: 598,
-                paymentStatus: "Paid",
-                status: "Order Placed",
-                date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-                createdAt: serverTimestamp()
-            };
-
-            const docRef = await addDoc(collection(db, "orders"), testOrder);
-            alert(`Success! Test order written to Firestore Database with Document ID: ${docRef.id}`);
+            const data = await adminMutate('create-test-order');
+            alert(`Success! Test order written to Firestore Database with Document ID: ${data.id}`);
+            await fetchCollection('orders', setOrders);
         } catch (err) {
             console.error("Error creating test order in database:", err);
             alert("Failed to write to database: " + err.message);
@@ -282,11 +180,8 @@ const Admin = () => {
     // --- Order Database Operations ---
     const handleUpdateOrderStatus = async (orderId, newStatus) => {
         try {
-            const orderRef = doc(db, "orders", orderId);
-            await updateDoc(orderRef, {
-                status: newStatus,
-                updatedAt: new Date().toISOString()
-            });
+            await adminMutate('update-order-status', { orderId, status: newStatus });
+            setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
         } catch (err) {
             console.error("Failed to update order status in database:", err);
             alert("Error updating database: " + err.message);
@@ -299,7 +194,8 @@ const Admin = () => {
         if (pendingActions.has(key)) return;
         beginPending(key);
         try {
-            await deleteDoc(doc(db, "orders", orderId));
+            await adminMutate('delete-order', { orderId });
+            setOrders(prev => prev.filter(o => o.id !== orderId));
         } catch (err) {
             console.error("Failed to delete order from database:", err);
             alert("Error deleting order: " + err.message);
@@ -314,7 +210,8 @@ const Admin = () => {
         if (pendingActions.has(key)) return;
         beginPending(key);
         try {
-            await deleteDoc(doc(db, "activity_logs", logId));
+            await adminMutate('delete-log', { logId });
+            setActivityLogs(prev => prev.filter(l => l.id !== logId));
         } catch (err) {
             console.error("Error deleting log:", err);
         } finally {
@@ -329,7 +226,8 @@ const Admin = () => {
         beginPending(key);
         try {
             const nextStatus = currentStatus === 'read' ? 'unread' : 'read';
-            await updateDoc(doc(db, "contact_messages", messageId), { status: nextStatus });
+            await adminMutate('toggle-message-read', { messageId });
+            setMessages(prev => prev.map(m => m.id === messageId ? { ...m, status: nextStatus } : m));
         } catch (err) {
             console.error("Error updating message status:", err);
         } finally {
@@ -343,7 +241,8 @@ const Admin = () => {
         if (pendingActions.has(key)) return;
         beginPending(key);
         try {
-            await deleteDoc(doc(db, "contact_messages", messageId));
+            await adminMutate('delete-message', { messageId });
+            setMessages(prev => prev.filter(m => m.id !== messageId));
         } catch (err) {
             console.error("Error deleting message:", err);
         } finally {
@@ -358,7 +257,8 @@ const Admin = () => {
         if (pendingActions.has(key)) return;
         beginPending(key);
         try {
-            await deleteDoc(doc(db, "subscribers", subId));
+            await adminMutate('delete-subscriber', { subId });
+            setSubscribers(prev => prev.filter(s => s.id !== subId));
         } catch (err) {
             console.error("Error deleting subscriber:", err);
         } finally {
@@ -373,7 +273,8 @@ const Admin = () => {
         if (pendingActions.has(key)) return;
         beginPending(key);
         try {
-            await deleteDoc(doc(db, "reviews", reviewId));
+            await adminMutate('delete-review', { reviewId });
+            setReviews(prev => prev.filter(r => r.id !== reviewId));
         } catch (err) {
             console.error("Error deleting review:", err);
         } finally {
@@ -398,6 +299,7 @@ const Admin = () => {
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'Failed to resolve redemption request');
+            await fetchCollection('redemption_requests', setRedemptions);
         } catch (err) {
             console.error("Error resolving redemption request:", err);
             alert("Error: " + err.message);
@@ -513,10 +415,10 @@ const Admin = () => {
                         <div className="flex items-center gap-2">
                             <h1 className="font-heading text-2xl md:text-3xl text-charcoal">Database Control Center</h1>
                             <span className="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-                                Firestore Live
+                                Secure Server Sync
                             </span>
                         </div>
-                        <p className="text-gray-500 text-xs mt-1">Real-time sync enabled across orders, minute activity, cart edits, contacts & reviews.</p>
+                        <p className="text-gray-500 text-xs mt-1">Auto-refreshes every 20s across orders, activity, contacts, subscribers, reviews & redemptions.</p>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-3">
@@ -534,6 +436,13 @@ const Admin = () => {
                             <Download size={15} /> Export Orders CSV
                         </button>
                         <button
+                            onClick={() => { setLoading(true); fetchAllData(); }}
+                            disabled={loading}
+                            className="bg-white border border-gray-300 text-charcoal px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-gray-50 transition-colors shadow-sm flex items-center gap-2 disabled:opacity-50"
+                        >
+                            <RefreshCw size={15} className={loading ? 'animate-spin' : ''} /> Refresh
+                        </button>
+                        <button
                             onClick={handleLogout}
                             className="bg-white border border-gray-300 text-red-600 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-red-50 transition-colors shadow-sm"
                         >
@@ -542,28 +451,16 @@ const Admin = () => {
                     </div>
                 </div>
 
-                {/* Firestore Rules Troubleshooting Alert */}
-                {firestorePermissionError && (
+                {/* Data Load Error Alert */}
+                {dataLoadError && (
                     <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl flex items-start gap-3">
                         <AlertCircle className="text-amber-600 shrink-0 mt-0.5" size={20} />
                         <div className="text-xs text-amber-900 space-y-1">
-                            <p className="font-bold">Firebase Firestore Rules Notice:</p>
-                            <p>
-                                Firebase Firestore currently rejected direct remote reads/writes due to default security rules. Data is currently safely stored in local backup.
-                            </p>
+                            <p className="font-bold">Couldn't load admin data:</p>
+                            <p>{dataLoadError}</p>
                             <p className="font-medium mt-1">
-                                To enable public writing to Firestore: Go to <a href="https://console.firebase.google.com/project/ayodhya-agarbatti/firestore/rules" target="_blank" rel="noreferrer" className="underline font-bold text-amber-800">Firebase Console ➔ Firestore Database ➔ Rules</a> and set:
+                                Check that FIREBASE_ADMIN_PROJECT_ID, FIREBASE_ADMIN_CLIENT_EMAIL and FIREBASE_ADMIN_PRIVATE_KEY are set in Vercel's environment variables, or try logging out and back in if your session expired.
                             </p>
-                            <pre className="bg-amber-100/80 p-2 rounded text-[11px] font-mono text-amber-950 mt-1">
-{`rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if true;
-    }
-  }
-}`}
-                            </pre>
                         </div>
                     </div>
                 )}
