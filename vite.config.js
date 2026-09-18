@@ -22,6 +22,10 @@ const razorpayApiDevPlugin = (env) => ({
       '/api/create-redemption-request': path.resolve(process.cwd(), 'api/create-redemption-request.js'),
       '/api/admin-resolve-redemption': path.resolve(process.cwd(), 'api/admin-resolve-redemption.js'),
       '/api/detect-region': path.resolve(process.cwd(), 'api/detect-region.js'),
+      '/api/admin-list': path.resolve(process.cwd(), 'api/admin-list.js'),
+      '/api/admin-mutate': path.resolve(process.cwd(), 'api/admin-mutate.js'),
+      '/api/admin-login': path.resolve(process.cwd(), 'api/admin-login.js'),
+      '/api/admin-verify': path.resolve(process.cwd(), 'api/admin-verify.js'),
     }
     for (const [route, modulePath] of Object.entries(routes)) {
       server.middlewares.use(route, async (req, res) => {
