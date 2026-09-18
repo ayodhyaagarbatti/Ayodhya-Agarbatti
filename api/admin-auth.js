@@ -1,5 +1,5 @@
 import readJsonBody from './_readJsonBody.js';
-import { signSession } from './_adminSession.js';
+import { signSession, verifySession } from './_adminSession.js';
 
 const sendJson = (res, status, payload) => {
     res.statusCode = status;
@@ -7,6 +7,8 @@ const sendJson = (res, status, payload) => {
     res.end(JSON.stringify(payload));
 };
 
+// Combined login+session-verify (rather than separate admin-login.js/admin-verify.js)
+// to stay under Vercel's serverless function count limit.
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         sendJson(res, 405, { error: 'Method not allowed' });
@@ -18,6 +20,12 @@ export default async function handler(req, res) {
         body = await readJsonBody(req);
     } catch (err) {
         sendJson(res, 400, { error: 'Invalid JSON body' });
+        return;
+    }
+
+    if (body.mode === 'verify') {
+        const valid = verifySession(body.token, process.env.ADMIN_SESSION_SECRET);
+        sendJson(res, 200, { valid });
         return;
     }
 
