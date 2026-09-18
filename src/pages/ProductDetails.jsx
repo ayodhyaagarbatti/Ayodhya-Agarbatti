@@ -61,7 +61,9 @@ const ProductDetails = ({ addToCart }) => {
     const handleAddToCart = () => {
         const itemToAdd = {
             ...product,
-            price: `₹${currentPrice}`,
+            price: isIndia ? `₹${currentPrice}` : `$${currentUsdPrice}`,
+            numericPrice: isIndia ? currentPrice : currentUsdPrice,
+            currency: isIndia ? 'INR' : 'USD',
             selectedPackName: product.packOptions?.[selectedPack]?.size || product.stickCount,
             quantity: quantity
         };
@@ -541,22 +543,13 @@ const ProductDetails = ({ addToCart }) => {
                                 </button>
                             </div>
 
-                            {isIndia ? (
-                                <button
-                                    type="button"
-                                    onClick={handleAddToCart}
-                                    className="flex-1 bg-charcoal text-white hover:bg-gold hover:text-charcoal transition-all py-4 px-8 rounded-xl font-bold uppercase tracking-widest text-xs shadow-xl flex items-center justify-center gap-3 transform active:scale-98"
-                                >
-                                    <ShoppingBag size={18} /> Add to Sanctuary — {displayTotalPrice}
-                                </button>
-                            ) : (
-                                <Link
-                                    to="/contact"
-                                    className="flex-1 bg-gray-100 text-gray-500 transition-all py-4 px-8 rounded-xl font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-3 text-center"
-                                >
-                                    International Checkout Coming Soon — {displayTotalPrice}
-                                </Link>
-                            )}
+                            <button
+                                type="button"
+                                onClick={handleAddToCart}
+                                className="flex-1 bg-charcoal text-white hover:bg-gold hover:text-charcoal transition-all py-4 px-8 rounded-xl font-bold uppercase tracking-widest text-xs shadow-xl flex items-center justify-center gap-3 transform active:scale-98"
+                            >
+                                <ShoppingBag size={18} /> Add to Sanctuary — {displayTotalPrice}
+                            </button>
                         </div>
 
                         {/* Key Benefits List */}

@@ -12,6 +12,9 @@ const Cart = ({ isOpen, onClose, items, onRemove, onUpdateQuantity }) => {
         const priceNum = item.numericPrice || parseInt(String(item.price || '0').replace(/[^0-9]/g, '')) || 70;
         return acc + (priceNum * item.quantity);
     }, 0);
+    // Currency is tied to the visitor's region for the whole session, so every item
+    // in a cart shares one - just read it off whatever's in the cart already.
+    const currencySymbol = items[0]?.currency === 'USD' ? '$' : '₹';
 
     const navigate = useNavigate();
 
@@ -103,7 +106,7 @@ const Cart = ({ isOpen, onClose, items, onRemove, onUpdateQuantity }) => {
                 <div className="border-t border-charcoal/5 pt-6 mt-auto bg-ivory">
                     <div className="flex justify-between items-center mb-6">
                         <span className="font-display text-gray-500 uppercase tracking-widest text-xs">{t('totalEstimate')}</span>
-                        <span className="font-heading text-2xl text-charcoal">₹{total}</span>
+                        <span className="font-heading text-2xl text-charcoal">{currencySymbol}{total}</span>
                     </div>
                     <button
                         onClick={handleCheckout}

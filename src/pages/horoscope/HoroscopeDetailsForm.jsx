@@ -4,6 +4,7 @@ import { MapPin, ArrowRight, ArrowLeft } from 'lucide-react';
 import SEO from '../../components/SEO';
 import { getHoroscopeProduct } from '../../data/horoscopeProducts';
 import { searchCities } from '../../utils/horoscopeCities';
+import { useRegion } from '../../hooks/useRegion';
 
 const emptyPerson = () => ({
     name: '',
@@ -163,6 +164,7 @@ const HoroscopeDetailsForm = () => {
     const { productId } = useParams();
     const navigate = useNavigate();
     const product = getHoroscopeProduct(productId);
+    const { isIndia } = useRegion();
 
     const [subject, setSubject] = useState(emptyPerson());
     const [partner, setPartner] = useState(emptyPerson());
@@ -216,7 +218,7 @@ const HoroscopeDetailsForm = () => {
                     <ArrowLeft size={14} /> Back to readings
                 </Link>
                 <h1 className="font-serif text-3xl text-charcoal mb-2">{product.name}</h1>
-                <p className="text-gray-500 mb-8">Enter birth details to compute the chart. ₹{product.price}.</p>
+                <p className="text-gray-500 mb-8">Enter birth details to compute the chart. {isIndia ? `₹${product.price}` : `$${product.usdPrice}`}.</p>
 
                 <form onSubmit={handleSubmit}>
                     <PersonFields

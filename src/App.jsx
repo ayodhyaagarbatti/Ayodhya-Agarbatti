@@ -123,8 +123,11 @@ function AppContent() {
             const parsed = JSON.parse(saved);
             return parsed.map(item => {
                 const matchedProduct = products.find(p => p.id === item.id);
-                const numericPrice = matchedProduct?.numericPrice || item.numericPrice || 70;
-                const priceStr = matchedProduct?.price || item.price || `₹${numericPrice}`;
+                // Prefer what was actually saved (respects the currency/price the item
+                // was added at) over the current INR catalog price, which would
+                // otherwise silently flip a restored USD cart item back to INR.
+                const numericPrice = item.numericPrice || matchedProduct?.numericPrice || 70;
+                const priceStr = item.price || matchedProduct?.price || `₹${numericPrice}`;
                 const imageSrc = item.image || matchedProduct?.images?.[0] || item.images?.[0] || '/images/ayodhya_logo.png';
                 return {
                     ...item,

@@ -1,7 +1,9 @@
+import { isIndiaRequest } from './_region.js';
+
 // Vercel's edge network stamps every request with the visitor's country before it
-// ever reaches this function - no third-party geo-IP lookup needed. This is also the
-// same signal that order-creation endpoints will trust when international checkout
-// goes live, so what a visitor sees here matches what they'd actually be charged.
+// ever reaches this function - no third-party geo-IP lookup needed. isIndiaRequest()
+// is the same check order-creation endpoints use, so what a visitor sees here matches
+// what they're actually charged.
 const sendJson = (res, status, payload) => {
     res.statusCode = status;
     res.setHeader('Content-Type', 'application/json');
@@ -11,6 +13,5 @@ const sendJson = (res, status, payload) => {
 
 export default async function handler(req, res) {
     const country = req.headers['x-vercel-ip-country'] || null;
-    const isIndia = !country || country === 'IN'; // unknown origin (e.g. local dev) defaults to India
-    sendJson(res, 200, { country, isIndia });
+    sendJson(res, 200, { country, isIndia: isIndiaRequest(req) });
 }

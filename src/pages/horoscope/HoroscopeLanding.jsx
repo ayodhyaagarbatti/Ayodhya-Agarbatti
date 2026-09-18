@@ -62,21 +62,12 @@ const HoroscopeLanding = () => {
                                 </li>
                             ))}
                         </ul>
-                        {isIndia ? (
-                            <Link
-                                to={`/horoscope/${product.id}/details`}
-                                className="btn-primary flex items-center justify-center gap-2 hover:bg-gold hover:text-charcoal"
-                            >
-                                Get Started <ArrowRight size={14} />
-                            </Link>
-                        ) : (
-                            <Link
-                                to="/contact"
-                                className="btn-primary bg-gray-100 text-gray-500 flex items-center justify-center gap-2"
-                            >
-                                International Checkout Coming Soon
-                            </Link>
-                        )}
+                        <Link
+                            to={`/horoscope/${product.id}/details`}
+                            className="btn-primary flex items-center justify-center gap-2 hover:bg-gold hover:text-charcoal"
+                        >
+                            Get Started <ArrowRight size={14} />
+                        </Link>
                     </div>
                 ))}
             </div>

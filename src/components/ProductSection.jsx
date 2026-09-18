@@ -24,7 +24,10 @@ const ProductSection = ({ addToCart, isStandaloneShop = false }) => {
 
     const handleAddToCart = (product, e) => {
         if (e) e.stopPropagation();
-        addToCart(product);
+        const itemToAdd = isIndia
+            ? { ...product, currency: 'INR' }
+            : { ...product, price: `$${product.usdPrice}`, numericPrice: product.usdPrice, currency: 'USD' };
+        addToCart(itemToAdd);
         setAddedToast(product.name);
         setTimeout(() => setAddedToast(null), 2500);
     };
@@ -218,22 +221,12 @@ const ProductSection = ({ addToCart, isStandaloneShop = false }) => {
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-3">
-                                        {isIndia ? (
-                                            <button
-                                                onClick={(e) => handleAddToCart(product, e)}
-                                                className="bg-charcoal text-white hover:bg-gold hover:text-charcoal font-bold uppercase tracking-widest text-[11px] py-3.5 px-4 rounded-lg transition-all shadow-md flex items-center justify-center gap-2"
-                                            >
-                                                <ShoppingBag size={14} /> {t('quickAdd')}
-                                            </button>
-                                        ) : (
-                                            <Link
-                                                to="/contact"
-                                                className="bg-gray-100 text-gray-500 font-bold uppercase tracking-widest text-[11px] py-3.5 px-4 rounded-lg transition-all flex items-center justify-center gap-2 text-center"
-                                                title="International checkout is launching soon"
-                                            >
-                                                Coming Soon
-                                            </Link>
-                                        )}
+                                        <button
+                                            onClick={(e) => handleAddToCart(product, e)}
+                                            className="bg-charcoal text-white hover:bg-gold hover:text-charcoal font-bold uppercase tracking-widest text-[11px] py-3.5 px-4 rounded-lg transition-all shadow-md flex items-center justify-center gap-2"
+                                        >
+                                            <ShoppingBag size={14} /> {t('quickAdd')}
+                                        </button>
                                         <Link
                                             to="/completion-ritual"
                                             className="border border-charcoal/20 text-charcoal hover:border-gold hover:text-gold font-bold uppercase tracking-widest text-[11px] py-3.5 px-4 rounded-lg transition-all text-center block"
@@ -295,25 +288,15 @@ const ProductSection = ({ addToCart, isStandaloneShop = false }) => {
                             </div>
 
                             <div className="flex gap-4">
-                                {isIndia ? (
-                                    <button
-                                        onClick={() => {
-                                            addToCart(quickViewProduct);
-                                            setQuickViewProduct(null);
-                                        }}
-                                        className="flex-1 bg-charcoal text-white hover:bg-gold hover:text-charcoal py-4 font-bold uppercase tracking-widest text-xs rounded-lg transition-colors shadow-lg flex items-center justify-center gap-2"
-                                    >
-                                        <ShoppingBag size={16} /> {t('addToSanctuary')} — {quickViewProduct.price}
-                                    </button>
-                                ) : (
-                                    <Link
-                                        to="/contact"
-                                        onClick={() => setQuickViewProduct(null)}
-                                        className="flex-1 bg-gray-100 text-gray-500 py-4 font-bold uppercase tracking-widest text-xs rounded-lg transition-colors flex items-center justify-center gap-2 text-center"
-                                    >
-                                        International Checkout Coming Soon
-                                    </Link>
-                                )}
+                                <button
+                                    onClick={() => {
+                                        handleAddToCart(quickViewProduct);
+                                        setQuickViewProduct(null);
+                                    }}
+                                    className="flex-1 bg-charcoal text-white hover:bg-gold hover:text-charcoal py-4 font-bold uppercase tracking-widest text-xs rounded-lg transition-colors shadow-lg flex items-center justify-center gap-2"
+                                >
+                                    <ShoppingBag size={16} /> {t('addToSanctuary')} — {formatProductPrice(quickViewProduct, isIndia)}
+                                </button>
                                 <Link
                                     to={`/product/${quickViewProduct.id}`}
                                     onClick={() => setQuickViewProduct(null)}
