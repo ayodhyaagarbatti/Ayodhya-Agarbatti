@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en" data-resolution="landscape">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Ayodhya Agarbatti — Brag</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Cinzel";
+        font-style: normal;
+        font-weight: 400;
+        font-display: block;
+        src: url("assets/fonts/cinzel-400.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "Cinzel";
+        font-style: normal;
+        font-weight: 700;
+        font-display: block;
+        src: url("assets/fonts/cinzel-700.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "Cinzel";
+        font-style: normal;
+        font-weight: 900;
+        font-display: block;
+        src: url("assets/fonts/cinzel-900.woff2") format("woff2");
+      }
+
+      :root {
+        --maroon-mid: #3e1414;
+        --maroon-dark: #1a0505;
+        --maroon-deep: #0f0202;
+        --gold: #d4af37;
+        --gold-light: #f5d67b;
+        --gold-deep-on-light: #6a4e12;
+        --ivory: #fdfbf7;
+        --charcoal: #1a1a1a;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--maroon-deep);
+      }
+      body {
+        font-family: "Outfit", sans-serif;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      /* Sub-comp slots stretch to fill the root and stack in document order. */
+      #root > [data-composition-src] {
+        position: absolute;
+        inset: 0;
+      }
+
+      .scene-inner {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* ---------- Dark ritual scenes (1 & 4) ---------- */
+      .scene-dark {
+        background: var(--maroon-deep);
+      }
+      .bg-image {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.82;
+      }
+      .bg-gradient-maroon {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse 85% 80% at 50% 46%,
+          var(--maroon-mid) 0%,
+          var(--maroon-dark) 58%,
+          var(--maroon-deep) 100%
+        );
+        mix-blend-mode: multiply;
+      }
+      .bg-vignette {
+        position: absolute;
+        inset: 0;
+        box-shadow: inset 0 0 260px 90px rgba(0, 0, 0, 0.62);
+        pointer-events: none;
+      }
+
+      .hook-content {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+        text-align: center;
+        padding: 0 120px;
+      }
+      .tagline-ivory {
+        font-family: "Outfit", sans-serif;
+        font-weight: 400;
+        font-size: 27px;
+        letter-spacing: 0.42em;
+        text-transform: uppercase;
+        color: var(--ivory);
+      }
+      .wordmark-gold {
+        font-family: "Cinzel", serif;
+        font-weight: 700;
+        font-size: 134px;
+        line-height: 1.05;
+        letter-spacing: 0.03em;
+        background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 48%, #b8912e 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .wordmark-gold.outro-mark {
+        font-size: 108px;
+      }
+      .outro-tagline {
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+        font-weight: 400;
+        font-size: 32px;
+        color: var(--ivory);
+        letter-spacing: 0.02em;
+      }
+
+      /* ---------- Light card scenes (2 & 3) ---------- */
+      .scene-light {
+        background: radial-gradient(ellipse 90% 80% at 50% 40%, #ffffff 0%, var(--ivory) 62%, #f6efe1 100%);
+      }
+      .section-kicker {
+        position: absolute;
+        top: 108px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-family: "Outfit", sans-serif;
+        font-weight: 600;
+        font-size: 16px;
+        letter-spacing: 0.34em;
+        text-transform: uppercase;
+        color: var(--gold-deep-on-light);
+      }
+      .section-kicker::after {
+        content: "";
+        display: block;
+        width: 64px;
+        height: 2px;
+        margin: 16px auto 0;
+        background: var(--gold);
+      }
+
+      /* Fragrance cards (scene 2) */
+      .cards-row {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 232px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 40px;
+        padding: 0 100px;
+      }
+      .frag-card {
+        width: 390px;
+        background: #ffffff;
+        border-radius: 20px;
+        box-shadow:
+          0 32px 60px -22px rgba(26, 5, 5, 0.28),
+          0 10px 22px -12px rgba(26, 5, 5, 0.16);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .card-image-wrap {
+        position: relative;
+        height: 250px;
+        background: linear-gradient(160deg, #fbf3e6, #f3e2c4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .card-image-wrap img {
+        width: 68%;
+        height: 68%;
+        object-fit: contain;
+        filter: drop-shadow(0 18px 22px rgba(26, 5, 5, 0.2));
+      }
+      .card-pill {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        background: linear-gradient(135deg, var(--gold-light), var(--gold));
+        color: var(--charcoal);
+        font-family: "Outfit", sans-serif;
+        font-weight: 600;
+        font-size: 12.5px;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        padding: 8px 14px;
+        border-radius: 999px;
+      }
+      .card-body {
+        padding: 24px 24px 26px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        flex: 1;
+      }
+      .card-name {
+        font-family: "Cinzel", serif;
+        font-weight: 700;
+        font-size: 22px;
+        color: var(--charcoal);
+        line-height: 1.3;
+      }
+      .badge-bar {
+        margin-top: auto;
+        display: flex;
+        background: var(--charcoal);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .badge-seg {
+        flex: 1;
+        padding: 12px 10px;
+        text-align: center;
+      }
+      .badge-seg + .badge-seg {
+        border-left: 1px solid rgba(212, 175, 55, 0.35);
+      }
+      .badge-label {
+        font-family: "Outfit", sans-serif;
+        font-weight: 500;
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 5px;
+      }
+      .badge-value {
+        font-family: "Outfit", sans-serif;
+        font-weight: 600;
+        font-size: 14.5px;
+        color: var(--ivory);
+      }
+
+      /* Horoscope card (scene 3) */
+      .horo-card-wrap {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 196px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .horo-card {
+        width: 560px;
+        background: #ffffff;
+        border-radius: 22px;
+        box-shadow:
+          0 36px 70px -24px rgba(26, 5, 5, 0.3),
+          0 12px 24px -14px rgba(26, 5, 5, 0.16);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .horo-image-wrap {
+        position: relative;
+        height: 190px;
+        background: radial-gradient(circle at 50% 50%, #fbf3e6 0%, #f3e2c4 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .horo-ring {
+        width: 132px;
+        height: 132px;
+        border-radius: 50%;
+        border: 2px solid rgba(212, 175, 55, 0.55);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .horo-ring::before {
+        content: "";
+        width: 92px;
+        height: 92px;
+        border-radius: 50%;
+        border: 1.5px solid rgba(212, 175, 55, 0.75);
+      }
+      .horo-pill {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        background: linear-gradient(135deg, var(--gold-light), var(--gold));
+        color: var(--charcoal);
+        font-family: "Outfit", sans-serif;
+        font-weight: 600;
+        font-size: 12.5px;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        padding: 8px 14px;
+        border-radius: 999px;
+      }
+      .horo-body {
+        padding: 28px 30px 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .horo-title {
+        font-family: "Cinzel", serif;
+        font-weight: 700;
+        font-size: 30px;
+        color: var(--charcoal);
+      }
+      .horo-desc {
+        font-family: "Outfit", sans-serif;
+        font-weight: 400;
+        font-size: 18px;
+        line-height: 1.5;
+        color: #4a4038;
+      }
+      .horo-badge-bar {
+        margin-top: 4px;
+        background: var(--charcoal);
+        border-radius: 12px;
+        padding: 12px 16px;
+        text-align: center;
+      }
+      .horo-badge-bar .badge-label {
+        margin-bottom: 4px;
+      }
+      .horo-badge-bar .badge-value {
+        font-size: 14px;
+      }
+
+      .clarify-line {
+        margin-top: 44px;
+        max-width: 980px;
+        text-align: center;
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+        font-weight: 400;
+        font-size: 29px;
+        line-height: 1.5;
+        color: var(--charcoal);
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="brag"
+      data-start="0"
+      data-duration="21"
+      data-width="1920"
+      data-height="1080"
+    >
+      <!-- ============ Scene slots — sub-compositions, overlapped 0.7s for crossfades ============ -->
+      <div
+        id="scene1"
+        class="clip"
+        data-composition-id="scene1"
+        data-composition-src="compositions/scene1.html"
+        data-start="0"
+        data-duration="5.7"
+        data-width="1920"
+        data-height="1080"
+        data-track-index="1"
+      ></div>
+
+      <div
+        id="scene2"
+        class="clip"
+        data-composition-id="scene2"
+        data-composition-src="compositions/scene2.html"
+        data-start="5"
+        data-duration="6.7"
+        data-width="1920"
+        data-height="1080"
+        data-track-index="1"
+      ></div>
+
+      <div
+        id="scene3"
+        class="clip"
+        data-composition-id="scene3"
+        data-composition-src="compositions/scene3.html"
+        data-start="11"
+        data-duration="6.7"
+        data-width="1920"
+        data-height="1080"
+        data-track-index="1"
+      ></div>
+
+      <div
+        id="scene4"
+        class="clip"
+        data-composition-id="scene4"
+        data-composition-src="compositions/scene4.html"
+        data-start="17"
+        data-duration="4"
+        data-width="1920"
+        data-height="1080"
+        data-track-index="1"
+      ></div>
+
+      <!-- ============ Audio — continuous at the root, survives scene cuts ============ -->
+      <audio
+        id="music-bed"
+        src="assets/music/happy-beats-business-moves-vol-12-by-ende-dot-app.mp3"
+        data-start="0"
+        data-duration="21"
+        data-media-start="0"
+        data-track-index="20"
+        data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":0},{"t":1.5,"v":0.32},{"t":16.5,"v":0.32},{"t":17.5,"v":0.36},{"t":19,"v":0.36},{"t":21,"v":0}]}]}'
+      ></audio>
+
+      <audio
+        id="sfx-wordmark"
+        src="assets/sfx/interface/bong_001.ogg"
+        data-start="0.55"
+        data-track-index="21"
+        data-volume="0.38"
+      ></audio>
+
+      <audio
+        id="sfx-card-set"
+        src="assets/sfx/impact/impactSoft_medium_001.ogg"
+        data-start="6.9"
+        data-track-index="22"
+        data-volume="0.3"
+      ></audio>
+
+      <audio
+        id="sfx-horoscope-card"
+        src="assets/sfx/impact/impactSoft_medium_001.ogg"
+        data-start="12.05"
+        data-track-index="23"
+        data-volume="0.32"
+      ></audio>
+    </div>
+
+    <script>
+      // Root timeline is near-empty — all scene animation lives in the sub-compositions.
+      window.__timelines["brag"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>
