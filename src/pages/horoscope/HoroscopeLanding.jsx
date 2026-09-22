@@ -63,7 +63,7 @@ const HoroscopeLanding = () => {
                                         onClick={openSignIn}
                                         className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-gold border border-gold rounded-lg px-3 py-2 hover:bg-gold hover:text-charcoal transition-all"
                                     >
-                                        <Lock size={12} /> Sign in for price
+                                        <Lock size={12} /> Sign in
                                     </button>
                                 )}
                             </div>
