@@ -1,16 +1,20 @@
 import React, { useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Sparkles, Check, ArrowRight } from 'lucide-react';
+import { Sparkles, Check, ArrowRight, Lock } from 'lucide-react';
 import SEO from '../../components/SEO';
 import { horoscopeProducts } from '../../data/horoscopeProducts';
 import ReferAndEarn from '../../components/ReferAndEarn';
 import { storeReferralCode } from '../../utils/referral';
 import { useRegion } from '../../hooks/useRegion';
+import { useAuthUser } from '../../hooks/useAuthUser';
 import { formatHoroscopePrice } from '../../utils/currency';
+
+const openSignIn = () => window.dispatchEvent(new CustomEvent('ayodhya:open-account'));
 
 const HoroscopeLanding = () => {
     const [searchParams] = useSearchParams();
     const { isIndia } = useRegion();
+    const { user, loading: authLoading } = useAuthUser();
 
     useEffect(() => {
         const ref = searchParams.get('ref');
@@ -50,7 +54,18 @@ const HoroscopeLanding = () => {
                                 <p className="text-xs uppercase tracking-widest text-gold font-bold mt-1">{product.shortName}</p>
                             </div>
                             <div className="text-right shrink-0">
-                                <div className="font-serif text-3xl font-bold text-charcoal">{formatHoroscopePrice(product, isIndia)}</div>
+                                {authLoading ? (
+                                    <div className="h-8 w-16 rounded bg-gray-100 animate-pulse" />
+                                ) : user ? (
+                                    <div className="font-serif text-3xl font-bold text-charcoal">{formatHoroscopePrice(product, isIndia)}</div>
+                                ) : (
+                                    <button
+                                        onClick={openSignIn}
+                                        className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-gold border border-gold rounded-lg px-3 py-2 hover:bg-gold hover:text-charcoal transition-all"
+                                    >
+                                        <Lock size={12} /> Sign in for price
+                                    </button>
+                                )}
                             </div>
                         </div>
                         <p className="text-gray-600 text-sm mb-6">{product.tagline}</p>
@@ -62,12 +77,21 @@ const HoroscopeLanding = () => {
                                 </li>
                             ))}
                         </ul>
-                        <Link
-                            to={`/horoscope/${product.id}/details`}
-                            className="btn-primary flex items-center justify-center gap-2 hover:bg-gold hover:text-charcoal"
-                        >
-                            Get Started <ArrowRight size={14} />
-                        </Link>
+                        {user ? (
+                            <Link
+                                to={`/horoscope/${product.id}/details`}
+                                className="btn-primary flex items-center justify-center gap-2 hover:bg-gold hover:text-charcoal"
+                            >
+                                Get Started <ArrowRight size={14} />
+                            </Link>
+                        ) : (
+                            <button
+                                onClick={openSignIn}
+                                className="btn-primary flex items-center justify-center gap-2 hover:bg-gold hover:text-charcoal"
+                            >
+                                Sign In to Get Started <ArrowRight size={14} />
+                            </button>
+                        )}
                     </div>
                 ))}
             </div>
