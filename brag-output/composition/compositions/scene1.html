@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        #root {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+        }
+      </style>
+      <div id="root" data-composition-id="scene1" data-width="1920" data-height="1080" data-duration="5.7">
+        <div id="scene1-inner" class="scene-inner scene-dark">
+          <img id="scene1-bg-img" class="bg-image" src="assets/images/ritual_bg.png" alt="" />
+          <div class="bg-gradient-maroon"></div>
+          <div class="bg-vignette"></div>
+          <div class="hook-content">
+            <p id="s1-tagline" class="tagline-ivory">Handcrafted in the Holy City</p>
+            <h1 id="s1-wordmark" class="wordmark-gold">Sacred Aroma</h1>
+          </div>
+        </div>
+      </div>
+      <script>
+        const tl = gsap.timeline({ paused: true });
+        tl.fromTo("#s1-tagline", { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 1.0, ease: "power2.out" }, 0.3);
+        tl.fromTo(
+          "#s1-wordmark",
+          { opacity: 0, scale: 1.08 },
+          { opacity: 1, scale: 1, duration: 1.1, ease: "power2.out" },
+          0.55,
+        );
+        // Exit crossfade — last 0.7s of this scene's 5.7s window.
+        tl.fromTo("#scene1-inner", { opacity: 1 }, { opacity: 0, duration: 0.7, ease: "power1.inOut" }, 5.0);
+        window.__timelines["scene1"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
