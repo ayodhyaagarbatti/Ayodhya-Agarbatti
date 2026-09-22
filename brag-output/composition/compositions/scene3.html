@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <style>
+        #root {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+        }
+      </style>
+      <div id="root" data-composition-id="scene3" data-width="1920" data-height="1080" data-duration="6.7">
+        <div id="scene3-inner" class="scene-inner scene-light">
+          <div class="horo-card-wrap">
+            <div id="horo-card" class="horo-card">
+              <div class="horo-image-wrap">
+                <span class="horo-pill">Vedic Astrology</span>
+                <div class="horo-ring"></div>
+              </div>
+              <div class="horo-body">
+                <h2 class="horo-title">Janma Kundali &middot; &#8377;99</h2>
+                <p class="horo-desc">
+                  Computed to arc-second precision from your exact birth details &mdash; career, marriage,
+                  health, timing and remedies.
+                </p>
+                <div class="horo-badge-bar">
+                  <div class="badge-label">Instant Delivery</div>
+                  <div class="badge-value">Shareable PDF Chart</div>
+                </div>
+              </div>
+            </div>
+            <p id="clarify-line" class="clarify-line">
+              AI here means Almighty &#298;&#347;vara. Not artificial intelligence.
+            </p>
+          </div>
+        </div>
+      </div>
+      <script>
+        const tl = gsap.timeline({ paused: true });
+        // Entrance crossfade — first 0.7s of this scene's window.
+        tl.fromTo("#scene3-inner", { opacity: 0 }, { opacity: 1, duration: 0.7, ease: "power1.inOut" }, 0);
+        tl.fromTo("#horo-card", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.75, ease: "power2.out" }, 0.3);
+        tl.fromTo(
+          "#clarify-line",
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.9, ease: "power2.out" },
+          2.05,
+        );
+        // Exit crossfade — last 0.7s of this scene's 6.7s window.
+        tl.fromTo(
+          "#scene3-inner",
+          { opacity: 1 },
+          { opacity: 0, duration: 0.7, ease: "power1.inOut", immediateRender: false },
+          6.0,
+        );
+        window.__timelines["scene3"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
