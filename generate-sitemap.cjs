@@ -16,6 +16,7 @@ const staticRoutes = [
     { path: '/shop', lastmod: '2026-07-25', changefreq: 'daily', priority: 0.9 },
     { path: '/blog', lastmod: '2026-07-25', changefreq: 'weekly', priority: 0.8 },
     { path: '/contact', lastmod: '2026-07-25', changefreq: 'monthly', priority: 0.7 },
+    { path: '/careers', lastmod: '2026-09-30', changefreq: 'weekly', priority: 0.7 },
     { path: '/return-policy', lastmod: '2026-07-25', changefreq: 'monthly', priority: 0.6 },
     { path: '/checkout', lastmod: '2026-07-25', changefreq: 'yearly', priority: 0.3 },
     { path: '/success', lastmod: '2026-07-25', changefreq: 'yearly', priority: 0.3 }

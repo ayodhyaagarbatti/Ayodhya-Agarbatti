@@ -125,6 +125,7 @@ const Footer = () => {
                         <li><Link to="/#heritage" onClick={goToHeritage} className="hover:text-gold transition-colors">{t('footerOurStory')}</Link></li>
                         <li><Link to="/blog" className="hover:text-gold transition-colors">{t('footerJournal')}</Link></li>
                         <li><Link to="/contact" className="hover:text-gold transition-colors">{t('footerContact')}</Link></li>
+                        <li><Link to="/careers" className="hover:text-gold transition-colors">Careers & Internships</Link></li>
                         <li><Link to="/horoscope" className="hover:text-gold transition-colors">✨ Vedic Horoscope</Link></li>
                         <li><Link to="/return-policy" className="hover:text-gold transition-colors text-gold/90 font-bold">{t('footerReturnPolicy')}</Link></li>
                         <li><Link to="/shipping-policy" className="hover:text-gold transition-colors">Shipping & Exchange</Link></li>
