@@ -24,6 +24,7 @@ import SearchModal from './components/SearchModal';
 import Home from './pages/Home';
 import Blog from './pages/Blog';
 import Contact from './pages/Contact';
+import Careers from './pages/Careers';
 import ProductDetails from './pages/ProductDetails';
 import Admin from './pages/Admin';
 import Checkout from './pages/Checkout';
@@ -264,6 +265,7 @@ function AppContent() {
                         <Route path="/shop" element={<ProductSection addToCart={addToCart} isStandaloneShop={true} />} />
                         <Route path="/blog" element={<Blog />} />
                         <Route path="/contact" element={<Contact />} />
+                        <Route path="/careers" element={<Careers />} />
                         <Route path="/checkout" element={<Checkout cartItems={cartItems} onClearCart={clearCart} />} />
                         <Route path="/success" element={<PaymentSuccess />} />
                         <Route path="/return-policy" element={<ReturnPolicy />} />
