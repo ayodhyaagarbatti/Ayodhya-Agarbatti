@@ -422,6 +422,120 @@ function nearTerm(chart,years){
   return events;
 }
 
+/* ---------------- Dhan Yog: financial-year forecast ---------------- */
+// Day-by-day / week-by-week investing tone for one Indian financial year
+// (1 Apr - 31 Mar), scored from the same transit primitives as gochara()
+// above - every tone traces to a specific rule, nothing is asserted by hand.
+const WEALTH_HOUSES=[2,5,9,11]; // 2nd=wealth/savings, 5th=speculation, 9th=fortune, 11th=gains
+const DUSTHANA_HOUSES=[6,8,12];
+function dyHouseFrom(fromSign,sign){ return ((sign-fromSign)%12+12)%12+1; }
+function dyOrdw(h){return ['','1st','2nd','3rd','4th','5th','6th','7th','8th','9th','10th','11th','12th'][h];}
+function mercuryRetrograde(jd){
+  const a=transitLon(3,jd-0.5), b=transitLon(3,jd+0.5);
+  let diff=b-a; if(diff>180)diff-=360; if(diff<-180)diff+=360;
+  return diff<0;
+}
+/* Jupiter, Saturn and the daśā lord move so slowly (months to years per
+   sign/period) that scoring them at full weight would make nearly every day
+   in a multi-month stretch identical - they are the "weather pattern" for the
+   season, not the day's actual signal. They get softened weights; the Moon
+   and Mercury-retrograde, which actually move day to day, carry the swing. */
+function dhanYogDayScore(jd,moonSign,asc,dashaLordAt){
+  const reasons=[]; let score=0;
+  const push=(delta,text)=>{score+=delta;reasons.push({delta,text});};
+
+  const jup=signOf(transitLon(4,jd));
+  const jFromMoon=dyHouseFrom(moonSign,jup), jFromAsc=dyHouseFrom(asc,jup);
+  if(WEALTH_HOUSES.includes(jFromMoon)||WEALTH_HOUSES.includes(jFromAsc))
+    push(0.5,`Jupiter transiting your ${dyOrdw(jFromAsc)} house from Lagna`);
+
+  const ven=signOf(transitLon(5,jd));
+  const vFromMoon=dyHouseFrom(moonSign,ven), vFromAsc=dyHouseFrom(asc,ven);
+  if(WEALTH_HOUSES.includes(vFromMoon)||WEALTH_HOUSES.includes(vFromAsc))
+    push(0.5,`Venus transiting your ${dyOrdw(vFromAsc)} house from Lagna`);
+
+  const sat=signOf(transitLon(6,jd));
+  const sFromMoon=dyHouseFrom(moonSign,sat);
+  if([12,1,2,4,8].includes(sFromMoon))
+    push(-0.5,`Saturn affliction to the Moon (${sFromMoon===4?'Kantaka Shani':sFromMoon===8?'Ashtama Shani':'Sade-Sati'}) - go slow on new financial commitments`);
+
+  if(mercuryRetrograde(jd))
+    push(-1,'Mercury retrograde - avoid signing new contracts or making big purchases, review old paperwork instead');
+
+  const moon=signOf(transitLon(1,jd));
+  const mFromAsc=dyHouseFrom(asc,moon);
+  if(WEALTH_HOUSES.includes(mFromAsc))
+    push(1,`Moon transiting your ${dyOrdw(mFromAsc)} house`);
+  else if(DUSTHANA_HOUSES.includes(mFromAsc))
+    push(-0.5,`Moon transiting your ${dyOrdw(mFromAsc)} house - keep decisions low-key today`);
+
+  const dl=dashaLordAt(jd);
+  if(dl&&dl.ownsWealth)
+    push(0.5,`Running ${PLANETS[dl.lord]} Mahādaśā, lord of your ${dl.owns.join(' & ')} house${dl.owns.length>1?'s':''}`);
+  else if(dl&&dl.dusthana)
+    push(-0.5,`Running ${PLANETS[dl.lord]} Mahādaśā, lord of a dusthana house`);
+
+  let tone='neutral';
+  if(score>=1.5)tone='favorable'; else if(score<=-1)tone='caution';
+  // the headline reason is whichever single factor swung the score hardest,
+  // preferring one that actually points the same way as the final tone
+  const sign=tone==='favorable'?1:tone==='caution'?-1:0;
+  const ranked=[...reasons].sort((a,b)=>{
+    const as=sign&&Math.sign(a.delta)===sign, bs=sign&&Math.sign(b.delta)===sign;
+    if(as!==bs)return as?-1:1;
+    return Math.abs(b.delta)-Math.abs(a.delta);
+  });
+  return {tone,score,reason:ranked[0]?.text||'Routine transits - no strong signal either way.',reasons:reasons.map(r=>r.text)};
+}
+function dhanYogForecast(chart){
+  const moonSign=chart.planets[1].sign, asc=chart.ascSign;
+  const secondLord=SIGN_LORD[(asc+1)%12], fifthLord=SIGN_LORD[(asc+4)%12],
+    ninthLord=SIGN_LORD[(asc+8)%12], eleventhLord=SIGN_LORD[(asc+10)%12];
+  const dusthanaLords=new Set(DUSTHANA_HOUSES.map(h=>SIGN_LORD[(asc+h-1)%12]));
+  const vim=J.vimshottari(chart.planets[1].lon,chart.jd);
+  const dashaLordAt=(jd)=>{
+    const md=vim.list.find(m=>jd>=m.st&&jd<m.en);
+    if(!md)return null;
+    const owns=[];
+    if(secondLord===md.lord)owns.push('2nd');
+    if(fifthLord===md.lord)owns.push('5th');
+    if(ninthLord===md.lord)owns.push('9th');
+    if(eleventhLord===md.lord)owns.push('11th');
+    return {lord:md.lord,owns,ownsWealth:owns.length>0,dusthana:dusthanaLords.has(md.lord)};
+  };
+
+  // Indian financial year: 1 Apr - 31 Mar, the one already underway today
+  // (Jan-Mar counts as the tail of the FY that started the previous April).
+  const today=new Date();
+  const fyStartYear=today.getUTCMonth()<3?today.getUTCFullYear()-1:today.getUTCFullYear();
+  const fyStart=Date.UTC(fyStartYear,3,1), fyEnd=Date.UTC(fyStartYear+1,2,31);
+  const fyLabel=`FY ${fyStartYear}-${String((fyStartYear+1)%100).padStart(2,'0')}`;
+
+  const weeks=[]; let cursor=fyStart, weekNum=1;
+  while(cursor<=fyEnd){
+    const days=[];
+    for(let i=0;i<7&&cursor<=fyEnd;i++,cursor+=86400000){
+      const d=new Date(cursor), jd=date2jd(d);
+      const scored=dhanYogDayScore(jd,moonSign,asc,dashaLordAt);
+      days.push({date:d,weekday:WEEKDAY[d.getUTCDay()],...scored});
+    }
+    const favCount=days.filter(d=>d.tone==='favorable').length;
+    const cautionCount=days.filter(d=>d.tone==='caution').length;
+    let theme;
+    if(cautionCount>=3&&cautionCount>favCount)theme='A slower week for money matters - avoid new commitments, review instead.';
+    else if(favCount>=3&&favCount>cautionCount)theme='A strong week for financial decisions and new investments.';
+    else if(favCount===0&&cautionCount===0)theme='A quiet week - no strong signal either way; routine decisions are fine, nothing special is favoured.';
+    else theme='A mixed week - pick the favourable days below for anything important.';
+    weeks.push({weekNum,start:days[0].date,end:days[days.length-1].date,theme,favCount,cautionCount,days});
+    weekNum++;
+  }
+  return {
+    fyLabel,fyStart:new Date(fyStart),fyEnd:new Date(fyEnd),
+    wealthLords:{secondLord,fifthLord,ninthLord,eleventhLord},
+    weeks
+  };
+}
+
 /* ---------------- Bhava Chalit (Sripati cusps) ---------------- */
 function midheaven(jd,lonEast){
   const time=A.MakeTime(jd-J2000); const gast=A.SiderealTime(time);
@@ -597,6 +711,7 @@ function healthAnalysis(chart){
 /* expose */
 Object.assign(J,{panchanga,avakhada,functionalNature,aspects,avasthas,compoundRel,jaimini,ISHTA_DEV,
   upagrahas,gulika,sunEvents,moonEvents,shadbala,doshas,sadeSati,gochara,nearTerm,bhavaChalit,transitLon,ownsHouses,
+  dhanYogForecast,
   marriageTiming,marriageStyle,foreignSpouse,careerTiming,healthAnalysis,NAISARGIKA,REQ,
   /* raw tables the compatibility module (engine3) matches on - shared so the
      Avakhada Chakra shown in the report and the Guṇa Milan read the same data */

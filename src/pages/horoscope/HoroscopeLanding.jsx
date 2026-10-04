@@ -25,8 +25,8 @@ const HoroscopeLanding = () => {
         <div className="min-h-screen bg-ivory/50 pt-32 pb-20">
             <SEO
                 title="Most Accurate Horoscope Reading Online | Vedic Astrology - Ayodhya Agarbatti"
-                description="Get the most accurate horoscope reading online - a Janma Kundali life horoscope for ₹99 or a full marriage compatibility match for ₹149, computed to arc-second precision from your exact birth details and delivered instantly as a branded PDF."
-                keywords="most accurate horoscope reading, accurate horoscope online, Vedic horoscope, Janma Kundali, marriage compatibility match, birth chart online, kundli matching, Vedic astrology reading India"
+                description="Get the most accurate horoscope reading online - a Janma Kundali life horoscope for ₹199, a full marriage compatibility match for ₹500, or a Dhan Yog financial-year forecast for ₹500, computed to arc-second precision from your exact birth details and delivered instantly as a branded PDF."
+                keywords="most accurate horoscope reading, accurate horoscope online, Vedic horoscope, Janma Kundali, marriage compatibility match, Dhan Yog financial astrology, birth chart online, kundli matching, Vedic astrology reading India"
                 canonical="https://www.ayodhyaagarbatti.in/horoscope"
                 ogType="website"
             />
@@ -42,7 +42,7 @@ const HoroscopeLanding = () => {
                 </p>
             </div>
 
-            <div className="max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {horoscopeProducts.map((product) => (
                     <div
                         key={product.id}

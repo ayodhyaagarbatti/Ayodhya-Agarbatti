@@ -23,9 +23,11 @@ export const encodeChart = ({ name, dob, tob, lat, lon, tz, gender, place, timeU
 
 // Builds the URL for the embedded horoscope-engine iframe/redirect.
 // `partner` is only needed for marriage-match (mode: 'match') products.
-export const buildHoroscopeEngineUrl = (subject, partner) => {
+// `reportType` picks a non-default single-chart report template (e.g. 'dhanyog').
+export const buildHoroscopeEngineUrl = (subject, partner, reportType) => {
     const params = new URLSearchParams();
     params.set('c', encodeChart(subject));
     if (partner) params.set('m', encodeChart(partner));
+    else if (reportType) params.set('rt', reportType);
     return `/horoscope-engine/index.html?${params.toString()}`;
 };

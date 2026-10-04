@@ -192,11 +192,14 @@ function enterApp(user){
   else{badge.style.display='none';$('#history').style.display='none';}
 }
 function initLogin(){
-  // a shared ?c= link opens straight into the chart (as guest); ?c=&m= opens a match
-  try{const q=new URLSearchParams(location.search), cs=q.get('c'), ms=q.get('m');
+  // a shared ?c= link opens straight into the chart (as guest); ?c=&m= opens a
+  // match; ?c=&rt=dhanyog opens the Dhan Yog financial-year forecast instead
+  // of the usual single-chart report (no partner, so it never combines with m=).
+  try{const q=new URLSearchParams(location.search), cs=q.get('c'), ms=q.get('m'), rt=q.get('rt');
     if(cs){const o=decodeChart(cs), p=ms?decodeChart(ms):null;
       if(o){enterApp(null);
         setMode(p?'match':'single');
+        if(!p&&rt==='dhanyog')appMode='dhanyog';
         const ok=applyShared(o)&&(!p||applySharedPartner(p));
         if(ok)doCompute();
         return;}}}catch(e){}
@@ -335,6 +338,7 @@ function decodeChart(s){try{return JSON.parse(decodeURIComponent(escape(atob(s))
 function shareUrl(i){return location.origin+location.pathname+'?c='+encodeChart(i);}
 /* a match link carries both nativities - `c` is the groom's, `m` the bride's */
 function shareMatchUrl(g,b){return shareUrl(g)+'&m='+encodeChart(b);}
+function shareDhanYogUrl(i){return shareUrl(i)+'&rt=dhanyog';}
 function applyShared(o){if(!o)return false;
   const[y,mo,d]=(o.d||'').split('-'),[hh,mi]=(o.t||'').split(':');
   $('#name').value=o.n||'';$('#dob').value=`${y}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
@@ -538,6 +542,7 @@ function doCompute(){
   saveChartForUser(gInput);
   if(bInput)saveChartForUser(bInput);
   if(match)renderMatchReport(gChart,gInput,bChart,bInput);
+  else if(appMode==='dhanyog')renderDhanYogReport(gChart,gInput);
   else renderReport(gChart,gInput);
   $('#report').classList.add('show');$('#jumpNav').classList.add('show');
   requestAnimationFrame(()=>smoothTo($('#sec-'+SECTIONS[0][0])));
@@ -647,6 +652,10 @@ const MATCH_SECTIONS=[['mglance','Match at a Glance'],['mkoota','Ashtakoota (36 
 ['mgates','Nāḍī & Bhakūṭa Doshas'],['mlayers','Beyond the Kootas'],['mareas','Area by Area'],
 ['mcharts','Both Charts · D-1 & D-9'],['mdasha','Daśā & Timing'],['mremedy','Remedies & Next Steps'],
 ['mgloss','Glossary']];
+/* Dhan Yog is its own report too - a financial-year forecast instead of a
+   birth-chart reading, so it gets its own short section list. */
+const DHANYOG_SECTIONS=[['dyglance','Dhan Yog · At a Glance'],['dyweeks','Week by Week'],
+['dyevents','Key Shifts This Year'],['dynote','Methodology & Disclaimer']];
 let SECTIONS=BASE_SECTIONS;
 
 /* plain-English one-liner for each section (shown when "Plain English" is on) */
@@ -689,7 +698,11 @@ remedies:"Traditional supportive practices - mantras, colours, gemstones, charit
 gochara:"A year-by-year weather-map of the slow planets against your moon and rising signs.",
 nearterm:"A month-by-month timeline of the next few years' key planetary changes.",
 verify:"Proof of accuracy: how the maths is computed and cross-checked against the Swiss Ephemeris.",
-glossary:"Plain-English meanings of the Sanskrit terms used throughout."};
+glossary:"Plain-English meanings of the Sanskrit terms used throughout.",
+dyglance:"Your wealth-house lords and the financial year this forecast covers.",
+dyweeks:"Every week of the financial year, with a daily investing tone and the transit behind it.",
+dyevents:"The planetary shifts and daśā changes that land within this financial year.",
+dynote:"How each day's tone is computed, and what this report is not."};
 
 const prefersReduce=()=>matchMedia('(prefers-reduced-motion:reduce)').matches;
 
@@ -1203,6 +1216,116 @@ function aspectNote(a,P,asc){const houses=a.aspects;
   if(a.i===2)return `Mars energises the ${houses.map(ord).join(', ')} - drive and initiative.`;
   return `Casts its ${houses.map(ord).join(', ')} aspect.`;
 }
+/* ======================= DHAN YOG (financial-year forecast) =======================
+   Renders J.dhanYogForecast(). Every day's tone comes from a specific transit
+   rule computed off this chart - see dynote below for the full method. */
+const DY_TONE_LABEL={favorable:'Favourable',neutral:'Neutral',caution:'Caution'};
+const DY_TONE_PILL={favorable:'pill exalt',neutral:'pill',caution:'pill debil'};
+function renderDhanYogReport(chart,input){
+  SECTIONS=DHANYOG_SECTIONS;
+  const R=$('#report');R.innerHTML='';
+  const jump=$('#jumpInner');jump.innerHTML=SECTIONS.map(s=>`<a href="#sec-${s[0]}" data-sec="${s[0]}">${s[1]}</a>`).join('');
+  const jc=$('#jumpCount');if(jc)jc.textContent='1 / '+SECTIONS.length;
+  requestAnimationFrame(railUpdate);
+
+  const add=(id,html)=>{const s=el('section','rpt',html);s.id='sec-'+id;R.appendChild(s);return s;};
+  const dy=J.dhanYogForecast(chart);
+  const totalFav=dy.weeks.reduce((n,w)=>n+w.favCount,0);
+  const totalCaution=dy.weeks.reduce((n,w)=>n+w.cautionCount,0);
+  const totalDays=dy.weeks.reduce((n,w)=>n+w.days.length,0);
+  const mb=$('#mobileBar');if(mb){mb.innerHTML=`<span>${esc(dy.fyLabel)}</span><span>${totalFav} favourable days</span><span>${totalCaution} caution days</span>`;mb.classList.add('show');}
+
+  /* ---------- AT A GLANCE ---------- */
+  const wl=dy.wealthLords;
+  /* Most of this report's daily variation comes from the Moon's house from
+     Lagna, and the Jupiter/Venus/Saturn readings also fall back to "from
+     Lagna" when the Moon-from-Moon check misses - so an unknown (noon-default)
+     birth time quietly degrades the one signal that actually changes day to
+     day. Said once up top, same as the main Kundali report does. */
+  const unknownBanner=chart.timeUnknown?`<div class="panel time-warn">
+      <div class="tw-h">Cast for 12:00 noon - the birth time was not known</div>
+      <p>This report leans on the Lagna (rising sign) for most of its day-to-day movement -
+      above all the Moon's house from Lagna, which drives most of the daily tone swings below -
+      and the Lagna shifts roughly one sign every two hours. With no verified birth time, every
+      "from Lagna" house check here is an estimate, not a computed fact.</p>
+      <p>The Jupiter, Venus and Saturn readings taken from the Moon's own sign, and the
+      Mahādaśā-based readings, stay exact regardless of birth time - only the Lagna-dependent
+      signal is affected.</p>
+      <p>For a fully reliable Dhan Yog forecast, enter a verified birth time and request the
+      report again.</p></div>`:'';
+  add('dyglance',secHead('dyglance','Dhan Yog - At a Glance')+
+    unknownBanner+
+    `<div class="panel hero"><div class="eyebrow">Personalised Financial-Year Forecast</div>
+      <div class="name">${esc(input.name)}</div>
+      <div class="born">${esc(dy.fyLabel)} · ${fmtDate(dy.fyStart)} - ${fmtDate(dy.fyEnd)}</div>
+      <div class="hero-grid">
+        <div class="stat"><div class="k">2nd lord (wealth)</div><div class="v">${PL[wl.secondLord]}</div></div>
+        <div class="stat"><div class="k">5th lord (speculation)</div><div class="v">${PL[wl.fifthLord]}</div></div>
+        <div class="stat"><div class="k">9th lord (fortune)</div><div class="v">${PL[wl.ninthLord]}</div></div>
+        <div class="stat"><div class="k">11th lord (gains)</div><div class="v">${PL[wl.eleventhLord]}</div></div>
+      </div></div>
+    <div class="sc-cols" style="margin-top:16px">
+      <div class="panel sc-card good"><div class="sc-head">Favourable days this year</div><div class="oneline"><b>${totalFav}</b> of ${totalDays} days</div></div>
+      <div class="panel sc-card bad"><div class="sc-head">Caution days this year</div><div class="oneline"><b>${totalCaution}</b> of ${totalDays} days</div></div>
+    </div>
+    <p class="para" style="margin-top:16px">This report tracks Jupiter, Venus, Saturn, Mercury and the Moon against your natal 2nd, 5th, 9th and 11th houses - the classical wealth, speculation, fortune and gains houses - for every day of ${esc(dy.fyLabel)}, alongside your running daśā lord. Favourable days suit new investments and financial decisions; caution days favour review over new commitments. See <a href="#sec-dynote">Methodology</a> for the full rule set.</p>`);
+
+  /* ---------- WEEK BY WEEK ---------- */
+  const weekHtml=dy.weeks.map(w=>{
+    const cls=w.favCount>w.cautionCount?'good':(w.cautionCount>w.favCount?'bad':'');
+    const rows=w.days.map(d=>`<tr><td>${fmtDate(d.date)}</td><td>${d.weekday}</td>
+      <td><span class="${DY_TONE_PILL[d.tone]}">${DY_TONE_LABEL[d.tone]}</span></td>
+      <td class="muted">${esc(d.reason)}</td></tr>`).join('');
+    return `<div class="panel sc-card ${cls}" style="margin-bottom:16px">
+      <div class="sc-head">Week ${w.weekNum} · ${fmtDate(w.start)} - ${fmtDate(w.end)}</div>
+      <p class="para" style="margin:0 0 12px">${esc(w.theme)}</p>
+      <div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Day</th><th>Tone</th><th>Why</th></tr></thead>
+      <tbody>${rows}</tbody></table></div>
+    </div>`;
+  }).join('');
+  add('dyweeks',secHead('dyweeks','Week by Week')+weekHtml);
+
+  /* ---------- KEY SHIFTS THIS YEAR ---------- */
+  const toJD=d=>J2000+(d.getTime()-EPOCH)/86400000;
+  const fyStartJD=toJD(dy.fyStart), fyEndJD=toJD(dy.fyEnd);
+  const events=J.nearTerm(chart,1.2).filter(e=>e.jd>=fyStartJD&&e.jd<=fyEndJD);
+  const evRows=events.length
+    ? events.map(e=>`<tr><td style="white-space:nowrap">${jdFmt(e.jd)}</td><td>${esc(e.txt)}</td></tr>`).join('')
+    : `<tr><td colspan="2" class="muted">No major planet-sign changes or daśā changes fall within this financial year.</td></tr>`;
+  add('dyevents',secHead('dyevents','Key Shifts This Year')+
+    `<p class="para">Planet-sign changes and daśā-period changes falling inside ${esc(dy.fyLabel)} - these usually mark a turning point in the week's theme above.</p>
+    <div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Event</th></tr></thead><tbody>${evRows}</tbody></table></div>`);
+
+  /* ---------- METHODOLOGY & DISCLAIMER ---------- */
+  add('dynote',secHead('dynote','Methodology & Disclaimer')+
+    `<p class="para">Each day's tone is a deterministic score, not a hand-written prediction:</p>
+    <ul class="clean">
+      <li>+1 - Jupiter or Venus transiting your 2nd, 5th, 9th or 11th house (from the Moon or from Lagna)</li>
+      <li>+0.5 - the Moon transiting your 2nd, 5th, 9th or 11th house from Lagna (a same-day tailwind)</li>
+      <li>+1 - your current Mahādaśā lord owns one of those same four houses</li>
+      <li>-1 - Saturn afflicting the Moon (Sade-Sati, Kantaka or Aṣṭama Śani)</li>
+      <li>-1 - Mercury retrograde (caution on new contracts and large purchases)</li>
+      <li>-1 - your current Mahādaśā lord owns a dusthāna (6th, 8th or 12th house)</li>
+    </ul>
+    <p class="para">A day scoring 1.5 or higher is <b>Favourable</b>; -1 or lower is <b>Caution</b>; everything between is <b>Neutral</b>. The same scoring method powers the <a href="#sec-dyweeks">Week by Week</a> table above, so every tone shown there can be traced back to the transit named in its "Why" column.</p>
+    <div class="disc">Computed entirely on your device with astronomy-engine (Swiss-Ephemeris-grade) and a Lahiri sidereal model. Dhan Yog is a traditional interpretive system offered for reflection and planning context - it is not financial, investment, tax or legal advice, and no outcome is guaranteed.</div>`);
+
+  /* footer */
+  const foot=el('div');foot.innerHTML=`<div class="footer-actions"><button class="btn btn-primary" id="pdfBtn" type="button"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v11.5"/><path d="m7.5 10.5 4.5 4.5 4.5-4.5"/><path d="M4.5 19.5h15"/></svg><span class="lbl">Download PDF</span></button><button class="btn btn-ghost" id="shareBtn" type="button"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="9.5" y="9.5" width="10.5" height="10.5" rx="2.5"/><path d="M6.5 14.5h-1a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v1"/></svg><span class="lbl">Copy shareable link</span></button><button class="btn btn-ghost" id="editBtn" type="button">Edit birth details</button></div><p class="hint screen-only" style="text-align:center;margin:-8px 0 0">In the print dialog choose <b>Save as PDF</b>, and keep <b>Background graphics</b> on to preserve the full colour design. The shareable link encodes the birth details in the URL (not encrypted).</p><div class="disc">Computed entirely on your device with astronomy-engine (Swiss-Ephemeris-grade) and a Lahiri sidereal model validated to the arc-minute. No internet, no artificial intelligence. Vedic astrology is a traditional interpretive system offered for reflection and cultural interest - not prediction, and not medical, legal or financial advice.</div>`;
+  R.appendChild(foot);
+  $('#pdfBtn').addEventListener('click',()=>window.print());
+  $('#shareBtn').addEventListener('click',()=>{const url=shareDhanYogUrl(lastInput||input);const b=$('#shareBtn');
+    const ok=()=>{const l=b.querySelector('.lbl');if(!l)return;const t=l.textContent;
+      l.textContent='Link copied';setTimeout(()=>{l.textContent=t;},1600);};
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(ok).catch(()=>prompt('Copy this link:',url));
+    else prompt('Copy this link:',url);});
+  $('#editBtn').addEventListener('click',()=>smoothTo($('#formCard')));
+
+  /* plain-English glosses under each section head (shown when the toggle is on) */
+  $$('#report section.rpt').forEach(s=>{const g=LAYMAN[s.id.replace('sec-','')];
+    if(g){const sh=s.querySelector('.sec-head');if(sh)sh.insertAdjacentHTML('afterend',`<div class="layman-note">${g}</div>`);}});
+}
+
 /* ======================= MARRIAGE COMPATIBILITY (Guṇa Milan) =======================
    Renders J.compatibility(). The order is deliberate and matches classical practice:
    the score is shown, but the dosha gates come before any of the deeper layers,

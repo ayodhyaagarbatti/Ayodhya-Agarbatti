@@ -22,10 +22,12 @@ const PlaceField = ({ person, setPerson, idPrefix }) => {
     const [query, setQuery] = useState(person.place || '');
     const [matches, setMatches] = useState([]);
     const [showManual, setShowManual] = useState(false);
+    const [confirmed, setConfirmed] = useState(false);
 
     const onInput = (e) => {
         const val = e.target.value;
         setQuery(val);
+        setConfirmed(false);
         setPerson((p) => ({ ...p, place: val, lat: '', lon: '', tz: '' }));
         setMatches(searchCities(val));
     };
@@ -35,6 +37,8 @@ const PlaceField = ({ person, setPerson, idPrefix }) => {
         const place = `${name}, ${region}`;
         setQuery(place);
         setMatches([]);
+        setShowManual(false);
+        setConfirmed(true);
         setPerson((p) => ({ ...p, place, lat, lon, tz }));
     };
 
@@ -70,7 +74,7 @@ const PlaceField = ({ person, setPerson, idPrefix }) => {
                     ))}
                 </div>
             )}
-            {person.lat !== '' ? (
+            {confirmed ? (
                 <p className="text-xs text-gray-500 mt-2">
                     ✓ {Number(person.lat).toFixed(4)}° {Number(person.lon).toFixed(4)}° · UTC{person.tz >= 0 ? '+' : ''}{person.tz}
                 </p>
@@ -83,7 +87,7 @@ const PlaceField = ({ person, setPerson, idPrefix }) => {
                     Can't find your city? Enter coordinates manually
                 </button>
             )}
-            {showManual && person.lat === '' && (
+            {showManual && !confirmed && (
                 <div className="grid grid-cols-3 gap-3 mt-3">
                     <input type="number" step="any" placeholder="Latitude" id={`${idPrefix}-lat`}
                         onChange={(e) => setPerson((p) => ({ ...p, lat: e.target.value }))}

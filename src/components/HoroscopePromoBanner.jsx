@@ -15,7 +15,7 @@ const HoroscopePromoBanner = () => {
                             Discover Your Life's Path
                         </h3>
                         <p className="text-ivory/70 text-sm max-w-md">
-                            Get your complete Janma Kundali horoscope from just ₹99 - computed instantly, delivered as a downloadable PDF.
+                            Get your complete Janma Kundali horoscope from just ₹199 - computed instantly, delivered as a downloadable PDF.
                         </p>
                     </div>
                     <Link

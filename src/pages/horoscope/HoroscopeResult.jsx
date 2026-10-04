@@ -16,7 +16,7 @@ const HoroscopeResult = () => {
     // the outer page scrolls naturally instead.
     const [iframeHeight, setIframeHeight] = useState('85vh');
 
-    const engineUrl = useMemo(() => (subject ? buildHoroscopeEngineUrl(subject, partner) : null), [subject, partner]);
+    const engineUrl = useMemo(() => (subject ? buildHoroscopeEngineUrl(subject, partner, product?.reportType) : null), [subject, partner, product]);
 
     useEffect(() => () => resizeObserverRef.current?.disconnect(), []);
 
