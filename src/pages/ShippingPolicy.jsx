@@ -65,7 +65,7 @@ const ShippingPolicy = () => {
                             <PackageCheck size={22} />
                         </div>
                         <h3 className="font-heading text-base text-charcoal mb-1">Free Shipping</h3>
-                        <p className="text-xs text-gray-500">On orders above ₹500, else ₹79 delivery.</p>
+                        <p className="text-xs text-gray-500">On orders above ₹400, else ₹79 delivery.</p>
                     </div>
                     <div className="bg-white p-6 rounded-xl border border-gray-200/80 shadow-sm flex flex-col items-center text-center">
                         <div className="w-12 h-12 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center mb-4">
@@ -94,7 +94,7 @@ const ShippingPolicy = () => {
                             <MapPin size={18} className="text-gold" /> 2. Shipping Charges & Coverage
                         </h2>
                         <ul className="list-disc pl-6 space-y-2 text-gray-600">
-                            <li>Free shipping on orders above ₹500; a flat ₹79 delivery charge applies below that.</li>
+                            <li>Free shipping on orders above ₹400; a flat ₹79 delivery charge applies below that.</li>
                             <li>Cash on Delivery is available on select pincodes.</li>
                             <li>We currently ship within India only; horoscope readings are digital and delivered by email worldwide.</li>
                         </ul>

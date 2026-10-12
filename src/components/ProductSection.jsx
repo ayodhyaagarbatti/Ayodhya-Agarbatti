@@ -48,7 +48,7 @@ const ProductSection = ({ addToCart, isStandaloneShop = false }) => {
             {isStandaloneShop && (
                 <SEO
                     title="Shop Incense Sticks Online | Ayodhya Agarbatti - Coffee, Vanilla, Lemon & Orange"
-                    description="Browse the full Ayodhya Agarbatti collection - hand-rolled incense sticks in Espresso, Madagascan Vanilla, Citrus Lemon, and Wild Orange. 33 sticks per pack with a free holder, free shipping above ₹999, COD available."
+                    description="Browse the full Ayodhya Agarbatti collection - hand-rolled incense sticks in Espresso, Madagascan Vanilla, Citrus Lemon, and Wild Orange. 33 sticks per pack with a free holder, free shipping above ₹400, COD available."
                     keywords="buy agarbatti online, incense sticks shop, Ayodhya Agarbatti collection, coffee incense, vanilla incense, lemon incense, orange incense, hand rolled agarbatti India"
                     canonical="https://www.ayodhyaagarbatti.in/shop"
                     ogType="website"

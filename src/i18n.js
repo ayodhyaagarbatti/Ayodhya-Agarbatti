@@ -6,7 +6,7 @@ const resources = {
         translation: {
             // TopBar
             topBar: "✨ Hand-Rolled in Ayodhya • Divine Fragrance",
-            freeShipping: "Complimentary Shipping on Orders Over ₹500",
+            freeShipping: "Complimentary Shipping on Orders Over ₹400",
 
             // Navbar
             navHome: "Home",
@@ -137,7 +137,7 @@ const resources = {
         translation: {
             // TopBar
             topBar: "✨ पवित्र अयोध्या में हस्त-निर्मित • दिव्य सुगंध",
-            freeShipping: "₹500 से अधिक के ऑर्डर पर मुफ्त शिपिंग",
+            freeShipping: "₹400 से अधिक के ऑर्डर पर मुफ्त शिपिंग",
 
             // Navbar
             navHome: "होम",

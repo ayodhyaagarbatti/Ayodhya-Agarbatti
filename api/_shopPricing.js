@@ -1,6 +1,6 @@
 import { products } from '../src/data/products.js';
 
-export const FREE_SHIPPING_THRESHOLD = 500;
+export const FREE_SHIPPING_THRESHOLD = 400;
 export const DELIVERY_CHARGE = 79;
 
 // Server is the sole source of truth for cart totals - the browser only ever

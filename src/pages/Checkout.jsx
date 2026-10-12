@@ -126,7 +126,7 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
         setStep(2);
     };
 
-    const FREE_SHIPPING_THRESHOLD = 500;
+    const FREE_SHIPPING_THRESHOLD = 400;
     const DELIVERY_CHARGE = 79;
 
     const subtotal = cartItems.reduce((acc, item) => {
@@ -372,7 +372,7 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
         <div className="min-h-screen bg-ivory/50 pt-28 pb-12">
             <SEO
                 title="Secure Checkout | Ayodhya Agarbatti - Complete Your Order"
-                description="Complete your secure purchase of premium incense sticks with a divine fragrance from Ayodhya Agarbatti. Multiple payment options including Razorpay (UPI, Cards, Netbanking) and Cash on Delivery. Free shipping on orders above ₹500."
+                description="Complete your secure purchase of premium incense sticks with a divine fragrance from Ayodhya Agarbatti. Multiple payment options including Razorpay (UPI, Cards, Netbanking) and Cash on Delivery. Free shipping on orders above ₹400."
                 keywords="checkout Ayodhya Agarbatti, secure payment incense, buy agarbatti online payment, razorpay checkout, cash on delivery incense, order sacred fragrances"
                 canonical="https://www.ayodhyaagarbatti.in/checkout"
                 ogImage="https://www.ayodhyaagarbatti.in/images/ayodhya_package.png"

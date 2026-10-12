@@ -15,7 +15,7 @@ const homeSchema = {
     "@context": "https://schema.org",
     "@type": "WebPage",
     "name": "Ayodhya Agarbatti - Best Agarbatti Online, Pure Sacred Incense Sticks Hand-Rolled in Ayodhya",
-    "description": "Shop the best agarbatti online - premium incense sticks with a divine fragrance, hand-rolled in the holy city of Ayodhya. Sourced from sacred temple flowers, pure Mysore sandalwood, and therapeutic essential oils. Free shipping on orders above ₹500.",
+    "description": "Shop the best agarbatti online - premium incense sticks with a divine fragrance, hand-rolled in the holy city of Ayodhya. Sourced from sacred temple flowers, pure Mysore sandalwood, and therapeutic essential oils. Free shipping on orders above ₹400.",
     "url": "https://www.ayodhyaagarbatti.in/",
     "publisher": {
         "@type": "Organization",
@@ -105,7 +105,7 @@ const Home = ({ addToCart }) => {
         <div className="overflow-x-hidden">
             <SEO
                 title="Ayodhya Agarbatti | Best Agarbatti Online - Pure Sacred Incense Sticks"
-                description="Shop the best agarbatti online from Ayodhya - incense sticks with a divine fragrance, hand-rolled with sacred temple flowers and pure Mysore sandalwood. Free shipping on orders above ₹500. Also home to India's most accurate Vedic horoscope reading, computed instantly from your exact birth details."
+                description="Shop the best agarbatti online from Ayodhya - incense sticks with a divine fragrance, hand-rolled with sacred temple flowers and pure Mysore sandalwood. Free shipping on orders above ₹400. Also home to India's most accurate Vedic horoscope reading, computed instantly from your exact birth details."
                 keywords="best agarbatti, best agarbatti online, Ayodhya Agarbatti, natural incense sticks, divine fragrance incense, Mysore sandalwood incense, temple flower agarbatti, organic incense sticks India, luxury agarbatti, pooja incense, Ayodhya incense online buy, buy agarbatti online, hand rolled incense, sacred incense sticks, premium incense India, accurate horoscope reading"
                 canonical="https://www.ayodhyaagarbatti.in/"
                 ogImage="https://www.ayodhyaagarbatti.in/images/ayodhya_package.png"
@@ -181,7 +181,7 @@ const Home = ({ addToCart }) => {
                             </div>
                             <h4 className="font-heading text-lg text-charcoal mb-2">Do you offer free shipping across India?</h4>
                             <p className="text-gray-600 text-sm leading-relaxed">
-                                Yes! Free express shipping on all orders above ₹500. We also offer Cash on Delivery (COD) for most pin codes. Orders typically deliver within 3-5 business days with zero-cost pickup for returns.
+                                Yes! Free express shipping on all orders above ₹400. We also offer Cash on Delivery (COD) for most pin codes. Orders typically deliver within 3-5 business days with zero-cost pickup for returns.
                             </p>
                         </article>
 

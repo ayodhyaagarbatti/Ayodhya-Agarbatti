@@ -126,7 +126,7 @@ const ProductDetails = ({ addToCart }) => {
         },
         {
             question: "Do you ship across India?",
-            answer: "Yes, we offer fast express shipping across India. Free shipping on orders above ₹500. We also offer Cash on Delivery (COD) for most pin codes."
+            answer: "Yes, we offer fast express shipping across India. Free shipping on orders above ₹400. We also offer Cash on Delivery (COD) for most pin codes."
         },
         {
             question: "Can I return or exchange incense sticks?",
@@ -474,7 +474,7 @@ const ProductDetails = ({ addToCart }) => {
                                     <>
                                         <span className="text-base text-gray-400 line-through">{product.originalPrice}</span>
                                         <span className="text-xs font-bold text-green-700 bg-green-50 px-2 py-1 rounded">
-                                            Free Shipping Above ₹500
+                                            Free Shipping Above ₹400
                                         </span>
                                     </>
                                 ) : (
