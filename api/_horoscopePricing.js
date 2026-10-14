@@ -1,7 +1,8 @@
 import { horoscopeProducts } from '../src/data/horoscopeProducts.js';
 
 const COUPONS = {
-    WEKNOWTHEOWNER: { amountPaise: 1000 } // ₹10 flat, horoscope only, India only - see below
+    WEKNOWTHEOWNER: { amountPaise: 1000 }, // ₹10 flat, horoscope only, India only - see below
+    CODECLASH2026: { percentOff: 50 } // 50% off any horoscope reading, India only
 };
 
 // Server is the sole source of truth for what a horoscope reading costs -
@@ -29,7 +30,12 @@ export const computeHoroscopePrice = (productId, couponCode, isIndia = true) => 
     const normalizedCoupon = couponCode ? String(couponCode).trim().toUpperCase() : '';
     const coupon = normalizedCoupon ? COUPONS[normalizedCoupon] : null;
 
-    const amountPaise = coupon ? coupon.amountPaise : product.price * 100;
+    const basePaise = product.price * 100;
+    const amountPaise = !coupon
+        ? basePaise
+        : coupon.percentOff
+            ? Math.round(basePaise * (1 - coupon.percentOff / 100))
+            : coupon.amountPaise;
 
     return {
         amountPaise,
