@@ -34,7 +34,8 @@ export const computeHoroscopePrice = (productId, couponCode, isIndia = true) => 
     const amountPaise = !coupon
         ? basePaise
         : coupon.percentOff
-            ? Math.round(basePaise * (1 - coupon.percentOff / 100))
+            // Round down to whole rupees so customers never see paise (₹199 -> ₹99)
+            ? Math.floor(product.price * (1 - coupon.percentOff / 100)) * 100
             : coupon.amountPaise;
 
     return {
