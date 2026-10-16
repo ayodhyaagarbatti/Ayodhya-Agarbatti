@@ -39,6 +39,7 @@ import HoroscopeDetailsForm from './pages/horoscope/HoroscopeDetailsForm';
 import HoroscopePayment from './pages/horoscope/HoroscopePayment';
 import HoroscopeResult from './pages/horoscope/HoroscopeResult';
 import AccountWallet from './pages/AccountWallet';
+import TrackOrder from './pages/TrackOrder';
 
 const TopBar = () => {
     const { t, i18n } = useTranslation();
@@ -279,6 +280,7 @@ function AppContent() {
                         <Route path="/horoscope/:productId/payment" element={<HoroscopePayment />} />
                         <Route path="/horoscope/result" element={<HoroscopeResult />} />
                         <Route path="/account/wallet" element={<AccountWallet />} />
+                        <Route path="/track-order" element={<TrackOrder />} />
                         <Route path="*" element={<NotFound />} />
                     </Routes>
                 </main>

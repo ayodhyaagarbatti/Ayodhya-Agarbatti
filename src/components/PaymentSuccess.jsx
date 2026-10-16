@@ -37,7 +37,7 @@ const PaymentSuccess = () => {
                 </div>
 
                 <span className="bg-gray-100 text-gray-500 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-4 inline-block">
-                    Order #{order.id}
+                    Order #{order.orderNumber || order.id}
                 </span>
 
                 <h1 className="font-heading text-3xl text-gray-900 mb-2">Order Confirmed</h1>
@@ -65,12 +65,17 @@ const PaymentSuccess = () => {
                     </div>
                 </div>
 
+                <p className="text-xs text-gray-500 mb-6">
+                    Save your order number - you can check its status anytime on the{' '}
+                    <Link to={`/track-order?order=${encodeURIComponent(order.orderNumber || '')}`} className="text-terracotta font-bold hover:underline">Track Order</Link> page.
+                </p>
+
                 <div className="flex gap-4 justify-center">
                     <Link to="/" className="inline-block bg-gray-900 text-white px-6 py-3 rounded-lg font-bold uppercase tracking-widest text-xs hover:bg-terracotta transition-colors flex-1">
                         Continue Shopping
                     </Link>
-                    <Link to="/contact" className="inline-block bg-white border border-gray-200 text-gray-900 px-6 py-3 rounded-lg font-bold uppercase tracking-widest text-xs hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
-                        <Search size={14} /> Order Help
+                    <Link to={`/track-order?order=${encodeURIComponent(order.orderNumber || '')}`} className="inline-block bg-white border border-gray-200 text-gray-900 px-6 py-3 rounded-lg font-bold uppercase tracking-widest text-xs hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+                        <Search size={14} /> Track Order
                     </Link>
                 </div>
 
