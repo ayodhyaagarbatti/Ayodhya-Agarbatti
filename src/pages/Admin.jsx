@@ -319,7 +319,7 @@ const Admin = () => {
             return;
         }
 
-        const headers = ["Order Ref", "Doc ID", "Date", "Customer Name", "Phone", "Email", "Address", "Items", "Payment Method", "Payment Status", "Total (INR)", "Order Status"];
+        const headers = ["Order Ref", "Doc ID", "Date", "Customer Name", "Phone", "Email", "Address", "Items", "Payment Method", "Payment Status", "Total", "Currency", "Order Status"];
         const rows = orders.map(order => [
             order.orderNumber || order.id,
             order.id,
@@ -328,10 +328,11 @@ const Admin = () => {
             order.customer?.phone || '',
             order.customer?.email || '',
             `"${order.customer?.address || ''}"`,
-            `"${(order.items || []).map(i => `${i.name} (x${i.quantity})`).join(', ')}"`,
+            `"${(order.items || []).map(i => `${i.name}${i.pack ? ` [${i.pack}]` : ''} (x${i.quantity})`).join(', ')}"`,
             order.customer?.paymentMethod || 'Online',
             order.paymentStatus || 'Paid',
             order.total || 0,
+            order.currency || 'INR',
             order.status || 'Order Placed'
         ]);
 
@@ -366,8 +367,12 @@ const Admin = () => {
 
     const filteredRedemptions = redemptions.filter(r => redemptionFilter === 'ALL' || r.status === redemptionFilter);
 
-    const shopRevenue = orders.reduce((acc, o) => acc + (o.status === 'Cancelled' ? 0 : (parseInt(o.total) || 0)), 0);
-    const horoscopeRevenue = horoscopeOrders.reduce((acc, o) => acc + (Number(o.amount) || 0), 0);
+    // INR only - international (USD) orders are summed separately rather than mixed in.
+    const isUsd = (o) => o.currency === 'USD';
+    const shopRevenue = orders.reduce((acc, o) => acc + (o.status === 'Cancelled' || isUsd(o) ? 0 : (parseInt(o.total) || 0)), 0);
+    const horoscopeRevenue = horoscopeOrders.reduce((acc, o) => acc + (isUsd(o) ? 0 : (Number(o.amount) || 0)), 0);
+    const usdRevenue = orders.reduce((acc, o) => acc + (o.status !== 'Cancelled' && isUsd(o) ? (Number(o.total) || 0) : 0), 0)
+        + horoscopeOrders.reduce((acc, o) => acc + (isUsd(o) ? (Number(o.amount) || 0) : 0), 0);
     const totalRevenue = shopRevenue + horoscopeRevenue;
     const formatMillis = (ms) => (ms ? new Date(ms).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-');
     const unreadMessagesCount = messages.filter(m => m.status === 'unread').length;
@@ -492,7 +497,7 @@ const Admin = () => {
                         <div>
                             <span className="text-xs text-gray-500 font-bold uppercase">Total Revenue</span>
                             <h3 className="text-2xl font-bold text-charcoal">₹{totalRevenue.toLocaleString('en-IN')}</h3>
-                            <span className="text-[10px] text-gray-400">₹{shopRevenue.toLocaleString('en-IN')} shop · ₹{horoscopeRevenue.toLocaleString('en-IN')} horoscope</span>
+                            <span className="text-[10px] text-gray-400">₹{shopRevenue.toLocaleString('en-IN')} shop · ₹{horoscopeRevenue.toLocaleString('en-IN')} horoscope{usdRevenue > 0 ? ` · $${usdRevenue.toLocaleString('en-US')} intl` : ''}</span>
                         </div>
                     </div>
 
@@ -645,6 +650,22 @@ const Admin = () => {
                                                     <span className="text-xs font-mono font-bold text-gold">
                                                         {order.orderNumber || `AYD-${order.id.slice(0, 6)}`}
                                                     </span>
+                                                    {order.needsReview && (
+                                                        <span
+                                                            className="bg-red-100 text-red-700 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider"
+                                                            title="Paid, but the address or cart couldn't be recovered - check this payment in the Razorpay dashboard and contact the customer."
+                                                        >
+                                                            Check details
+                                                        </span>
+                                                    )}
+                                                    {order.recordedVia === 'webhook' && (
+                                                        <span
+                                                            className="bg-blue-100 text-blue-700 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider"
+                                                            title="Recorded by Razorpay's webhook - the customer's browser never confirmed this payment."
+                                                        >
+                                                            Via webhook
+                                                        </span>
+                                                    )}
                                                 </div>
                                                 <p className="text-[11px] text-gray-400 mt-1 flex items-center gap-1">
                                                     <Clock size={12} /> {order.date || 'Just now'}
@@ -685,7 +706,11 @@ const Admin = () => {
                                                 <div className="mt-2 space-y-1.5">
                                                     {(order.items || []).map((item, idx) => (
                                                         <div key={idx} className="flex justify-between text-xs items-center bg-gray-50/60 p-2 rounded">
-                                                            <span className="text-gray-800 font-medium">{item.name} <span className="text-gold font-bold">x{item.quantity}</span></span>
+                                                            <span className="text-gray-800 font-medium">
+                                                                {item.name}
+                                                                {item.pack ? <span className="text-gray-500 font-normal"> · {item.pack}</span> : null}
+                                                                {' '}<span className="text-gold font-bold">x{item.quantity}</span>
+                                                            </span>
                                                             <span className="font-bold text-charcoal">{item.price}</span>
                                                         </div>
                                                     ))}
@@ -697,7 +722,7 @@ const Admin = () => {
                                                     </span>
                                                     <div className="text-right">
                                                         <span className="text-xs text-gray-400 block">Total Amount</span>
-                                                        <span className="font-bold text-gold text-base">₹{order.total}</span>
+                                                        <span className="font-bold text-gold text-base">{order.currency === 'USD' ? '$' : '₹'}{order.total}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -908,7 +933,7 @@ const Admin = () => {
                                             <p className="font-bold text-charcoal">#{h.orderNumber || h.id}</p>
                                             <p className="text-xs text-gray-500 mt-1">{h.date || formatMillis(h.createdAt)}</p>
                                             <p className="mt-2 font-semibold">{h.productName}</p>
-                                            <p className="text-lg font-bold text-charcoal">₹{h.amount}</p>
+                                            <p className="text-lg font-bold text-charcoal">{h.currency === 'USD' ? '$' : '₹'}{h.amount}</p>
                                             <p className="text-xs text-gray-500">{h.paymentStatus || 'Paid'} · {h.paymentId}</p>
                                         </div>
                                         <div>

@@ -1,8 +1,8 @@
 import crypto from 'crypto';
 import readJsonBody from './_readJsonBody.js';
 import razorpay from './_razorpay.js';
-import { computeCartTotal } from './_shopPricing.js';
-import { saveShopOrder } from './_saveShopOrder.js';
+import { finalizeShopPayment } from './_shopOrders.js';
+import { handleRazorpayWebhook } from './_razorpayWebhook.js';
 
 const sendJson = (res, status, payload) => {
     res.statusCode = status;
@@ -18,9 +18,21 @@ const signaturesMatch = (expectedHex, actualHex) => {
     return crypto.timingSafeEqual(expected, actual);
 };
 
+// Razorpay's own headers - present on its server-to-server webhook calls, never on
+// the checkout's verification request.
+const isRazorpayWebhook = (req) => req.headers['x-razorpay-signature'] !== undefined || req.headers['x-razorpay-event-id'] !== undefined;
+
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         sendJson(res, 405, { error: 'Method not allowed' });
+        return;
+    }
+
+    // The Razorpay webhook shares this function to stay under Vercel's function-count
+    // limit. It's routed before the body is read, because it needs the raw body to
+    // check Razorpay's signature.
+    if (isRazorpayWebhook(req)) {
+        await handleRazorpayWebhook(req, res);
         return;
     }
 
@@ -56,32 +68,21 @@ export default async function handler(req, res) {
         return;
     }
 
-    // Signature is valid, so the payment is real - save the order server-side (client
-    // writes to `orders` are denied by Firestore rules). The total charged is read back
-    // from Razorpay itself; the doc id is the payment id, so a retried call can't
-    // create a duplicate order.
-    if (!body.customer || !Array.isArray(body.cartItems)) {
-        sendJson(res, 200, { verified: true });
-        return;
-    }
+    // Signature is valid, so the payment is real - record the order from the checkout
+    // saved before payment (create-shop-order.js), falling back to what the browser
+    // sends now. The total is read back from Razorpay itself. If the webhook already
+    // recorded it, this just returns that order.
     try {
         const rzpOrder = await razorpay.orders.fetch(razorpay_order_id);
-        const pricing = computeCartTotal(body.cartItems, rzpOrder.currency === 'INR');
-        const saved = await saveShopOrder({
-            docId: razorpay_payment_id,
-            orderNumber: rzpOrder.receipt,
-            customer: body.customer,
-            items: body.items,
-            paymentMethod: 'Razorpay Online',
+        const { order, alreadyProcessed } = await finalizeShopPayment({
+            razorpayOrder: rzpOrder,
             paymentId: razorpay_payment_id,
-            paymentStatus: 'Paid & Verified',
-            subtotal: pricing.subtotalPaise / 100,
-            shipping: pricing.shippingFeePaise / 100,
-            total: rzpOrder.amount / 100,
-            currency: rzpOrder.currency
+            via: 'checkout',
+            fallback: { customer: body.customer, cartLines: body.cartItems, items: body.items }
         });
-        sendJson(res, 200, { verified: true, order: saved });
+        sendJson(res, 200, { verified: true, order, alreadyProcessed });
     } catch (err) {
+        console.error('Error recording shop order:', err);
         sendJson(res, 200, { verified: true, saveError: err.message || 'Failed to save order' });
     }
 }

@@ -2,7 +2,7 @@ import razorpay from './_razorpay.js';
 import readJsonBody from './_readJsonBody.js';
 import { computeCartTotal } from './_shopPricing.js';
 import { isIndiaRequest } from './_region.js';
-import { saveShopOrder } from './_saveShopOrder.js';
+import { saveCodOrder, savePendingShopCheckout } from './_shopOrders.js';
 
 const sendJson = (res, status, payload) => {
     res.statusCode = status;
@@ -51,18 +51,7 @@ export default async function handler(req, res) {
             return;
         }
         try {
-            const saved = await saveShopOrder({
-                orderNumber: receipt,
-                customer: body.customer,
-                items: body.items,
-                paymentMethod: 'Cash on Delivery',
-                paymentId: 'COD',
-                paymentStatus: 'Pending COD',
-                subtotal: pricing.subtotalPaise / 100,
-                shipping: pricing.shippingFeePaise / 100,
-                total: pricing.totalPaise / 100,
-                currency: pricing.currency
-            });
+            const saved = await saveCodOrder({ orderNumber: receipt, customer: body.customer, pricing });
             sendJson(res, 200, { order: saved });
         } catch (err) {
             sendJson(res, 500, { error: err.message || 'Failed to save order' });
@@ -74,8 +63,17 @@ export default async function handler(req, res) {
         const order = await razorpay.orders.create({
             amount: pricing.totalPaise,
             currency: pricing.currency,
-            receipt
+            receipt,
+            notes: { kind: 'shop' }
         });
+        // Saved before the customer pays, so the Razorpay webhook can still record the
+        // order if their browser never comes back (see _shopOrders.js). A failure here
+        // doesn't block payment - the browser's own verification still records it.
+        try {
+            await savePendingShopCheckout({ razorpayOrder: order, orderNumber: receipt, cartItems: body.cartItems, customer: body.customer, pricing });
+        } catch (err) {
+            console.error('Could not save pending shop checkout:', err);
+        }
         sendJson(res, 200, {
             order_id: order.id,
             amount: order.amount,

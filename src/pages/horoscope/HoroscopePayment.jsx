@@ -128,11 +128,16 @@ const HoroscopePayment = () => {
             const createRes = await fetch('/api/create-horoscope-order', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                // Birth and contact details go to the server before payment, so the order is
+                // still recorded (by Razorpay's webhook) if this page never comes back.
                 body: JSON.stringify({
                     productId,
                     couponCode: couponStatus?.couponApplied ? couponCode.trim() : null,
                     referralCode,
                     customerEmail: contact.email,
+                    customer: { name: subject.name, email: contact.email, phone: contact.phone },
+                    subject,
+                    partner: partner || null,
                     receipt: orderNumber
                 })
             });

@@ -138,7 +138,7 @@ const TrackOrder = () => {
                                 {order.items.map((item, i) => (
                                     <li key={i} className="py-3 flex justify-between gap-4">
                                         <span>
-                                            {item.name}{item.variant ? <span className="text-gray-500"> · {item.variant}</span> : null}
+                                            {item.name}{item.pack ? <span className="text-gray-500"> · {item.pack}</span> : null}
                                             <span className="text-gray-500"> × {item.quantity}</span>
                                         </span>
                                         <span className="font-semibold whitespace-nowrap">{item.price}</span>

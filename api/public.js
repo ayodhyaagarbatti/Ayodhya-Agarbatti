@@ -67,6 +67,7 @@ const actions = {
                 items: (o.items || []).map((item) => ({
                     name: item.name || '',
                     variant: item.variant || '',
+                    pack: item.pack || '',
                     price: item.price || '',
                     quantity: item.quantity || 1
                 })),

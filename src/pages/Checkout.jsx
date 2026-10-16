@@ -150,6 +150,13 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
         if (cartItems.length) trackBeginCheckout(cartItems, total, isIndia ? 'INR' : 'USD');
     }, []);
 
+    // Shown when the payment went through but this page couldn't confirm the order -
+    // Razorpay's webhook still records it server-side within a minute or two.
+    const paymentReceivedMessage = (paymentId, orderNumber) =>
+        `Your payment was received (payment ID ${paymentId}) and your order is being confirmed. ` +
+        `Check the Track Order page in a few minutes with order number ${orderNumber}. ` +
+        'If it does not show up, contact us with this payment ID.';
+
     const handlePlaceOrder = async () => {
         if (isProcessing) return;
         setPayError('');
@@ -219,8 +226,11 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                     const createRes = await fetch('/api/create-shop-order', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
+                        // Customer details go to the server before payment, so the order is
+                        // still recorded (by Razorpay's webhook) if this page never comes back.
                         body: JSON.stringify({
                             cartItems: cartLines,
+                            customer: orderCustomer,
                             receipt: orderNumber
                         })
                     });
@@ -263,14 +273,14 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                                 return;
                             }
                             if (!verifyData.order) {
-                                setPayError('Payment received but the order could not be recorded. Please contact support with payment ID ' + response.razorpay_payment_id + '.');
+                                setPayError(paymentReceivedMessage(response.razorpay_payment_id, orderNumber));
                                 setIsProcessing(false);
                                 return;
                             }
                             finishOrder(verifyData.order);
                         } catch (error) {
                             console.error("Error verifying razorpay payment:", error);
-                            setPayError("Payment completed but failed to write order to database. Please contact support.");
+                            setPayError(paymentReceivedMessage(response.razorpay_payment_id, orderNumber));
                             setIsProcessing(false);
                         }
                     },

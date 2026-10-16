@@ -2,6 +2,7 @@ import razorpay from './_razorpay.js';
 import readJsonBody from './_readJsonBody.js';
 import { computeHoroscopePrice } from './_horoscopePricing.js';
 import { adminDb } from './_firebaseAdmin.js';
+import { savePendingHoroscopeCheckout } from './_horoscopeOrders.js';
 import { isIndiaRequest } from './_region.js';
 
 const sendJson = (res, status, payload) => {
@@ -68,7 +69,7 @@ export default async function handler(req, res) {
     // Notes ride along on the Razorpay order and are read back at verification
     // time, so the verify step never has to trust anything the client claims
     // about coupon/referral state - it's all already fixed at order-creation time.
-    const notes = { productId: String(productId) };
+    const notes = { kind: 'horoscope', productId: String(productId) };
     if (referrerUid) notes.referrerUid = referrerUid;
     if (pricing.couponApplied) notes.couponApplied = 'true';
 
@@ -79,6 +80,23 @@ export default async function handler(req, res) {
             receipt,
             notes
         });
+        // Saved before the customer pays, so the Razorpay webhook can still record the
+        // order (and its birth details) if their browser never comes back - see
+        // _horoscopeOrders.js. A failure here doesn't block payment.
+        try {
+            await savePendingHoroscopeCheckout({
+                razorpayOrder: order,
+                orderNumber: receipt,
+                productId,
+                customer: body.customer || { email: customerEmail },
+                subject: body.subject,
+                partner: body.partner,
+                couponCode: pricing.couponApplied ? couponCode : null,
+                referralCode: referrerUid ? referralCode : null
+            });
+        } catch (err) {
+            console.error('Could not save pending horoscope checkout:', err);
+        }
         sendJson(res, 200, {
             order_id: order.id,
             amount: order.amount,

@@ -1,8 +1,7 @@
 import crypto from 'crypto';
 import readJsonBody from './_readJsonBody.js';
 import razorpay from './_razorpay.js';
-import { adminDb, FieldValue } from './_firebaseAdmin.js';
-import { horoscopeProducts } from '../src/data/horoscopeProducts.js';
+import { recordHoroscopePayment } from './_horoscopeOrders.js';
 
 const sendJson = (res, status, payload) => {
     res.statusCode = status;
@@ -54,9 +53,8 @@ export default async function handler(req, res) {
         return;
     }
 
-    // Everything about what was actually charged (amount, coupon, referrer) comes
-    // back from Razorpay's own record of the order, not from anything the client
-    // says now - the order's `notes` were fixed at creation time in create-horoscope-order.js.
+    // What was actually charged (amount, coupon, referrer) is read back from Razorpay's
+    // own record of the order inside recordHoroscopePayment - see _horoscopeOrders.js.
     let order;
     try {
         order = await razorpay.orders.fetch(razorpay_order_id);
@@ -65,70 +63,15 @@ export default async function handler(req, res) {
         return;
     }
 
-    const notes = order.notes || {};
-    const productId = notes.productId || body.productId;
-    // The wallet/commission system is entirely INR-denominated (payouts go out via
-    // UPI/bank transfer in India) - crediting 10% of a USD order as if it were paise
-    // would under-credit the referrer by the full INR/USD exchange rate. International
-    // orders just don't generate a commission for now.
-    const referrerUid = order.currency === 'INR' ? (notes.referrerUid || null) : null;
-    const couponApplied = notes.couponApplied === 'true';
-    const amountRupees = order.amount / 100;
-    const product = horoscopeProducts.find((p) => p.id === productId);
-
-    const db = adminDb();
-    const orderRef = db.collection('horoscope_orders').doc(razorpay_payment_id); // deterministic id => idempotent
-    const userRef = referrerUid ? db.collection('users').doc(referrerUid) : null;
-
-    let alreadyProcessed = false;
-    let commissionPaise = 0;
-
+    // Idempotent with the Razorpay webhook: whichever records the payment first wins,
+    // and the referral commission is only ever credited once.
+    let result;
     try {
-        await db.runTransaction(async (tx) => {
-            const existing = await tx.get(orderRef);
-            if (existing.exists) {
-                alreadyProcessed = true;
-                return;
-            }
-
-            if (referrerUid) {
-                commissionPaise = Math.round(amountRupees * 100 * 0.10);
-            }
-
-            tx.set(orderRef, {
-                orderNumber: orderNumber || razorpay_payment_id,
-                productId,
-                productName: product?.name || 'Vedic Horoscope Reading',
-                amount: amountRupees,
-                couponCode: couponApplied ? (body.couponCode || null) : null,
-                couponApplied,
-                referralCodeUsed: referrerUid ? (referralCode || null) : null,
-                referrerUid,
-                commissionPaise,
-                commissionCredited: Boolean(referrerUid),
-                razorpayOrderId: razorpay_order_id,
-                paymentId: razorpay_payment_id,
-                paymentStatus: 'Paid & Verified',
-                customer: customer || null,
-                subject: subject || null,
-                partner: partner || null,
-                date: date || new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-                createdAt: FieldValue.serverTimestamp()
-            });
-
-            if (referrerUid && commissionPaise > 0) {
-                const ledgerRef = db.collection('wallet_ledger').doc();
-                tx.set(ledgerRef, {
-                    uid: referrerUid,
-                    type: 'commission',
-                    amountPaise: commissionPaise,
-                    relatedOrderId: orderRef.id,
-                    relatedRedemptionId: null,
-                    createdAt: FieldValue.serverTimestamp(),
-                    note: `10% referral commission for order ${orderNumber || razorpay_payment_id}`
-                });
-                tx.set(userRef, { walletBalance: FieldValue.increment(commissionPaise) }, { merge: true });
-            }
+        result = await recordHoroscopePayment({
+            razorpayOrder: order,
+            paymentId: razorpay_payment_id,
+            via: 'checkout',
+            details: { orderNumber, productId: body.productId, couponCode: body.couponCode, referralCode, customer, subject, partner, date }
         });
     } catch (err) {
         console.error('Error persisting horoscope order:', err);
@@ -141,8 +84,8 @@ export default async function handler(req, res) {
 
     sendJson(res, 200, {
         verified: true,
-        alreadyProcessed,
-        orderId: orderRef.id,
-        commissionCredited: Boolean(referrerUid) && !alreadyProcessed
+        alreadyProcessed: result.alreadyProcessed,
+        orderId: result.orderId,
+        commissionCredited: result.commissionCredited && !result.alreadyProcessed
     });
 }

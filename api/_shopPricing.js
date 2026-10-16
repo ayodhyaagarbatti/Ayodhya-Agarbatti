@@ -17,6 +17,9 @@ export const computeCartTotal = (cartItems, isIndia = true) => {
     }
 
     let subtotal = 0;
+    // What was actually priced, line by line - used as the order's item list, so the
+    // admin sees the exact pack and price charged rather than the browser's copy.
+    const lines = [];
     for (const line of cartItems) {
         const product = products.find((p) => p.id === Number(line.id));
         if (!product) {
@@ -31,6 +34,16 @@ export const computeCartTotal = (cartItems, isIndia = true) => {
             throw new Error(`No price found for product: ${line.id}`);
         }
         subtotal += unitPrice * quantity;
+        lines.push({
+            id: product.id,
+            name: product.name,
+            variant: product.variant || '',
+            // Unmatched pack names are charged the base price, so they're labelled as the base pack.
+            pack: pack ? pack.size : (product.stickCount || ''),
+            unitPrice,
+            quantity,
+            image: product.images?.[0] || product.image || ''
+        });
     }
 
     const shippingFee = isIndia
@@ -42,6 +55,7 @@ export const computeCartTotal = (cartItems, isIndia = true) => {
         subtotalPaise: subtotal * 100,
         shippingFeePaise: shippingFee * 100,
         totalPaise: total * 100,
-        currency: isIndia ? 'INR' : 'USD'
+        currency: isIndia ? 'INR' : 'USD',
+        lines
     };
 };
