@@ -7,6 +7,7 @@ import {
     ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { callPublicApi } from '../utils/publicApi';
+import { trackViewItem } from '../utils/googleAnalytics';
 import SEO, { breadcrumbSchema, faqSchema } from '../components/SEO';
 import { products } from '../data/products';
 import { useRegion } from '../hooks/useRegion';
@@ -25,6 +26,10 @@ const ProductDetails = ({ addToCart }) => {
     const [reviewForm, setReviewForm] = useState({ name: '', rating: 5, comment: '' });
     const [userReviews, setUserReviews] = useState(product.reviews || []);
     const [reviewSuccess, setReviewSuccess] = useState(false);
+
+    useEffect(() => {
+        trackViewItem(product, isIndia ? 'INR' : 'USD');
+    }, [product.id]);
 
     useEffect(() => {
         // Route-change scroll reset is handled centrally by PageTracker (App.jsx) via

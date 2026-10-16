@@ -55,19 +55,43 @@ export const trackAddToCart = (product, quantity = 1) => {
     }
 };
 
+// Order items store price as a display string like "₹70" - GA4 needs a number.
+const toNumber = (value) => (typeof value === 'number' ? value : Number(String(value || '').replace(/[^0-9.]/g, '')) || 0);
+
+// GA4 Track Product View
+export const trackViewItem = (product, currency = 'INR') => {
+    try {
+        if (window.gtag) {
+            const price = currency === 'USD' ? product.usdPrice : product.numericPrice;
+            window.gtag('event', 'view_item', {
+                currency,
+                value: price || 0,
+                items: [{
+                    item_id: String(product.id),
+                    item_name: product.name,
+                    item_category: product.category || 'Incense',
+                    price: price || 0
+                }]
+            });
+        }
+    } catch (err) {
+        console.warn("GA4 trackViewItem note:", err);
+    }
+};
+
 // GA4 Track Begin Checkout
-export const trackBeginCheckout = (cartItems, totalValue) => {
+export const trackBeginCheckout = (cartItems, totalValue, currency = 'INR') => {
     try {
         const items = cartItems.map(item => ({
             item_id: String(item.id),
             item_name: item.name,
-            price: item.numericPrice || 70,
+            price: item.numericPrice || toNumber(item.price),
             quantity: item.quantity
         }));
 
         if (window.gtag) {
             window.gtag('event', 'begin_checkout', {
-                currency: 'INR',
+                currency,
                 value: totalValue,
                 items: items
             });
@@ -83,12 +107,14 @@ export const trackPurchase = (order) => {
         if (window.gtag) {
             window.gtag('event', 'purchase', {
                 transaction_id: order.orderNumber || order.id,
-                value: order.total,
-                currency: 'INR',
+                value: toNumber(order.total),
+                shipping: toNumber(order.shipping),
+                currency: order.currency || 'INR',
                 items: (order.items || []).map(item => ({
                     item_id: String(item.id),
                     item_name: item.name,
-                    price: item.price,
+                    item_variant: item.variant || undefined,
+                    price: toNumber(item.price),
                     quantity: item.quantity
                 }))
             });

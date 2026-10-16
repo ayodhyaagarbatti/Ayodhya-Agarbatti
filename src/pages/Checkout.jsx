@@ -3,11 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, MapPin, Lock, CreditCard, Banknote, CheckCircle, ShieldCheck, Truck, Check } from 'lucide-react';
 import { logCheckoutStep } from '../utils/analyticsLogger';
+import { trackBeginCheckout, trackPurchase } from '../utils/googleAnalytics';
 import { getLenisInstance } from '../utils/lenisInstance';
 import SEO from '../components/SEO';
 import { useRegion } from '../hooks/useRegion';
 
 const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID || '';
+// Cash on Delivery is switched off for now - flip this (and COD_ENABLED in
+// api/create-shop-order.js) to bring it back.
+const COD_ENABLED = false;
 
 const checkoutSchema = {
     "@context": "https://schema.org",
@@ -136,10 +140,15 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
     const shippingFee = isIndia ? (subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : DELIVERY_CHARGE) : 0;
     const total = subtotal + shippingFee;
 
-    // Cash on Delivery only works within India - force online payment for everyone else.
+    // Cash on Delivery only works within India (and only while enabled) - force online payment otherwise.
     useEffect(() => {
-        if (!isIndia && paymentMethod === 'cod') setPaymentMethod('razorpay');
+        if ((!isIndia || !COD_ENABLED) && paymentMethod === 'cod') setPaymentMethod('razorpay');
     }, [isIndia, paymentMethod]);
+
+    // GA4 begin_checkout, once per visit to the checkout page.
+    useEffect(() => {
+        if (cartItems.length) trackBeginCheckout(cartItems, total, isIndia ? 'INR' : 'USD');
+    }, []);
 
     const handlePlaceOrder = async () => {
         if (isProcessing) return;
@@ -301,6 +310,7 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
         } catch (e) {
             console.warn("Could not write local order backup:", e);
         }
+        trackPurchase(order);
         onClearCart();
         navigate("/success", { state: { order } });
     };
@@ -465,7 +475,7 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                                             {paymentMethod === 'razorpay' && <CheckCircle className="text-gold" />}
                                         </div>
 
-                                        {isIndia && (
+                                        {COD_ENABLED && isIndia && (
                                             <div
                                                 onClick={() => setPaymentMethod('cod')}
                                                 className={`p-6 border rounded-xl cursor-pointer flex items-center justify-between transition-all ${paymentMethod === 'cod' ? 'border-gold bg-gold/5' : 'border-gray-200 hover:border-gray-300'}`}

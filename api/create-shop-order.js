@@ -10,6 +10,9 @@ const sendJson = (res, status, payload) => {
     res.end(JSON.stringify(payload));
 };
 
+// Cash on Delivery is switched off for now - keep in sync with COD_ENABLED in src/pages/Checkout.jsx.
+const COD_ENABLED = false;
+
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         sendJson(res, 405, { error: 'Method not allowed' });
@@ -39,6 +42,10 @@ export default async function handler(req, res) {
     // Cash on Delivery: no payment gateway involved, so the order is saved right away.
     // India-only, matching the checkout UI.
     if (body.paymentMethod === 'cod') {
+        if (!COD_ENABLED) {
+            sendJson(res, 400, { error: 'Cash on Delivery is currently unavailable. Please pay online.' });
+            return;
+        }
         if (!isIndia) {
             sendJson(res, 400, { error: 'Cash on Delivery is only available within India.' });
             return;
