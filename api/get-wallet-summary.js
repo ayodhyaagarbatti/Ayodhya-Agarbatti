@@ -48,18 +48,39 @@ export default async function handler(req, res) {
 
         const referralCode = await ensureReferralCode(db, decoded.uid, userData.referralCode);
 
-        const ledgerSnap = await db.collection('wallet_ledger')
-            .where('uid', '==', decoded.uid)
-            .orderBy('createdAt', 'desc')
-            .limit(50)
-            .get();
-        const recentLedger = ledgerSnap.docs.map((d) => ({ id: d.id, ...d.data(), createdAt: d.data().createdAt?.toMillis?.() || null }));
+        // Equality-only queries sorted in memory, so neither needs a composite index.
+        const [ledgerSnap, requestsSnap] = await Promise.all([
+            db.collection('wallet_ledger').where('uid', '==', decoded.uid).limit(500).get(),
+            db.collection('redemption_requests').where('uid', '==', decoded.uid).limit(100).get()
+        ]);
+        const byNewest = (a, b) => (b.createdAt || 0) - (a.createdAt || 0);
+        const recentLedger = ledgerSnap.docs
+            .map((d) => ({ id: d.id, ...d.data(), createdAt: d.data().createdAt?.toMillis?.() || null }))
+            .sort(byNewest)
+            .slice(0, 50);
+        // Redemption requests are closed to the client SDK by Firestore rules, so the
+        // wallet page gets its own requests from here (payout details left out).
+        const recentRequests = requestsSnap.docs
+            .map((d) => {
+                const r = d.data();
+                return {
+                    id: d.id,
+                    status: r.status,
+                    requestedAmountPaise: r.requestedAmountPaise,
+                    feePaise: r.feePaise,
+                    netPayoutPaise: r.netPayoutPaise,
+                    payoutMethod: r.payoutMethod,
+                    createdAt: r.createdAt?.toMillis?.() || null
+                };
+            })
+            .sort(byNewest);
 
         sendJson(res, 200, {
             walletBalance: userData.walletBalance || 0,
             walletPendingRedemption: userData.walletPendingRedemption || 0,
             referralCode,
-            recentLedger
+            recentLedger,
+            recentRequests
         });
     } catch (err) {
         console.error('Error fetching wallet summary:', err);

@@ -1,5 +1,4 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 // Firebase Analytics (its own separate GA4 property, G-HXQGTZF7WV) is intentionally
@@ -19,7 +18,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 // Export services
-export const db = getFirestore(app);
+// No client Firestore: every collection is closed to the client SDK by Firestore
+// rules, so all reads/writes go through the api/ functions (Admin SDK) instead.
 export const auth = getAuth(app);
 
 // "Sign in with Google" - the OAuth consent screen used here is configured

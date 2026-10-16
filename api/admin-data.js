@@ -21,7 +21,11 @@ const COLLECTIONS = {
     contact_messages: { orderBy: 'createdAt', limit: 500 },
     subscribers: { orderBy: 'createdAt', limit: 1000 },
     reviews: { orderBy: 'createdAt', limit: 500 },
-    redemption_requests: { orderBy: 'createdAt', limit: 500 }
+    redemption_requests: { orderBy: 'createdAt', limit: 500 },
+    horoscope_orders: { orderBy: 'createdAt', limit: 500 },
+    // Many users docs predate profile syncing and have no createdAt - an orderBy query
+    // would silently drop them, so users are fetched unordered and sorted here instead.
+    users: { orderBy: null, limit: 1000 }
 };
 
 const ORDER_STATUSES = ['Order Placed', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
@@ -40,8 +44,12 @@ const handleList = async (db, body, res) => {
         sendJson(res, 400, { error: 'Unknown collection.' });
         return;
     }
-    const snap = await db.collection(body.collection).orderBy(config.orderBy, 'desc').limit(config.limit).get();
+    const ref = db.collection(body.collection);
+    const snap = await (config.orderBy ? ref.orderBy(config.orderBy, 'desc') : ref).limit(config.limit).get();
     const items = snap.docs.map((doc) => ({ id: doc.id, ...serializeTimestamps(doc.data()) }));
+    if (!config.orderBy) {
+        items.sort((a, b) => (b.lastLoginAt || b.createdAt || 0) - (a.lastLoginAt || a.createdAt || 0));
+    }
     sendJson(res, 200, { items });
 };
 

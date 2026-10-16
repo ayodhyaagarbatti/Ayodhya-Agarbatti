@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Wallet, IndianRupee, Clock, CheckCircle, XCircle, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { collection, query, where, orderBy, onSnapshot } from 'firebase/firestore';
-import { db } from '../firebase';
 import { useAuthUser } from '../hooks/useAuthUser';
 import SEO from '../components/SEO';
 
@@ -41,6 +39,7 @@ const AccountWallet = () => {
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'Could not load wallet.');
             setSummary(data);
+            setRequests(data.recentRequests || []);
         } catch (err) {
             setSummaryError(err.message);
         } finally {
@@ -52,15 +51,6 @@ const AccountWallet = () => {
         fetchSummary();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [eligible]);
-
-    useEffect(() => {
-        if (!user) return;
-        const q = query(collection(db, 'redemption_requests'), where('uid', '==', user.uid), orderBy('createdAt', 'desc'));
-        const unsub = onSnapshot(q, (snap) => {
-            setRequests(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
-        });
-        return unsub;
-    }, [user]);
 
     const handleRedeemSubmit = async (e) => {
         e.preventDefault();

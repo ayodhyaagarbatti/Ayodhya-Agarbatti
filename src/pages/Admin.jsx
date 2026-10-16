@@ -20,7 +20,7 @@ const Admin = () => {
     const [password, setPassword] = useState('');
     const [isLoggingIn, setIsLoggingIn] = useState(false);
     const [error, setError] = useState('');
-    const [activeTab, setActiveTab] = useState('orders'); // 'orders' | 'activity' | 'messages' | 'subscribers' | 'reviews' | 'redemptions'
+    const [activeTab, setActiveTab] = useState('orders'); // 'orders' | 'horoscope' | 'customers' | 'activity' | 'messages' | 'subscribers' | 'reviews' | 'redemptions'
     const [dataLoadError, setDataLoadError] = useState('');
 
     // Server-backed admin data (fetched via /api/admin-data, never the client Firestore SDK)
@@ -30,6 +30,8 @@ const Admin = () => {
     const [subscribers, setSubscribers] = useState([]);
     const [reviews, setReviews] = useState([]);
     const [redemptions, setRedemptions] = useState([]);
+    const [horoscopeOrders, setHoroscopeOrders] = useState([]);
+    const [customers, setCustomers] = useState([]);
     const [loading, setLoading] = useState(true);
 
     // Filters & Search
@@ -79,7 +81,9 @@ const Admin = () => {
             fetchCollection('contact_messages', setMessages),
             fetchCollection('subscribers', setSubscribers),
             fetchCollection('reviews', setReviews),
-            fetchCollection('redemption_requests', setRedemptions)
+            fetchCollection('redemption_requests', setRedemptions),
+            fetchCollection('horoscope_orders', setHoroscopeOrders),
+            fetchCollection('users', setCustomers)
         ]);
         setLoading(false);
     };
@@ -362,7 +366,10 @@ const Admin = () => {
 
     const filteredRedemptions = redemptions.filter(r => redemptionFilter === 'ALL' || r.status === redemptionFilter);
 
-    const totalRevenue = orders.reduce((acc, o) => acc + (parseInt(o.total) || 0), 0);
+    const shopRevenue = orders.reduce((acc, o) => acc + (o.status === 'Cancelled' ? 0 : (parseInt(o.total) || 0)), 0);
+    const horoscopeRevenue = horoscopeOrders.reduce((acc, o) => acc + (Number(o.amount) || 0), 0);
+    const totalRevenue = shopRevenue + horoscopeRevenue;
+    const formatMillis = (ms) => (ms ? new Date(ms).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-');
     const unreadMessagesCount = messages.filter(m => m.status === 'unread').length;
     const pageViewCount = activityLogs.filter(l => l.type === 'PAGE_VIEW').length;
     const cartActionCount = activityLogs.filter(l => l.type === 'CART_ACTION').length;
@@ -418,7 +425,7 @@ const Admin = () => {
                                 Secure Server Sync
                             </span>
                         </div>
-                        <p className="text-gray-500 text-xs mt-1">Auto-refreshes every 20s across orders, activity, contacts, subscribers, reviews & redemptions.</p>
+                        <p className="text-gray-500 text-xs mt-1">Auto-refreshes every 20s across shop & horoscope orders, customers, activity, contacts, subscribers, reviews & redemptions.</p>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-3">
@@ -473,7 +480,8 @@ const Admin = () => {
                         </div>
                         <div>
                             <span className="text-xs text-gray-500 font-bold uppercase">Total Orders</span>
-                            <h3 className="text-2xl font-bold text-charcoal">{orders.length}</h3>
+                            <h3 className="text-2xl font-bold text-charcoal">{orders.length + horoscopeOrders.length}</h3>
+                            <span className="text-[10px] text-gray-400">{orders.length} shop · {horoscopeOrders.length} horoscope</span>
                         </div>
                     </div>
 
@@ -484,6 +492,7 @@ const Admin = () => {
                         <div>
                             <span className="text-xs text-gray-500 font-bold uppercase">Total Revenue</span>
                             <h3 className="text-2xl font-bold text-charcoal">₹{totalRevenue.toLocaleString('en-IN')}</h3>
+                            <span className="text-[10px] text-gray-400">₹{shopRevenue.toLocaleString('en-IN')} shop · ₹{horoscopeRevenue.toLocaleString('en-IN')} horoscope</span>
                         </div>
                     </div>
 
@@ -530,6 +539,18 @@ const Admin = () => {
                         className={`flex items-center gap-2 px-5 py-3 rounded-lg text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap ${activeTab === 'orders' ? 'bg-charcoal text-white shadow' : 'text-gray-600 hover:bg-gray-100'}`}
                     >
                         <Package size={16} /> Orders ({orders.length})
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('horoscope')}
+                        className={`flex items-center gap-2 px-5 py-3 rounded-lg text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap ${activeTab === 'horoscope' ? 'bg-charcoal text-white shadow' : 'text-gray-600 hover:bg-gray-100'}`}
+                    >
+                        <Compass size={16} /> Horoscope Orders ({horoscopeOrders.length})
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('customers')}
+                        className={`flex items-center gap-2 px-5 py-3 rounded-lg text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap ${activeTab === 'customers' ? 'bg-charcoal text-white shadow' : 'text-gray-600 hover:bg-gray-100'}`}
+                    >
+                        <Users size={16} /> Customers ({customers.length})
                     </button>
                     <button
                         onClick={() => setActiveTab('activity')}
@@ -869,6 +890,91 @@ const Admin = () => {
                                         </div>
                                     </div>
                                 ))}
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* HOROSCOPE ORDERS */}
+                {activeTab === 'horoscope' && (
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        {horoscopeOrders.length === 0 ? (
+                            <div className="p-12 text-center text-gray-400">No horoscope orders in database yet.</div>
+                        ) : (
+                            <div className="divide-y divide-gray-100">
+                                {horoscopeOrders.map((h) => (
+                                    <div key={h.id} className="p-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                        <div>
+                                            <p className="font-bold text-charcoal">#{h.orderNumber || h.id}</p>
+                                            <p className="text-xs text-gray-500 mt-1">{h.date || formatMillis(h.createdAt)}</p>
+                                            <p className="mt-2 font-semibold">{h.productName}</p>
+                                            <p className="text-lg font-bold text-charcoal">₹{h.amount}</p>
+                                            <p className="text-xs text-gray-500">{h.paymentStatus || 'Paid'} · {h.paymentId}</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Customer</p>
+                                            <p className="font-semibold">{h.customer?.name || h.subject?.name || '-'}</p>
+                                            <p className="text-xs text-gray-600">{h.customer?.email || '-'}</p>
+                                            <p className="text-xs text-gray-600">{h.customer?.phone || '-'}</p>
+                                            {(h.couponApplied || h.referralCodeUsed) && (
+                                                <p className="text-xs text-gold font-bold mt-2">
+                                                    {h.couponApplied ? `Coupon: ${h.couponCode || 'applied'}` : ''}
+                                                    {h.couponApplied && h.referralCodeUsed ? ' · ' : ''}
+                                                    {h.referralCodeUsed ? `Referral: ${h.referralCodeUsed}` : ''}
+                                                </p>
+                                            )}
+                                        </div>
+                                        <div className="space-y-2">
+                                            {[['Birth details', h.subject], ['Partner', h.partner]].filter(([, p]) => p).map(([label, p]) => (
+                                                <div key={label}>
+                                                    <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">{label}</p>
+                                                    <p className="font-semibold">{p.name}</p>
+                                                    <p className="text-xs text-gray-600">{p.dob} · {p.timeUnknown ? 'time unknown' : p.tob} · {p.gender}</p>
+                                                    <p className="text-xs text-gray-600">{p.place || `${p.lat}, ${p.lon}`}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* CUSTOMERS (signed-in accounts) */}
+                {activeTab === 'customers' && (
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        {customers.length === 0 ? (
+                            <div className="p-12 text-center text-gray-400">No customer accounts in database yet.</div>
+                        ) : (
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-sm text-left">
+                                    <thead className="bg-gray-50 text-[10px] uppercase tracking-widest text-gray-500">
+                                        <tr>
+                                            <th className="px-4 py-3">Customer</th>
+                                            <th className="px-4 py-3">Sign-in</th>
+                                            <th className="px-4 py-3">Referral Code</th>
+                                            <th className="px-4 py-3">Wallet</th>
+                                            <th className="px-4 py-3">Joined</th>
+                                            <th className="px-4 py-3">Last Login</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100">
+                                        {customers.map((c) => (
+                                            <tr key={c.id}>
+                                                <td className="px-4 py-3">
+                                                    <p className="font-semibold text-charcoal">{c.name || <span className="text-gray-400 italic">Name not synced yet</span>}</p>
+                                                    <p className="text-xs text-gray-500">{c.email || c.id}</p>
+                                                </td>
+                                                <td className="px-4 py-3 text-xs capitalize">{c.provider || '-'}{c.provider === 'password' && c.emailVerified === false ? ' (unverified)' : ''}</td>
+                                                <td className="px-4 py-3 font-mono text-xs">{c.referralCode || '-'}</td>
+                                                <td className="px-4 py-3 text-xs">₹{((c.walletBalance || 0) / 100).toFixed(2)}{c.walletPendingRedemption ? ` (+₹${(c.walletPendingRedemption / 100).toFixed(2)} pending)` : ''}</td>
+                                                <td className="px-4 py-3 text-xs">{formatMillis(c.createdAt)}</td>
+                                                <td className="px-4 py-3 text-xs">{formatMillis(c.lastLoginAt)}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
                         )}
                     </div>
