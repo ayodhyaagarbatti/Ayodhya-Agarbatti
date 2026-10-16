@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, MapPin, Lock, CreditCard, Banknote, CheckCircle, ShieldCheck, Truck, Check } from 'lucide-react';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../firebase';
 import { logCheckoutStep } from '../utils/analyticsLogger';
 import { getLenisInstance } from '../utils/lenisInstance';
 import SEO from '../components/SEO';
@@ -148,41 +146,46 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
         setPayError('');
         setIsProcessing(true);
         const orderNumber = `AYD-${Date.now().toString().slice(-6)}-${Math.floor(1000 + Math.random() * 9000)}`;
-        
+        const cartLines = cartItems.map(item => ({
+            id: item.id,
+            selectedPackName: item.selectedPackName || null,
+            quantity: item.quantity
+        }));
+        const orderItems = cartItems.map(item => ({
+            id: item.id,
+            name: item.name,
+            variant: item.variant || '',
+            price: item.price,
+            quantity: item.quantity,
+            image: item.image || ''
+        }));
+        const orderCustomer = {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            street: formData.address,
+            city: formData.city,
+            pincode: formData.pincode,
+            phone: formData.phone,
+            email: formData.email
+        };
+
         try {
             if (paymentMethod === 'cod') {
-                const newOrder = {
-                    orderNumber: orderNumber,
-                    customer: {
-                        name: `${formData.firstName} ${formData.lastName}`.trim(),
-                        firstName: formData.firstName,
-                        lastName: formData.lastName,
-                        address: `${formData.address}, ${formData.city} - ${formData.pincode}`,
-                        street: formData.address,
-                        city: formData.city,
-                        pincode: formData.pincode,
-                        phone: formData.phone,
-                        email: formData.email,
-                        paymentMethod: 'Cash on Delivery'
-                    },
-                    items: cartItems.map(item => ({
-                        id: item.id,
-                        name: item.name,
-                        variant: item.variant || '',
-                        price: item.price,
-                        quantity: item.quantity,
-                        image: item.image || ''
-                    })),
-                    subtotal: subtotal,
-                    shipping: shippingFee,
-                    total: total,
-                    paymentId: 'COD',
-                    paymentStatus: 'Pending COD',
-                    status: 'Order Placed',
-                    date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-                    createdAt: serverTimestamp()
-                };
-                await saveAndRedirect(newOrder);
+                // Saved server-side: Firestore rules deny client writes to `orders`.
+                const codRes = await fetch('/api/create-shop-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        paymentMethod: 'cod',
+                        cartItems: cartLines,
+                        items: orderItems,
+                        customer: orderCustomer,
+                        receipt: orderNumber
+                    })
+                });
+                const codData = await codRes.json();
+                if (!codRes.ok || !codData.order) throw new Error(codData.error || 'Failed to place order');
+                finishOrder(codData.order);
             } else {
                 if (!RAZORPAY_KEY_ID) {
                     setPayError('Payment gateway is not configured yet. Set VITE_RAZORPAY_KEY_ID to enable online payments.');
@@ -208,11 +211,7 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            cartItems: cartItems.map(item => ({
-                                id: item.id,
-                                selectedPackName: item.selectedPackName || null,
-                                quantity: item.quantity
-                            })),
+                            cartItems: cartLines,
                             receipt: orderNumber
                         })
                     });
@@ -242,7 +241,10 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                                 body: JSON.stringify({
                                     razorpay_order_id: response.razorpay_order_id,
                                     razorpay_payment_id: response.razorpay_payment_id,
-                                    razorpay_signature: response.razorpay_signature
+                                    razorpay_signature: response.razorpay_signature,
+                                    cartItems: cartLines,
+                                    items: orderItems,
+                                    customer: orderCustomer
                                 })
                             });
                             const verifyData = await verifyRes.json();
@@ -251,41 +253,14 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
                                 setIsProcessing(false);
                                 return;
                             }
-
-                            const newOrder = {
-                                orderNumber: orderNumber,
-                                paymentId: response.razorpay_payment_id || 'RZP-ONLINE',
-                                customer: {
-                                    name: `${formData.firstName} ${formData.lastName}`.trim(),
-                                    firstName: formData.firstName,
-                                    lastName: formData.lastName,
-                                    address: `${formData.address}, ${formData.city} - ${formData.pincode}`,
-                                    street: formData.address,
-                                    city: formData.city,
-                                    pincode: formData.pincode,
-                                    phone: formData.phone,
-                                    email: formData.email,
-                                    paymentMethod: 'Razorpay Online'
-                                },
-                                items: cartItems.map(item => ({
-                                    id: item.id,
-                                    name: item.name,
-                                    variant: item.variant || '',
-                                    price: item.price,
-                                    quantity: item.quantity,
-                                    image: item.image || ''
-                                })),
-                                subtotal: order.subtotal,
-                                shipping: order.shippingFee,
-                                total: order.total,
-                                paymentStatus: 'Paid & Verified',
-                                status: 'Order Placed',
-                                date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-                                createdAt: serverTimestamp()
-                            };
-                            await saveAndRedirect(newOrder);
+                            if (!verifyData.order) {
+                                setPayError('Payment received but the order could not be recorded. Please contact support with payment ID ' + response.razorpay_payment_id + '.');
+                                setIsProcessing(false);
+                                return;
+                            }
+                            finishOrder(verifyData.order);
                         } catch (error) {
-                            console.error("Error saving razorpay order:", error);
+                            console.error("Error verifying razorpay payment:", error);
                             setPayError("Payment completed but failed to write order to database. Please contact support.");
                             setIsProcessing(false);
                         }
@@ -318,44 +293,16 @@ const Checkout = ({ cartItems = [], onClearCart }) => {
         }
     };
 
-    const saveAndRedirect = async (orderData) => {
+    const finishOrder = (order) => {
         try {
-            // Clean payload to eliminate any undefined values for Firestore compatibility
-            const cleanOrderData = JSON.parse(JSON.stringify(orderData, (key, value) => 
-                value === undefined ? null : value
-            ));
-
-            // 1. Save to LocalStorage Backup
+            // Local copy for the customer's own device; the real record is in Firestore.
             const existingBackup = JSON.parse(localStorage.getItem('ayodhya_orders') || '[]');
-            const backupId = cleanOrderData.orderNumber || `AYD-${Date.now()}`;
-            const backupOrder = { ...cleanOrderData, id: backupId };
-            localStorage.setItem('ayodhya_orders', JSON.stringify([backupOrder, ...existingBackup]));
-
-            let docId = backupId;
-
-            // 2. Save order to Firebase Firestore Database ("orders" collection)
-            try {
-                const docRef = await addDoc(collection(db, "orders"), {
-                    ...cleanOrderData,
-                    createdAt: serverTimestamp()
-                });
-                docId = docRef.id;
-            } catch (firestoreError) {
-                console.warn("Firestore write notice (using backup store):", firestoreError);
-            }
-
-            const finalOrder = { ...cleanOrderData, id: docId };
-
-            // Clear Cart after order saved
-            onClearCart();
-
-            // Redirect to Success Page
-            navigate("/success", { state: { order: finalOrder } });
+            localStorage.setItem('ayodhya_orders', JSON.stringify([order, ...existingBackup]));
         } catch (e) {
-            console.error("Error processing order storage: ", e);
-            setPayError("Failed to place order. Error: " + (e.message || "Unknown error"));
-            setIsProcessing(false);
+            console.warn("Could not write local order backup:", e);
         }
+        onClearCart();
+        navigate("/success", { state: { order } });
     };
 
     if (cartItems.length === 0) {

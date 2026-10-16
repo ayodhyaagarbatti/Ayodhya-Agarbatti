@@ -2,6 +2,7 @@ import razorpay from './_razorpay.js';
 import readJsonBody from './_readJsonBody.js';
 import { computeCartTotal } from './_shopPricing.js';
 import { isIndiaRequest } from './_region.js';
+import { saveShopOrder } from './_saveShopOrder.js';
 
 const sendJson = (res, status, payload) => {
     res.statusCode = status;
@@ -32,6 +33,33 @@ export default async function handler(req, res) {
         pricing = computeCartTotal(body.cartItems, isIndia);
     } catch (err) {
         sendJson(res, 400, { error: err.message });
+        return;
+    }
+
+    // Cash on Delivery: no payment gateway involved, so the order is saved right away.
+    // India-only, matching the checkout UI.
+    if (body.paymentMethod === 'cod') {
+        if (!isIndia) {
+            sendJson(res, 400, { error: 'Cash on Delivery is only available within India.' });
+            return;
+        }
+        try {
+            const saved = await saveShopOrder({
+                orderNumber: receipt,
+                customer: body.customer,
+                items: body.items,
+                paymentMethod: 'Cash on Delivery',
+                paymentId: 'COD',
+                paymentStatus: 'Pending COD',
+                subtotal: pricing.subtotalPaise / 100,
+                shipping: pricing.shippingFeePaise / 100,
+                total: pricing.totalPaise / 100,
+                currency: pricing.currency
+            });
+            sendJson(res, 200, { order: saved });
+        } catch (err) {
+            sendJson(res, 500, { error: err.message || 'Failed to save order' });
+        }
         return;
     }
 

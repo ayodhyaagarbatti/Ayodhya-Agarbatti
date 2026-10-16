@@ -1,5 +1,8 @@
 import crypto from 'crypto';
 import readJsonBody from './_readJsonBody.js';
+import razorpay from './_razorpay.js';
+import { computeCartTotal } from './_shopPricing.js';
+import { saveShopOrder } from './_saveShopOrder.js';
 
 const sendJson = (res, status, payload) => {
     res.statusCode = status;
@@ -53,5 +56,32 @@ export default async function handler(req, res) {
         return;
     }
 
-    sendJson(res, 200, { verified: true });
+    // Signature is valid, so the payment is real - save the order server-side (client
+    // writes to `orders` are denied by Firestore rules). The total charged is read back
+    // from Razorpay itself; the doc id is the payment id, so a retried call can't
+    // create a duplicate order.
+    if (!body.customer || !Array.isArray(body.cartItems)) {
+        sendJson(res, 200, { verified: true });
+        return;
+    }
+    try {
+        const rzpOrder = await razorpay.orders.fetch(razorpay_order_id);
+        const pricing = computeCartTotal(body.cartItems, rzpOrder.currency === 'INR');
+        const saved = await saveShopOrder({
+            docId: razorpay_payment_id,
+            orderNumber: rzpOrder.receipt,
+            customer: body.customer,
+            items: body.items,
+            paymentMethod: 'Razorpay Online',
+            paymentId: razorpay_payment_id,
+            paymentStatus: 'Paid & Verified',
+            subtotal: pricing.subtotalPaise / 100,
+            shipping: pricing.shippingFeePaise / 100,
+            total: rzpOrder.amount / 100,
+            currency: rzpOrder.currency
+        });
+        sendJson(res, 200, { verified: true, order: saved });
+    } catch (err) {
+        sendJson(res, 200, { verified: true, saveError: err.message || 'Failed to save order' });
+    }
 }
