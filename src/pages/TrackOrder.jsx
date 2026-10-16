@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Package, CheckCircle2, Truck, Home, XCircle, Search, Clock } from 'lucide-react';
 import SEO from '../components/SEO';
+import { callPublicApi } from '../utils/publicApi';
 
 // Matches ORDER_STATUSES in api/admin-data.js (minus 'Cancelled', shown separately).
 const STEPS = [
@@ -30,13 +31,7 @@ const TrackOrder = () => {
         setOrder(null);
         setLoading(true);
         try {
-            const res = await fetch('/api/track-order', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ orderNumber, phone })
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Could not find that order.');
+            const data = await callPublicApi('track-order', { orderNumber, phone });
             setOrder(data.order);
         } catch (err) {
             setError(err.message);

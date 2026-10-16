@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Instagram, Linkedin, Facebook, Youtube, Check } from 'lucide-react';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../firebase';
+import { callPublicApi } from '../utils/publicApi';
 import { useTranslation } from 'react-i18next';
 
 const Footer = () => {
@@ -33,11 +32,7 @@ const Footer = () => {
 
         setStatus({ loading: true, success: false, error: '' });
         try {
-            await addDoc(collection(db, "subscribers"), {
-                email: email.trim(),
-                subscribedAt: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
-                createdAt: serverTimestamp()
-            });
+            await callPublicApi('subscribe', { email: email.trim() });
             setStatus({ loading: false, success: true, error: '' });
             setEmail('');
         } catch (err) {

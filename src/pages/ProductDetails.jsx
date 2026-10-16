@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-    ArrowLeft, Star, ShieldCheck, Truck, RotateCcw, Flame, Sparkles, 
+import {
+    ArrowLeft, Star, ShieldCheck, Truck, RotateCcw, Flame, Sparkles,
     Check, ShoppingBag, Info, Heart, Share2, HelpCircle, UserCheck,
-    ChevronLeft, ChevronRight 
+    ChevronLeft, ChevronRight
 } from 'lucide-react';
-import { collection, addDoc, serverTimestamp, query, where, onSnapshot, orderBy } from 'firebase/firestore';
-import { db } from '../firebase';
+import { callPublicApi } from '../utils/publicApi';
 import SEO, { breadcrumbSchema, faqSchema } from '../components/SEO';
 import { products } from '../data/products';
 import { useRegion } from '../hooks/useRegion';
@@ -32,20 +31,17 @@ const ProductDetails = ({ addToCart }) => {
         // Lenis - a plain window.scrollTo here bypasses Lenis's virtual scroll state
         // and can make it clamp onto the old (often taller) page's scroll position.
 
-        // Fetch product reviews live from Firestore database
-        const q = query(collection(db, "reviews"), where("productId", "==", product.id));
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            const dbReviews = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-            // Merge static default reviews with live database reviews
-            setUserReviews([...dbReviews, ...(product.reviews || [])]);
-        }, (err) => {
-            console.error("Error fetching product reviews from database:", err);
-        });
+        // Fetch customer reviews via the server (client reads of `reviews` are denied by rules)
+        let cancelled = false;
+        setUserReviews(product.reviews || []);
+        callPublicApi('list-reviews', { productId: product.id })
+            .then(({ reviews }) => {
+                // Merge static default reviews with database reviews
+                if (!cancelled) setUserReviews([...(reviews || []), ...(product.reviews || [])]);
+            })
+            .catch((err) => console.error("Error fetching product reviews from database:", err));
 
-        return () => unsubscribe();
+        return () => { cancelled = true; };
     }, [id, product.id]);
 
     const relatedProducts = products.filter(p => p.id !== product.id).slice(0, 3);
@@ -75,21 +71,17 @@ const ProductDetails = ({ addToCart }) => {
     const handleReviewSubmit = async (e) => {
         e.preventDefault();
         if (!reviewForm.name || !reviewForm.comment) return;
-        
+
         try {
-            const newReview = {
+            const { review } = await callPublicApi('submit-review', {
                 productId: product.id,
                 productSlug: product.slug,
                 productName: product.name,
                 name: reviewForm.name,
-                location: "Verified Purchaser",
                 rating: reviewForm.rating,
-                date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
-                comment: reviewForm.comment,
-                createdAt: serverTimestamp()
-            };
-            
-            await addDoc(collection(db, "reviews"), newReview);
+                comment: reviewForm.comment
+            });
+            setUserReviews(prev => [review, ...prev]);
             setReviewForm({ name: '', rating: 5, comment: '' });
             setReviewSuccess(true);
             setTimeout(() => setReviewSuccess(false), 3000);

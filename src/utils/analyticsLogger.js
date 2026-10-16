@@ -1,5 +1,4 @@
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "../firebase";
+import { callPublicApi } from "./publicApi";
 
 // Helper to get or create a session ID
 const getSessionId = () => {
@@ -52,8 +51,7 @@ export const logActivity = async (type, details = {}) => {
                 day: 'numeric', month: 'short', year: 'numeric',
                 hour: '2-digit', minute: '2-digit', second: '2-digit'
             }),
-            details: JSON.parse(JSON.stringify(details, (k, v) => v === undefined ? null : v)),
-            createdAt: serverTimestamp()
+            details: JSON.parse(JSON.stringify(details, (k, v) => v === undefined ? null : v))
         };
 
         // 1. Local Storage Backup for Activity Logs
@@ -63,8 +61,8 @@ export const logActivity = async (type, details = {}) => {
             localStorage.setItem('ayodhya_activity_logs', JSON.stringify(updatedLogs));
         } catch (e) {}
 
-        // 2. Save to Firestore Database ("activity_logs" collection)
-        await addDoc(collection(db, "activity_logs"), logEntry);
+        // 2. Save to Firestore ("activity_logs") via the server - client writes are denied by rules
+        await callPublicApi('log-activity', logEntry);
     } catch (err) {
         console.warn("Analytics logger note:", err.message);
     }

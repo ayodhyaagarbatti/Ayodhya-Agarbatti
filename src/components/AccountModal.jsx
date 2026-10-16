@@ -9,21 +9,18 @@ import {
     sendEmailVerification,
     sendPasswordResetEmail
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
-import { auth, googleProvider, db } from '../firebase';
+import { auth, googleProvider } from '../firebase';
+import { syncUserProfile } from '../utils/publicApi';
 
-const createOrUpdateAccount = async (firebaseUser, provider) => {
-    const userRef = doc(db, 'users', firebaseUser.uid);
-    const existing = await getDoc(userRef);
-    await setDoc(userRef, {
-        name: firebaseUser.displayName || '',
-        email: firebaseUser.email || '',
-        photoURL: firebaseUser.photoURL || '',
-        provider,
-        lastLoginAt: serverTimestamp(),
-        ...(existing.exists() ? {} : { createdAt: serverTimestamp() })
-    }, { merge: true });
+// Saved server-side (client writes to `users` are denied by rules). A failure here
+// shouldn't block sign-in itself.
+const createOrUpdateAccount = async (firebaseUser) => {
+    try {
+        await syncUserProfile(firebaseUser, { force: true });
+    } catch (err) {
+        console.warn('Profile sync failed:', err);
+    }
 };
 
 const AccountModal = ({ isOpen, onClose, user }) => {

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, MapPin, CheckCircle, Send, Loader2, Instagram, Facebook, Linkedin, Youtube } from 'lucide-react';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../firebase';
+import { callPublicApi } from '../utils/publicApi';
 import SEO from '../components/SEO';
 
 const contactSchema = {
@@ -75,19 +74,13 @@ const Contact = () => {
         setErrorMsg('');
 
         try {
-            const messageData = {
+            await callPublicApi('contact', {
                 firstName: formData.firstName,
                 lastName: formData.lastName,
-                name: `${formData.firstName} ${formData.lastName}`.trim(),
                 email: formData.email,
                 subject: formData.subject,
-                message: formData.message,
-                status: 'unread',
-                date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-                createdAt: serverTimestamp()
-            };
-
-            await addDoc(collection(db, "contact_messages"), messageData);
+                message: formData.message
+            });
             setIsSubmitted(true);
             setFormData({
                 firstName: '',
@@ -98,7 +91,7 @@ const Contact = () => {
             });
         } catch (err) {
             console.error("Error saving contact message to database:", err);
-            setErrorMsg("Failed to save message to database. Please check your internet connection.");
+            setErrorMsg(err.message || "Failed to send your message. Please try again.");
         } finally {
             setIsSubmitting(false);
         }
